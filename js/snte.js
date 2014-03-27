@@ -72,21 +72,55 @@ function snte_workspace_add_table() {
       if(value == "") {
         value = "MSG-Unnamed-Table";
       }
-      console.log(value);
       return value;
     }, {
     onblur: "submit"
   });
-  snteWorkspaceElements[nextId] = newElement;
-  newElement.appendTo(newElementContainer);
-  newElementContainer.appendTo(snteWorkspace);
   newElementContainer.draggable({
     handle: $("div.snte-element-drag-handle", newElementContainer)
   });
-  //$("#snte-element-"+nextId+" table").addClass("table-bordered");
+
+  snteWorkspaceElements[nextId] = newElement;
+  newElement.appendTo(newElementContainer);
+  newElementContainer.appendTo(snteWorkspace);
+  
 }
 
 function snte_workspace_add_text() {
+  var nextId = snte_generate_element_id();
+
+  var newElement = $("<div class=\"snte-element-text\" id=\"snte-element-"+nextId+"\"></div>");
+  newElement.editable(function(value, settings) {
+      if(value == "") {
+        value = " ";
+      }
+      return value;
+    }, {
+    onblur: "submit",
+    type: "textarea"
+  });
+  
+  var newElementContainer = $("<div class=\"snte-element-container\" id=\"snte-element-"+nextId+"\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"></div></div></div>");
+  newElementContainer.mouseover(function() {
+    $(this).addClass("snte-highlighted");
+    $("div.snte-element-control-handles", $(this)).removeClass("snte-hidden");
+  });
+  newElementContainer.mouseout(function() {
+    $(this).removeClass("snte-highlighted");
+    $("div.snte-element-control-handles", $(this)).addClass("snte-hidden");
+  });
+  $("div.snte-element-delete", newElementContainer).click(function() {
+    if(confirm("MSG-Sure?")) {
+      $(this).closest("div.snte-element-container").remove();
+    }
+  });
+  newElementContainer.draggable({
+    handle: $("div.snte-element-drag-handle", newElementContainer)
+  });
+
+  snteWorkspaceElements[nextId] = newElement;
+  newElement.appendTo(newElementContainer);
+  newElementContainer.appendTo(snteWorkspace);
 }
 
 function snte_workspace_add_header() {

@@ -1,0 +1,72 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+div#snte-page {
+  width: 100%;
+  height: 100%;
+  margin: -10px 0 0 0;
+  padding: 0;
+}
+div#snte-chrome-top {
+  width: 100%;
+  height: 100px;
+  border-bottom: 1px darkgray solid;
+  background: lightgray;
+}
+div#snte-menubar-top {
+  margin: 10px 0 0 10px;
+}
+div#snte-main {
+  width: 100%;
+  min-width: 960px;
+}
+div#snte-chrome-left {
+  width: 180px;
+  height: 100%;
+  min-height: 800px;
+  border-right: 1px darkgray solid;
+  background: lightgray;
+  float: left;
+  padding: 10px 0 0 10px;
+}
+div#snte-workspace {
+  margin-left: 180px;
+  min-width: 790px;
+  height: 100%;
+  min-height: 800px;
+  background: lightblue;
+}
+
+
+div#snte-menu-left h1 {
+  font-size: 10px;
+  font-weight: bolder;
+  text-transform: uppercase;
+  color: darkgray;
+  margin: 0 auto;
+  display: block;
+}
+div#snte-menu-left-empty {
+  font-size: 10px;
+  color: darkgray;
+}
+
+span#snte-menu-font-color-picker-indicator {
+  background: #FC0;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+}
+button#snte-menu-font-bold {
+  font-weight: bold;
+}
+button#snte-menu-font-italic {
+  font-style: italic;
+}
+button#snte-menu-font-strikethrough {
+  text-decoration: line-through;
+}
+button#snte-menu-font-underline {
+  text-decoration: underline;
+}

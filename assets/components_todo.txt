@@ -1,0 +1,17 @@
+bootstrap resources:
+http://bootsnipp.com/
+
+
+
+colorpicker:
+http://mjolnic.github.io/bootstrap-colorpicker/
+http://www.eyecon.ro/bootstrap-colorpicker/
+
+popups:
+http://bootboxjs.com/
+
+contextmenu:
+https://github.com/sydcanem/bootstrap-contextmenu
+
+tabs:
+http://www.eyecon.ro/bootstrap-tabdrop/

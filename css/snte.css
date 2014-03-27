@@ -30,12 +30,18 @@ div#snte-chrome-left {
   float: left;
   padding: 10px 0 0 10px;
 }
-div#snte-workspace {
+div#snte-workspace-container {
   margin-left: 180px;
   min-width: 790px;
   height: 100%;
   min-height: 800px;
   background: lightblue;
+  overflow: auto;
+}
+
+div#snte-workspace {
+  /*width: 5000px;
+  height: 5000px;*/
 }
 
 
@@ -69,4 +75,51 @@ button#snte-menu-font-strikethrough {
 }
 button#snte-menu-font-underline {
   text-decoration: underline;
+}
+
+
+
+div.snte-element-table {
+  margin: 20px 0 0 20px;
+}
+
+
+div.snte-element-container {
+  padding: 0;
+  display: inline-block;
+}
+div.snte-element-container div.snte-element-control-handles {
+  width: 20px;
+  height: 100px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+div.snte-element-container div.snte-element-title {
+  width: 50%;
+  height: 20px;
+  position: absolute;
+  top: 0;
+  left: 20px;
+}
+
+div.snte-element-container div.snte-element-control-handles div.snte-element-drag-handle {
+  width: 20px;
+  height: 20px;
+  background-color: darkgrey;
+}
+
+div.snte-element-container div.snte-element-control-handles div.snte-element-delete {
+  width: 20px;
+  height: 20px;
+  background-color: red;
+}
+
+.snte-hidden {
+  display: none;
+}
+
+.snte-highlighted {
+  /*border: 1px #fc0 solid;*/
 }

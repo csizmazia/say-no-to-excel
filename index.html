@@ -6,17 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>say-no-to-excel</title>
     <script src="assets/jquery/jquery-2.1.0.js"></script>
+    <script src="assets/jquery/jquery-ui-1.10.4.custom.js"></script>
     <script src="assets/bootstrap/js/bootstrap.js"></script>
+    <!--<script src="assets/bootstrap/js/bootstrap-editable.js"></script>-->
     <script src="assets/jquery/handsontable/jquery.handsontable.full.js"></script>
     <!--<script src="js/jquery-ui.custom.min.js"></script>-->
     <script src="assets/numeral/numeral.js"></script>
     <script src="assets/numeral/languages/de.js"></script>
+    <script src="assets/jquery/jquery.jeditable.js"></script>
     <!--<script src="assets/jquery/handsontable/jquery.handsontable-excel.js"></script>-->
+
+    <script src="js/snte.js"></script>
 
     <!--<link rel="stylesheet" media="screen" href="css/ui-bootstrap/jquery-ui.custom.css">
      <link rel="stylesheet" media="screen" href="css/smoothness/jquery-ui.custom.css"> -->
     <link rel="stylesheet" media="screen" href="assets/jquery/handsontable/jquery.handsontable.full.css">
     <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.css">
+    <!--<link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap-editable.css">-->
     <link rel="stylesheet" media="screen" href="css/snte.css">
   </head>
   <body>
@@ -81,17 +87,17 @@
               <button type="button" class="btn btn-default" title="MSG-Strikethrough" id="snte-menu-font-strikethrough" title="MSG-Strikethrough">S</button>
             </div>
           </div>
-          <div class="btn-group">
+          <div class="btn-group" id="snte-menu-add-element">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="MSG-New-Element">
               MSG-Add-New-Element
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-              <li><a href="#">MSG-Table</a></li>
-              <li><a href="#">MSG-Text</a></li>
-              <li><a href="#">MSG-Header</a></li>
-              <li><a href="#">MSG-Chart</a></li>
-              <li><a href="#">MSG-Image</a></li>
+              <li><a href="#" data-item="table">MSG-Table</a></li>
+              <li><a href="#" data-item="text">MSG-Text</a></li>
+              <li><a href="#" data-item="header">MSG-Header</a></li>
+              <li><a href="#" data-item="chart">MSG-Chart</a></li>
+              <li><a href="#" data-item="image">MSG-Image</a></li>
             </ul>
           </div>
         </div>
@@ -103,7 +109,24 @@
             <div id="snte-menu-left-empty">MSG-No-Element-Selected</div>
           </div>
         </div>
-        <div id="snte-workspace">&nbsp;</div>
+        <div id="snte-workspace-container">
+          <div id="snte-workspace">
+            <table id="test">
+              <thead>
+                <tr>
+                  <th>th1</th>
+                  <th>th2</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>td1</td>
+                  <td>td2</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
 

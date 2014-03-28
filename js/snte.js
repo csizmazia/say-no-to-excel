@@ -17,6 +17,23 @@ function snte_bootstrap() {
     e.preventDefault();
   });*/
 
+  $("button#snte-menu-undo").click(function(e) {
+    document.execCommand("styleWithCSS", false, "true");
+    document.execCommand("undo", false, null);
+  });
+  $("button#snte-menu-redo").click(function(e) {
+    document.execCommand("styleWithCSS", false, "true");
+    document.execCommand("redo", false, null);
+  });
+  $("button#snte-menu-copy").click(function(e) {
+    document.execCommand("styleWithCSS", false, "true");
+    document.execCommand("copy", false, null);
+  });
+  $("button#snte-menu-paste").click(function(e) {
+    document.execCommand("styleWithCSS", false, "true");
+    document.execCommand("paste", false, null);
+  });
+
   $("div#snte-menu-add-element ul.dropdown-menu li a").click(function(e) {
     console.log("Menu Item");
     console.log(this);
@@ -69,6 +86,7 @@ function snte_bootstrap() {
    snte_wysiwyg_apply_font_size();
   });
   $("div#snte-menu-font-color ul.dropdown-menu li a").click(function(e) {
+    document.execCommand("styleWithCSS", false, "true");
     document.execCommand("fontColor", false, $(this).data("value"));
     snteWorkspaceFocusedElement.focus();
     e.preventDefault();
@@ -97,7 +115,11 @@ function snte_wysiwyg_apply_font_size() {
     console.log(snteWorkspaceFocusedElement);
     console.log($("div#snte-menu-font-size button").data("value"));
     document.execCommand("styleWithCSS", false, "true");
-    document.execCommand("fontSize", false, $("div#snte-menu-font-size button").data("value"));
+    // fontSize only accepts values from 1-7, see https://developer.mozilla.org/en-US/docs/Rich-Text_Editing_in_Mozilla#Executing_Commands
+    // workaround found here http://stackoverflow.com/questions/5868295/document-execcommand-fontsize-in-pixels
+    document.execCommand("fontSize", false, 1);
+    $("font[size=1]", snteWorkspace).removeAttr("size").css("font-size", $("div#snte-menu-font-size button").data("value"));
+    
     snteWorkspaceFocusedElement.focus();
   }
 }

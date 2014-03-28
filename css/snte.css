@@ -128,7 +128,10 @@ div.snte-element-container div.snte-element-control-handles div.snte-element-del
   display: none;
 }
 
-.snte-highlighted {
-  /*border: 1px #fc0 solid;*/
+div.snte-element-container.snte-highlighted {
   background: rgba(255,255,255,0.6);
+}
+
+div.snte-element-text.snte-highlighted {
+  outline: 2px dashed #ccc;
 }

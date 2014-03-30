@@ -4,7 +4,7 @@ http://bootsnipp.com/
 
 
 colorpicker:
-http://mjolnic.github.io/bootstrap-colorpicker/
+VERWENDET: http://mjolnic.github.io/bootstrap-colorpicker/
 http://www.eyecon.ro/bootstrap-colorpicker/
 
 popups:

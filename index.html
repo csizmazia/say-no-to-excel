@@ -15,6 +15,7 @@
     <script src="assets/numeral/numeral.js"></script>
     <script src="assets/numeral/languages/de.js"></script>
     <script src="assets/jquery/jquery.jeditable.js"></script>
+    <script src="assets/jquery/jquery.selection.js"></script>
     <!--<script src="assets/jquery/handsontable/jquery.handsontable-excel.js"></script>-->
 
     <script src="js/snte.js"></script>
@@ -41,7 +42,7 @@
           </div>
           <div class="btn-group">
             <div class="btn-group" id="snte-menu-font-family">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="Arial" title="MSG-Fontfamily" style="min-width:160px; text-align: left;">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="Arial" data-default-value="Arial" title="MSG-Fontfamily" style="min-width:160px; text-align: left;">
                 <span class="value">Arial</span>
                 <span class="caret"></span>
               </button>
@@ -55,7 +56,7 @@
               </ul>
             </div>
             <div class="btn-group" id="snte-menu-font-size">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="2" title="MSG-Fontsize" style="min-width:55px; text-align: left;">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="2" data-default-value="2" title="MSG-Fontsize" style="min-width:55px; text-align: left;">
                 <span class="value">13</span>
                 <span class="caret"></span>
               </button>
@@ -69,21 +70,8 @@
                 <li><a href="#" data-value="7"><font size="7">48</font></a></li>
               </ul>
             </div>
-            <!--<div class="btn-group" id="snte-menu-font-color">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="#000" title="MSG-Fontcolor">
-                A
-                <span id="snte-menu-font-color-picker-indicator"></span>
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu">
-                <li><a href="#" data-value="#f00">MSG-Color-Red</a></li>
-                <li><a href="#" data-value="#00f">MSG-Color-Color-Blue</a></li>
-                <li><a href="#" data-value="#0f0">MSG-Color-Green</a></li>
-                <li><a href="#" data-value="#880">MSG-Color-Yellow</a></li>
-              </ul>
-            </div>-->
             <div class="btn-group" id="snte-menu-font-color-container">
-              <button type="button" class="btn btn-default" data-value="#000" title="MSG-Fontcolor" id="snte-menu-font-color">
+              <button type="button" class="btn btn-default" data-value="#000" data-default-value="#000" title="MSG-Fontcolor" id="snte-menu-font-color">
                 A
                 <span id="snte-menu-font-color-picker-indicator"></span>
                 <span class="caret"></span>
@@ -104,7 +92,6 @@
             <ul class="dropdown-menu" role="menu">
               <li><a href="#" data-item="table">MSG-Table</a></li>
               <li><a href="#" data-item="text">MSG-Text</a></li>
-              <li><a href="#" data-item="header">MSG-Header</a></li>
               <li><a href="#" data-item="chart">MSG-Chart</a></li>
               <li><a href="#" data-item="image">MSG-Image</a></li>
             </ul>

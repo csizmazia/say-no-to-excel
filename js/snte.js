@@ -1,12 +1,13 @@
+String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
+
 var snteWorkspace;
 var snteWorkspaceElements = {};
 var snteWorkspaceFocusedElement;
 
+var fontSizeMap = {1: 10, 2:13, 3:16, 4:18, 5:24, 6:32, 7:48};
 
 $(document).ready(function() {
   snte_bootstrap();
-
-  console.log($("table th", snteWorkspace));
 });
 
 function snte_bootstrap() {
@@ -23,7 +24,6 @@ function snte_bootstrap() {
     
   }).on('changeColor', function(e){
     var hexColor = e.color.toHex();
-    console.log(hexColor);
     $("span#snte-menu-font-color-picker-indicator").css("background-color", hexColor);
     $("button#snte-menu-font-color").data("value", hexColor);
     snte_wysiwyg_apply_font_color();
@@ -47,9 +47,6 @@ function snte_bootstrap() {
   });
 
   $("div#snte-menu-add-element ul.dropdown-menu li a").click(function(e) {
-    console.log("Menu Item");
-    console.log(this);
-
     snte_workspace_add_item($(this).data("item"));
     
     e.preventDefault();
@@ -106,7 +103,6 @@ function snte_bootstrap() {
    snte_wysiwyg_apply_font_color();
   });*/
   $("button#snte-menu-font-color").click(function(e) {
-    console.log("hier");
     $("div#snte-menu-font-color-picker").colorpicker("show");
     snte_wysiwyg_apply_font_color();
 
@@ -255,6 +251,11 @@ function snte_workspace_add_text() {
   newElement.blur(function(e) {
     $(this).removeClass("snte-highlighted");
   });
+  newElement.click(function(e) {
+    var target = e.target;
+    snte_chrome_set_font_controls("text", $(target));
+    e.preventDefault();
+  });
 
   snteWorkspaceElements[nextId] = newElement;
   newElement.appendTo(newElementContainer);
@@ -263,11 +264,43 @@ function snte_workspace_add_text() {
   snte_wysiwyg_apply_font();
 }
 
-function snte_workspace_add_header() {
-
-}
-
 function snte_generate_element_id() {
   var date = new Date();
   return "e"+date.getTime();
+}
+
+function snte_chrome_set_font_controls(element_type, source) {
+  var valuesToSet = {"family": true, "size": true, "color": true, "bold": true, "italic": true, "underline": true, "strikethrough": true};
+  if(element_type == "text") {
+    // font family <span style>
+    // font size <font>
+    // font color <span style>
+    var currentElement = source;
+    while(!currentElement.hasClass("snte-element")) {
+      console.log(currentElement);
+      if(currentElement.is("span") && currentElement.attr("style")) {
+        console.log(currentElement.attr("style"));
+        if(currentElement.attr("style").contains("font-family") && valuesToSet.family) {
+          $("div#snte-menu-font-family button span.value").text(currentElement.css("font-family"));
+          $("div#snte-menu-font-family button").data("value", currentElement.css("font-family"));
+          valuesToSet.family = false;
+        }
+        if(currentElement.attr("style").contains("color") && valuesToSet.color) {
+          var hexColor = currentElement.css("color");
+          console.log(hexColor);
+          $("span#snte-menu-font-color-picker-indicator").css("background-color", hexColor);
+          $("button#snte-menu-font-color").data("value", hexColor);
+          valuesToSet.color = false;
+        }
+      }
+      if(currentElement.is("font") && currentElement.attr("size")) {
+        if(valuesToSet.size) {
+          $("div#snte-menu-font-size button span.value").text(fontSizeMap[currentElement.attr("size")]);
+          $("div#snte-menu-font-size button").data("value", currentElement.attr("size"));
+          valuesToSet.size = false;
+        }
+      }
+      currentElement = currentElement.parent();
+    }
+  }
 }

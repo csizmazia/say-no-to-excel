@@ -17,6 +17,18 @@ function snte_bootstrap() {
     e.preventDefault();
   });*/
 
+  $("button#snte-menu-font-color").colorpicker({
+    format: "rgb",
+    color: "#000"
+    
+  }).on('changeColor', function(e){
+    var hexColor = e.color.toHex();
+    console.log(hexColor);
+    $("span#snte-menu-font-color-picker-indicator").css("background-color", hexColor);
+    $("button#snte-menu-font-color").data("value", hexColor);
+    snte_wysiwyg_apply_font_color();
+  });
+
   $("button#snte-menu-undo").click(function(e) {
     document.execCommand("styleWithCSS", false, "true");
     document.execCommand("undo", false, null);
@@ -84,18 +96,28 @@ function snte_bootstrap() {
     $("div#snte-menu-font-size button").data("value", $(this).data("value"));
 
    snte_wysiwyg_apply_font_size();
+
+   e.preventDefault();
   });
-  $("div#snte-menu-font-color ul.dropdown-menu li a").click(function(e) {
-    document.execCommand("styleWithCSS", false, "true");
-    document.execCommand("fontColor", false, $(this).data("value"));
-    snteWorkspaceFocusedElement.focus();
-    e.preventDefault();
+  /*$("div#snte-menu-font-color ul.dropdown-menu li a").click(function(e) {
+    $("div#snte-menu-font-color button span.value").text($(this).text());
+    $("div#snte-menu-font-color button").data("value", $(this).data("value"));
+
+   snte_wysiwyg_apply_font_color();
+  });*/
+  $("button#snte-menu-font-color").click(function(e) {
+    console.log("hier");
+    $("div#snte-menu-font-color-picker").colorpicker("show");
+    snte_wysiwyg_apply_font_color();
+
+    //e.preventDefault();
   });
 }
 
 function snte_wysiwyg_apply_font() {
   snte_wysiwyg_apply_font_family();
   snte_wysiwyg_apply_font_size();
+  snte_wysiwyg_apply_font_color();
 }
 
 function snte_wysiwyg_apply_font_family() {
@@ -114,12 +136,27 @@ function snte_wysiwyg_apply_font_size() {
     console.log("apply font size");
     console.log(snteWorkspaceFocusedElement);
     console.log($("div#snte-menu-font-size button").data("value"));
+    // http://home.earthlink.net/~silvermaplesoft/standards/size_heading.html
     document.execCommand("styleWithCSS", false, "true");
+    document.execCommand("fontSize", false, $("div#snte-menu-font-size button").data("value"));
+    /*
     // fontSize only accepts values from 1-7, see https://developer.mozilla.org/en-US/docs/Rich-Text_Editing_in_Mozilla#Executing_Commands
     // workaround found here http://stackoverflow.com/questions/5868295/document-execcommand-fontsize-in-pixels
     document.execCommand("fontSize", false, 1);
     $("font[size=1]", snteWorkspace).removeAttr("size").css("font-size", $("div#snte-menu-font-size button").data("value"));
+    */
     
+    snteWorkspaceFocusedElement.focus();
+  }
+}
+
+function snte_wysiwyg_apply_font_color() {
+  if(snteWorkspaceFocusedElement != null) {
+    console.log("apply font color");
+    console.log(snteWorkspaceFocusedElement);
+    console.log($("button#snte-menu-font-color").data("value"));
+    document.execCommand("styleWithCSS", false, "true");
+    document.execCommand("foreColor", false, $("button#snte-menu-font-color").data("value"));
     snteWorkspaceFocusedElement.focus();
   }
 }
@@ -193,15 +230,6 @@ function snte_workspace_add_text() {
   var nextId = snte_generate_element_id();
 
   var newElement = $("<div class=\"snte-element snte-element-text\" id=\"snte-element-"+nextId+"\" contenteditable=\"true\"></div>");
-  /*newElement.editable(function(value, settings) {
-      if(value == "") {
-        value = " ";
-      }
-      return value;
-    }, {
-    onblur: "submit",
-    type: "textarea"
-  });*/
   
   var newElementContainer = $("<div class=\"snte-element-container\" id=\"snte-element-"+nextId+"\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"></div></div></div>");
   newElementContainer.mouseover(function() {

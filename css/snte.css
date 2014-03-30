@@ -60,7 +60,7 @@ div#snte-menu-left-empty {
 }
 
 span#snte-menu-font-color-picker-indicator {
-  background: #FC0;
+  background: #000;
   width: 10px;
   height: 10px;
   display: inline-block;
@@ -86,7 +86,7 @@ div.snte-element-table {
 div.snte-element-text {
   margin: 0 0 0 20px;
   min-width: 200px;
-  min-height: 200px;
+  min-height: 40px;
 }
 
 div.snte-element-container {

@@ -1,6 +1,7 @@
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
 var snteWorkspace;
+var snteWorkspaceContainer;
 var snteWorkspaceElements = {};
 var snteWorkspaceFocusedElement;
 
@@ -12,6 +13,7 @@ $(document).ready(function() {
 
 function snte_bootstrap() {
   snteWorkspace = $("div#snte-workspace");
+  snteWorkspaceContainer = $("div#snte-workspace-container");
   /*snteWorkspace.click(function(e) {
     console.log("click on workspace");
     snteWorkspaceFocusedElement = snteWorkspace;
@@ -267,7 +269,11 @@ function snte_workspace_add_table() {
     onblur: "submit"
   });
   newElementContainer.draggable({
-    handle: $("div.snte-element-drag-handle", newElementContainer)
+    handle: $("div.snte-element-drag-handle", newElementContainer),
+    containment: snteWorkspaceContainer,
+    cursor: "move",
+    opacity: "0.5",
+    snap: true
   });
 
   snteWorkspaceElements[nextId] = newElement;
@@ -285,10 +291,12 @@ function snte_workspace_add_text() {
   newElementContainer.mouseover(function() {
     $(this).addClass("snte-highlighted");
     $("div.snte-element-control-handles", $(this)).removeClass("snte-hidden");
+    $(this).addClass("snte-highlighted");
   });
   newElementContainer.mouseout(function() {
     $(this).removeClass("snte-highlighted");
     $("div.snte-element-control-handles", $(this)).addClass("snte-hidden");
+    $(this).removeClass("snte-highlighted");
   });
   $("div.snte-element-delete", newElementContainer).click(function() {
     if(confirm("MSG-Sure?")) {
@@ -296,7 +304,11 @@ function snte_workspace_add_text() {
     }
   });
   newElementContainer.draggable({
-    handle: $("div.snte-element-drag-handle", newElementContainer)
+    handle: $("div.snte-element-drag-handle", newElementContainer),
+    containment: snteWorkspaceContainer,
+    cursor: "move",
+    opacity: "0.5",
+    snap: true
   });
   newElement.focus(function(e) {
     snteWorkspaceFocusedElement = $(this);
@@ -322,7 +334,7 @@ function snte_workspace_add_comment() {
 
   var newElement = $("<div class=\"snte-element snte-element-comment\" id=\"snte-element-"+nextId+"\" contenteditable=\"true\"></div>");
   
-  var newElementContainer = $("<div class=\"snte-element-container\" id=\"snte-element-"+nextId+"\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"></div></div></div>");
+  var newElementContainer = $("<div class=\"snte-element-container\" id=\"snte-element-"+nextId+"\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete glyphicon glyphicon-remove\"></div></div></div>");
   newElementContainer.mouseover(function() {
     $(this).addClass("snte-highlighted");
     $("div.snte-element-control-handles", $(this)).removeClass("snte-hidden");
@@ -337,7 +349,11 @@ function snte_workspace_add_comment() {
     }
   });
   newElementContainer.draggable({
-    handle: $("div.snte-element-drag-handle", newElementContainer)
+    handle: $("div.snte-element-drag-handle", newElementContainer),
+    containment: snteWorkspaceContainer,
+    cursor: "move",
+    opacity: "0.5",
+    snap: true
   });
   newElement.focus(function(e) {
     snteWorkspaceFocusedElement = $(this);
@@ -376,10 +392,10 @@ function snte_chrome_toggle_button(btn) {
 }
 
 function snte_workspace_show_comments() {
-  $("div.snte-element-comment").parent("div.snte-element-container").show();
+  $("div.snte-element-comment").parent("div.snte-element-container").removeClass("snte-hidden");
 }
 function snte_workspace_hide_comments() {
-  $("div.snte-element-comment").parent("div.snte-element-container").hide();
+  $("div.snte-element-comment").parent("div.snte-element-container").addClass("snte-hidden");
 }
 
 function snte_chrome_show_comments() {

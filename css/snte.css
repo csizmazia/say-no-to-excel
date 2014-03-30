@@ -35,7 +35,7 @@ div#snte-workspace-container {
   min-width: 790px;
   height: 100%;
   min-height: 800px;
-  background: lightblue;
+  /*background: lightblue;*/
   overflow: auto;
 }
 
@@ -87,6 +87,10 @@ div.snte-element-text {
   margin: 0 0 0 20px;
   min-width: 200px;
   min-height: 200px;
+  background: #fff;
+}
+div.snte-element-text:hover {
+  outline: 2px dashed #ccc;
 }
 
 div.snte-element-comment {
@@ -95,7 +99,7 @@ div.snte-element-comment {
   margin: 0 0 0 20px;
   background:#fefabc; 
   padding:15px; 
-  font-family: 'Gloria Hallelujah', cursive; 
+  /*font-family: 'Gloria Hallelujah', cursive;*/
   font-size:15px; 
   color: #000; 
   width:200px; 
@@ -135,15 +139,19 @@ div.snte-element-container div.snte-element-title {
 }
 
 div.snte-element-container div.snte-element-control-handles div.snte-element-drag-handle {
-  width: 20px;
-  height: 20px;
-  background-color: darkgrey;
+  margin: 1px 0 0 1px;
+  width: 18px;
+  height: 18px;
+  background: #e4e4e4 url('../img/drag-handle-icon.png');
+}
+div.snte-element-container div.snte-element-control-handles div.snte-element-drag-handle:hover {
+  cursor: move;
 }
 
 div.snte-element-container div.snte-element-control-handles div.snte-element-delete {
   width: 20px;
   height: 20px;
-  background-color: red;
+  background-color: #e4e4e4;
 }
 
 .snte-hidden {
@@ -151,7 +159,8 @@ div.snte-element-container div.snte-element-control-handles div.snte-element-del
 }
 
 div.snte-element-container.snte-highlighted {
-  background: rgba(255,255,255,0.6);
+  /*background: rgba(255,255,255,0.6);*/
+  background-color: #e4e4e4;
 }
 
 div.snte-element-text.snte-highlighted {

@@ -53,44 +53,30 @@ function snte_bootstrap() {
   });
 
   $("button#snte-menu-font-bold").click(function(e) {
-    if(snteWorkspaceFocusedElement != null) {
-      snte_chrome_toggle_button($(this));
+    snte_chrome_toggle_button($(this));
+    snte_wysiwyg_apply_font_bold();
 
-      snteWorkspaceFocusedElement.focus();
+    e.preventDefault();
 
-      document.execCommand("styleWithCSS", false, "true");
-      document.execCommand("bold", false, null);
-    }
   });
   $("button#snte-menu-font-italic").click(function(e) {
-    if(snteWorkspaceFocusedElement != null) {
-      snte_chrome_toggle_button($(this));
+    snte_chrome_toggle_button($(this));
+    snte_wysiwyg_apply_font_italic();
 
-      snteWorkspaceFocusedElement.focus();
-
-      document.execCommand("styleWithCSS", false, "true");
-      document.execCommand("italic", false, null);
-    }
+    e.preventDefault();
   });
   $("button#snte-menu-font-underline").click(function(e) {
-    if(snteWorkspaceFocusedElement != null) {
-      snte_chrome_toggle_button($(this));
+    snte_chrome_toggle_button($(this));
+    snte_wysiwyg_apply_font_underline();
 
-      snteWorkspaceFocusedElement.focus();
-
-      document.execCommand("styleWithCSS", false, "true");
-      document.execCommand("underline", false, null);
-    }
+    e.preventDefault();
   });
   $("button#snte-menu-font-strikethrough").click(function(e) {
-    if(snteWorkspaceFocusedElement != null) {
-      snte_chrome_toggle_button($(this));
+    snte_chrome_toggle_button($(this));
+    snte_wysiwyg_apply_font_strikethrough();
 
-      snteWorkspaceFocusedElement.focus();
-
-      document.execCommand("styleWithCSS", false, "true");
-      document.execCommand("strikeThrough", false, null);
-    }
+    e.preventDefault();
+    
   });
   $("div#snte-menu-font-family ul.dropdown-menu li a").click(function(e) {
     $("div#snte-menu-font-family button span.value").text($(this).text());
@@ -108,17 +94,10 @@ function snte_bootstrap() {
 
    e.preventDefault();
   });
-  /*$("div#snte-menu-font-color ul.dropdown-menu li a").click(function(e) {
-    $("div#snte-menu-font-color button span.value").text($(this).text());
-    $("div#snte-menu-font-color button").data("value", $(this).data("value"));
-
-   snte_wysiwyg_apply_font_color();
-  });*/
   $("button#snte-menu-font-color").click(function(e) {
     $("div#snte-menu-font-color-picker").colorpicker("show");
-    snte_wysiwyg_apply_font_color();
 
-    //e.preventDefault();
+    e.preventDefault();
   });
 }
 
@@ -126,6 +105,55 @@ function snte_wysiwyg_apply_font() {
   snte_wysiwyg_apply_font_family();
   snte_wysiwyg_apply_font_size();
   snte_wysiwyg_apply_font_color();
+  snte_wysiwyg_apply_font_styles();
+}
+
+function snte_wysiwyg_apply_font_styles() {
+  if($("button#snte-menu-font-bold").hasClass("active")) {
+    snte_wysiwyg_apply_font_bold();
+  }
+  if($("button#snte-menu-font-italic").hasClass("active")) {
+    snte_wysiwyg_apply_font_italic();
+  }
+  if($("button#snte-menu-font-underline").hasClass("active")) {
+    snte_wysiwyg_apply_font_underline();
+  }
+  if($("button#snte-menu-font-strikethrough").hasClass("active")) {
+    snte_wysiwyg_apply_font_strikethrough();
+  }
+}
+
+function snte_wysiwyg_apply_font_bold() {
+  if(snteWorkspaceFocusedElement != null) {
+    snteWorkspaceFocusedElement.focus();
+
+    document.execCommand("styleWithCSS", false, "true");
+    document.execCommand("bold", false, null);
+  }
+}
+function snte_wysiwyg_apply_font_italic() {
+  if(snteWorkspaceFocusedElement != null) {
+    snteWorkspaceFocusedElement.focus();
+
+    document.execCommand("styleWithCSS", false, "true");
+    document.execCommand("italic", false, null);
+  }
+}
+function snte_wysiwyg_apply_font_underline() {
+  if(snteWorkspaceFocusedElement != null) {
+    snteWorkspaceFocusedElement.focus();
+
+    document.execCommand("styleWithCSS", false, "true");
+    document.execCommand("underline", false, null);
+  }
+}
+function snte_wysiwyg_apply_font_strikethrough() {
+  if(snteWorkspaceFocusedElement != null) {
+    snteWorkspaceFocusedElement.focus();
+
+    document.execCommand("styleWithCSS", false, "true");
+    document.execCommand("strikeThrough", false, null);
+  }
 }
 
 function snte_wysiwyg_apply_font_family() {
@@ -264,8 +292,7 @@ function snte_workspace_add_text() {
     $(this).removeClass("snte-highlighted");
   });
   newElement.click(function(e) {
-    var target = e.target;
-    snte_chrome_set_font_controls("text", $(target));
+    snte_chrome_set_font_controls("text", $(e.target));
     e.preventDefault();
   });
 

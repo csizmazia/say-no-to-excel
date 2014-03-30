@@ -5,6 +5,8 @@ var snteWorkspaceContainer;
 var snteWorkspaceElements = {};
 var snteWorkspaceFocusedElement;
 
+var snteChromeSize = {left:{width: 180}, top:{height: 100}};
+
 var fontSizeMap = {1: 10, 2:13, 3:16, 4:18, 5:24, 6:32, 7:48};
 
 $(document).ready(function() {
@@ -232,6 +234,17 @@ function snte_workspace_add_item(type) {
     }
 }
 
+function snte_workspace_make_draggable(elem) {
+  elem.draggable({
+    handle: $("div.snte-element-drag-handle", elem),
+    //containment: snteWorkspaceContainer,
+    containment: [snteChromeSize.left.width, snteChromeSize.top.height, 9999999999, 9999999999],
+    cursor: "move",
+    opacity: "0.5",
+    snap: true
+  });
+}
+
 function snte_workspace_add_table() {
   var nextId = snte_generate_element_id();
   var newElement = $("<div class=\"snte-element snte-element-table\" id=\"snte-element-"+nextId+"\"></div>");
@@ -268,13 +281,8 @@ function snte_workspace_add_table() {
     }, {
     onblur: "submit"
   });
-  newElementContainer.draggable({
-    handle: $("div.snte-element-drag-handle", newElementContainer),
-    containment: snteWorkspaceContainer,
-    cursor: "move",
-    opacity: "0.5",
-    snap: true
-  });
+
+  snte_workspace_make_draggable(newElementContainer);
 
   snteWorkspaceElements[nextId] = newElement;
   newElement.appendTo(newElementContainer);
@@ -303,13 +311,9 @@ function snte_workspace_add_text() {
       $(this).closest("div.snte-element-container").remove();
     }
   });
-  newElementContainer.draggable({
-    handle: $("div.snte-element-drag-handle", newElementContainer),
-    containment: snteWorkspaceContainer,
-    cursor: "move",
-    opacity: "0.5",
-    snap: true
-  });
+
+  snte_workspace_make_draggable(newElementContainer);
+
   newElement.focus(function(e) {
     snteWorkspaceFocusedElement = $(this);
     $(this).addClass("snte-highlighted");
@@ -348,13 +352,9 @@ function snte_workspace_add_comment() {
       $(this).closest("div.snte-element-container").remove();
     }
   });
-  newElementContainer.draggable({
-    handle: $("div.snte-element-drag-handle", newElementContainer),
-    containment: snteWorkspaceContainer,
-    cursor: "move",
-    opacity: "0.5",
-    snap: true
-  });
+  
+  snte_workspace_make_draggable(newElementContainer);
+
   newElement.focus(function(e) {
     snteWorkspaceFocusedElement = $(this);
     $(this).addClass("snte-highlighted");

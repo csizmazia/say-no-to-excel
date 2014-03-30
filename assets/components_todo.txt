@@ -15,3 +15,6 @@ https://github.com/sydcanem/bootstrap-contextmenu
 
 tabs:
 http://www.eyecon.ro/bootstrap-tabdrop/
+
+images:
+http://www.dropzonejs.com/

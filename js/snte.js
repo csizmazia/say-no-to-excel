@@ -54,28 +54,40 @@ function snte_bootstrap() {
 
   $("button#snte-menu-font-bold").click(function(e) {
     if(snteWorkspaceFocusedElement != null) {
+      snte_chrome_toggle_button($(this));
+
       snteWorkspaceFocusedElement.focus();
+
       document.execCommand("styleWithCSS", false, "true");
       document.execCommand("bold", false, null);
     }
   });
   $("button#snte-menu-font-italic").click(function(e) {
     if(snteWorkspaceFocusedElement != null) {
+      snte_chrome_toggle_button($(this));
+
       snteWorkspaceFocusedElement.focus();
+
       document.execCommand("styleWithCSS", false, "true");
       document.execCommand("italic", false, null);
     }
   });
   $("button#snte-menu-font-underline").click(function(e) {
     if(snteWorkspaceFocusedElement != null) {
+      snte_chrome_toggle_button($(this));
+
       snteWorkspaceFocusedElement.focus();
+
       document.execCommand("styleWithCSS", false, "true");
       document.execCommand("underline", false, null);
     }
   });
   $("button#snte-menu-font-strikethrough").click(function(e) {
     if(snteWorkspaceFocusedElement != null) {
+      snte_chrome_toggle_button($(this));
+
       snteWorkspaceFocusedElement.focus();
+
       document.execCommand("styleWithCSS", false, "true");
       document.execCommand("strikeThrough", false, null);
     }
@@ -269,12 +281,23 @@ function snte_generate_element_id() {
   return "e"+date.getTime();
 }
 
+function snte_chrome_toggle_button(btn) {
+  if(btn.hasClass("active")) {
+    btn.removeClass("active");
+  }
+  else {
+    btn.addClass("active");
+  }
+}
+
 function snte_chrome_set_font_controls(element_type, source) {
   var valuesToSet = {"family": true, "size": true, "color": true, "bold": true, "italic": true, "underline": true, "strikethrough": true};
   if(element_type == "text") {
-    // font family <span style>
-    // font size <font>
-    // font color <span style>
+    $("button#snte-menu-font-bold").removeClass("active");
+    $("button#snte-menu-font-italic").removeClass("active");
+    $("button#snte-menu-font-underline").removeClass("active");
+    $("button#snte-menu-font-strikethrough").removeClass("active");
+
     var currentElement = source;
     while(!currentElement.hasClass("snte-element")) {
       console.log(currentElement);
@@ -286,11 +309,27 @@ function snte_chrome_set_font_controls(element_type, source) {
           valuesToSet.family = false;
         }
         if(currentElement.attr("style").contains("color") && valuesToSet.color) {
-          var hexColor = currentElement.css("color");
-          console.log(hexColor);
-          $("span#snte-menu-font-color-picker-indicator").css("background-color", hexColor);
-          $("button#snte-menu-font-color").data("value", hexColor);
+          $("span#snte-menu-font-color-picker-indicator").css("background-color", currentElement.css("color"));
+          $("button#snte-menu-font-color").data("value", currentElement.css("color"));
           valuesToSet.color = false;
+        }
+        if(currentElement.attr("style").contains("font-weight") && valuesToSet.bold) {
+          $("button#snte-menu-font-bold").addClass("active");
+          valuesToSet.bold = false;
+        }
+        if(currentElement.attr("style").contains("font-style") && valuesToSet.italic) {
+          $("button#snte-menu-font-italic").addClass("active");
+          valuesToSet.italic = false;
+        }
+        if(currentElement.attr("style").contains("text-decoration")) {
+          if(currentElement.attr("style").contains("underline") && valuesToSet.underline) {
+            $("button#snte-menu-font-underline").addClass("active");
+            valuesToSet.underline = false;
+          }
+          if(currentElement.attr("style").contains("line-through") && valuesToSet.strikethrough) {
+            $("button#snte-menu-font-strikethrough").addClass("active");
+            valuesToSet.strikethrough = false;
+          }
         }
       }
       if(currentElement.is("font") && currentElement.attr("size")) {

@@ -1,4 +1,0 @@
-copy-paste
-fillcolor
-font controls for tables
-undo-redo für text, table, drag n drop

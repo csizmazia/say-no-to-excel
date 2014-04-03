@@ -57,8 +57,16 @@ div#snte-menu-left h1 {
 div#snte-menu-left-empty {
   font-size: 10px;
   color: darkgray;
+  font-style: 
 }
 
+span#snte-menu-fill-color-picker-indicator {
+  background: #fff;
+  border: 1px black solid;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+}
 span#snte-menu-font-color-picker-indicator {
   background: #000;
   width: 10px;

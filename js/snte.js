@@ -50,6 +50,7 @@ $(document).ready(function() {
 function snte_bootstrap() {
   $snteWorkspace = $("div#snte-workspace");
   $snteWorkspaceContainer = $("div#snte-workspace-container");
+  $snteWorkspaceFocusedElement = null;
 
   $("button#snte-menu-font-color").colorpicker({
     format: "rgb",
@@ -196,18 +197,7 @@ function snte_wysiwyg_apply_font_bold() {
       document.execCommand("bold", false, null);
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
-      console.log("focused element is table");
-      var isBold = $("button#snte-menu-font-bold").hasClass("active");
-      var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
-      var selectedCells = tableInstance.getSelected(); //[startRow, startCol, endRow, endCol]
-      for(var ii = selectedCells[0]; ii <= selectedCells[2]; ii++) {
-        for(var jj = selectedCells[1]; jj <= selectedCells[3]; jj++) {
-          console.log("update cell meta for "+ii+" "+jj);
-          var cellMeta = tableInstance.getCellMeta(ii, jj);
-          cellMeta.snteWYSIWYG.bold = isBold;
-        }
-      }
-      tableInstance.render();
+      snte_wysiwyg_update_table_cell_meta("bold", $("button#snte-menu-font-bold").hasClass("active"));
     }
   }
 }
@@ -219,18 +209,7 @@ function snte_wysiwyg_apply_font_italic() {
       document.execCommand("italic", false, null);
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
-      console.log("focused element is table");
-      var isItalic = $("button#snte-menu-font-italic").hasClass("active");
-      var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
-      var selectedCells = tableInstance.getSelected(); //[startRow, startCol, endRow, endCol]
-      for(var ii = selectedCells[0]; ii <= selectedCells[2]; ii++) {
-        for(var jj = selectedCells[1]; jj <= selectedCells[3]; jj++) {
-          console.log("update cell meta for "+ii+" "+jj);
-          var cellMeta = tableInstance.getCellMeta(ii, jj);
-          cellMeta.snteWYSIWYG.italic = isItalic;
-        }
-      }
-      tableInstance.render();
+      snte_wysiwyg_update_table_cell_meta("italic", $("button#snte-menu-font-italic").hasClass("active"));
     }
   }
 }
@@ -242,18 +221,7 @@ function snte_wysiwyg_apply_font_underline() {
       document.execCommand("underline", false, null);
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
-      console.log("focused element is table");
-      var isUnderline = $("button#snte-menu-font-underline").hasClass("active");
-      var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
-      var selectedCells = tableInstance.getSelected(); //[startRow, startCol, endRow, endCol]
-      for(var ii = selectedCells[0]; ii <= selectedCells[2]; ii++) {
-        for(var jj = selectedCells[1]; jj <= selectedCells[3]; jj++) {
-          console.log("update cell meta for "+ii+" "+jj);
-          var cellMeta = tableInstance.getCellMeta(ii, jj);
-          cellMeta.snteWYSIWYG.underline = isUnderline;
-        }
-      }
-      tableInstance.render();
+      snte_wysiwyg_update_table_cell_meta("underline", $("button#snte-menu-font-underline").hasClass("active"));
     }
   }
 }
@@ -265,18 +233,7 @@ function snte_wysiwyg_apply_font_strikethrough() {
       document.execCommand("strikeThrough", false, null);
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
-      console.log("focused element is table");
-      var isStrikethrough = $("button#snte-menu-font-strikethrough").hasClass("active");
-      var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
-      var selectedCells = tableInstance.getSelected(); //[startRow, startCol, endRow, endCol]
-      for(var ii = selectedCells[0]; ii <= selectedCells[2]; ii++) {
-        for(var jj = selectedCells[1]; jj <= selectedCells[3]; jj++) {
-          console.log("update cell meta for "+ii+" "+jj);
-          var cellMeta = tableInstance.getCellMeta(ii, jj);
-          cellMeta.snteWYSIWYG.strikethrough = isStrikethrough;
-        }
-      }
-      tableInstance.render();
+      snte_wysiwyg_update_table_cell_meta("strikethrough", $("button#snte-menu-font-strikethrough").hasClass("active"));
     }
   }
 }
@@ -292,18 +249,7 @@ function snte_wysiwyg_apply_font_family() {
       $snteWorkspaceFocusedElement.focus();
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
-      console.log("focused element is table");
-      var fontFamily = $("div#snte-menu-font-family button").data("value");
-      var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
-      var selectedCells = tableInstance.getSelected(); //[startRow, startCol, endRow, endCol]
-      for(var ii = selectedCells[0]; ii <= selectedCells[2]; ii++) {
-        for(var jj = selectedCells[1]; jj <= selectedCells[3]; jj++) {
-          console.log("update cell meta for "+ii+" "+jj);
-          var cellMeta = tableInstance.getCellMeta(ii, jj);
-          cellMeta.snteWYSIWYG.fontFamily = fontFamily;
-        }
-      }
-      tableInstance.render();
+      snte_wysiwyg_update_table_cell_meta("fontFamily", $("div#snte-menu-font-family button").data("value"));
     }
   }
 }
@@ -326,18 +272,7 @@ function snte_wysiwyg_apply_font_size() {
       $snteWorkspaceFocusedElement.focus();
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
-      console.log("focused element is table");
-      var fontSize = $("div#snte-menu-font-size button").data("value");
-      var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
-      var selectedCells = tableInstance.getSelected(); //[startRow, startCol, endRow, endCol]
-      for(var ii = selectedCells[0]; ii <= selectedCells[2]; ii++) {
-        for(var jj = selectedCells[1]; jj <= selectedCells[3]; jj++) {
-          console.log("update cell meta for "+ii+" "+jj);
-          var cellMeta = tableInstance.getCellMeta(ii, jj);
-          cellMeta.snteWYSIWYG.fontSize = fontSize;
-        }
-      }
-      tableInstance.render();
+      snte_wysiwyg_update_table_cell_meta("fontSize", $("div#snte-menu-font-size button").data("value"));
     }
   }
 }
@@ -353,18 +288,7 @@ function snte_wysiwyg_apply_font_color() {
       $snteWorkspaceFocusedElement.focus();
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
-      console.log("focused element is table");
-      var fontColor = $("button#snte-menu-font-color").data("value");
-      var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
-      var selectedCells = tableInstance.getSelected(); //[startRow, startCol, endRow, endCol]
-      for(var ii = selectedCells[0]; ii <= selectedCells[2]; ii++) {
-        for(var jj = selectedCells[1]; jj <= selectedCells[3]; jj++) {
-          console.log("update cell meta for "+ii+" "+jj);
-          var cellMeta = tableInstance.getCellMeta(ii, jj);
-          cellMeta.snteWYSIWYG.fontColor = fontColor;
-        }
-      }
-      tableInstance.render();
+      snte_wysiwyg_update_table_cell_meta("fontColor", $("button#snte-menu-font-color").data("value"));
     }
   }
 }
@@ -380,24 +304,28 @@ function snte_wysiwyg_apply_fill_color() {
       $snteWorkspaceFocusedElement.focus();
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
-      console.log("focused element is table");
-      var fillColor = $("button#snte-menu-fill-color").data("value");
-      var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
-      var selectedCells = tableInstance.getSelected(); //[startRow, startCol, endRow, endCol]
-      for(var ii = selectedCells[0]; ii <= selectedCells[2]; ii++) {
-        for(var jj = selectedCells[1]; jj <= selectedCells[3]; jj++) {
-          console.log("update cell meta for "+ii+" "+jj);
-          var cellMeta = tableInstance.getCellMeta(ii, jj);
-          cellMeta.snteWYSIWYG.fillColor = fillColor;
-        }
-      }
-      tableInstance.render();
+      snte_wysiwyg_update_table_cell_meta("fillColor", $("button#snte-menu-fill-color").data("value"));
     }
   }
 }
 
+function snte_wysiwyg_update_table_cell_meta(field, value) {
+  var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+  var selectedCells = tableInstance.getSelected(); //[startRow, startCol, endRow, endCol]
+  for(var row = selectedCells[0]; row <= selectedCells[2]; row++) {
+    for(var col = selectedCells[1]; col <= selectedCells[3]; col++) {
+      var cellMeta = tableInstance.getCellMeta(row, col);
+      cellMeta.snteWYSIWYG[field] = value;
+    }
+  }
+  tableInstance.render();
+}
+
 function snte_workspace_add_item(type) {
   console.log("Add item of type "+type);
+
+  snte_chrome_reset_font_controls();
+
   switch(type) {
       case "table":
         snte_workspace_add_table();
@@ -556,6 +484,9 @@ function snte_workspace_add_text() {
   snte_workspace_make_draggable($newElementContainer);
 
   $newElement.focus(function(e) {
+    if($snteWorkspaceFocusedElement != null && $snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
+      $snteWorkspaceFocusedElement.handsontable("getInstance").deselectCell();
+    }
     $snteWorkspaceFocusedElement = $(this);
     $(this).addClass("snte-highlighted");
   });
@@ -597,6 +528,9 @@ function snte_workspace_add_comment() {
   snte_workspace_make_draggable($newElementContainer);
 
   $newElement.focus(function(e) {
+    if($snteWorkspaceFocusedElement != null && $snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
+      $snteWorkspaceFocusedElement.handsontable("getInstance").deselectCell();
+    }
     $snteWorkspaceFocusedElement = $(this);
     $(this).addClass("snte-highlighted");
   });
@@ -646,6 +580,25 @@ function snte_chrome_show_comments() {
 function snte_chrome_hide_comments() {
   $("button#snte-menu-toggle-comments").removeClass("active").attr("title", "MSG-Show-Comments-Off");
   $("button#snte-menu-toggle-comments span.value").text("MSG-Show-Comments-Off");
+}
+
+function snte_chrome_reset_font_controls() {
+  $("button#snte-menu-font-bold").removeClass("active");
+  $("button#snte-menu-font-italic").removeClass("active");
+  $("button#snte-menu-font-underline").removeClass("active");
+  $("button#snte-menu-font-strikethrough").removeClass("active");
+
+  $("div#snte-menu-font-family button span.value").text(snteWYSIWYG.fontFamily.default);
+  $("div#snte-menu-font-family button").data("value", snteWYSIWYG.fontFamily.default);
+
+  $("div#snte-menu-font-size button span.value").text(snteWYSIWYG.fontSize.valueToPixelMap[snteWYSIWYG.fontSize.default]);
+  $("div#snte-menu-font-size button").data("value", snteWYSIWYG.fontSize.default);
+
+  $("span#snte-menu-font-color-picker-indicator").css("background-color", snteWYSIWYG.fontColor.default);
+  $("button#snte-menu-font-color").data("value", snteWYSIWYG.fontColor.default);
+
+  $("span#snte-menu-fill-color-picker-indicator").css("background-color", snteWYSIWYG.fillColor.default);
+  $("button#snte-menu-fill-color").data("value", snteWYSIWYG.fillColor.default);
 }
 
 function snte_chrome_set_font_controls(element_type, $source) {
@@ -717,9 +670,8 @@ function snte_chrome_set_font_controls(element_type, $source) {
       $("div#snte-menu-font-family button").data("value", $source.css("font-family"));
     }
     else {
-      var defaultValue = $("div#snte-menu-font-family button").data("default-value");
-      $("div#snte-menu-font-family button span.value").text(defaultValue);
-      $("div#snte-menu-font-family button").data("value", defaultValue);
+      $("div#snte-menu-font-family button span.value").text(snteWYSIWYG.fontFamily.default);
+      $("div#snte-menu-font-family button").data("value", snteWYSIWYG.fontFamily.default);
     }
 
     if($source.attr("style") && $source.attr("style").contains("font-size")) {
@@ -727,9 +679,8 @@ function snte_chrome_set_font_controls(element_type, $source) {
       $("div#snte-menu-font-size button").data("value", snteWYSIWYG.fontSize.pixelToValueMap[$source.css("font-size")]);
     }
     else {
-      var defaultValue = $("div#snte-menu-font-size button").data("default-value");
-      $("div#snte-menu-font-size button span.value").text(snteWYSIWYG.fontSize.valueToPixelMap[defaultValue]);
-      $("div#snte-menu-font-size button").data("value", defaultValue);
+      $("div#snte-menu-font-size button span.value").text(snteWYSIWYG.fontSize.valueToPixelMap[snteWYSIWYG.fontSize.default]);
+      $("div#snte-menu-font-size button").data("value", snteWYSIWYG.fontSize.default);
     }
 
     if($source.attr("style") && $source.attr("style").contains("color")) {
@@ -737,9 +688,8 @@ function snte_chrome_set_font_controls(element_type, $source) {
       $("button#snte-menu-font-color").data("value", $source.css("color"));
     }
     else {
-      var defaultValue = $("button#snte-menu-font-color").data("default-value");
-      $("span#snte-menu-font-color-picker-indicator").css("background-color", defaultValue);
-      $("button#snte-menu-font-color").data("value", defaultValue);
+      $("span#snte-menu-font-color-picker-indicator").css("background-color", snteWYSIWYG.fontColor.default);
+      $("button#snte-menu-font-color").data("value", snteWYSIWYG.fontColor.default);
     }
 
     if($source.attr("style") && $source.attr("style").contains("background")) {
@@ -747,9 +697,8 @@ function snte_chrome_set_font_controls(element_type, $source) {
       $("button#snte-menu-fill-color").data("value", $source.css("background-color"));
     }
     else {
-      var defaultValue = $("button#snte-menu-fill-color").data("default-value");
-      $("span#snte-menu-fill-color-picker-indicator").css("background-color", defaultValue);
-      $("button#snte-menu-fill-color").data("value", defaultValue);
+      $("span#snte-menu-fill-color-picker-indicator").css("background-color", snteWYSIWYG.fillColor.default);
+      $("button#snte-menu-fill-color").data("value", snteWYSIWYG.fillColor.default);
     }
 
     if($source.attr("style") && $source.attr("style").contains("font-weight") && ($source.css("font-weight") === "bold" || parseInt($source.css("font-weight")) === 700)) {

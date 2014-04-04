@@ -104,7 +104,8 @@ var snteColorPalette = [
 ];
 
 var snteCellRenderer = function (instance, td, renderer_row, renderer_col, prop, value, cellProperties) {
-  Handsontable.renderers.TextRenderer.apply(this, arguments);
+  //Handsontable.renderers.TextRenderer.apply(this, arguments);
+  Handsontable.renderers.ExcelRenderer.apply(this, arguments);
   
   var textDecoration = "";
   if(cellProperties.snteWYSIWYG.underline) {
@@ -554,8 +555,10 @@ function snte_workspace_add_table() {
     scrollV: "none",
     scrollH: "none",
     outsideClickDeselects: false,
+    useFormula: true,
     cells: function (row, col, prop) {
       this.renderer = snteCellRenderer;
+      this.type = "excel";
       if(!this.hasOwnProperty("snteWYSIWYG")) {
         this.snteWYSIWYG = {
           "fontFamily": snteWYSIWYG.fontFamily.default,

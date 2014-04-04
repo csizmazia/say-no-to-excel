@@ -162,6 +162,10 @@ var evalFormula = function (instance, formula) {
     }
     if (val == null || val == '')
       return res;
+    
+    if (typeof val === 'number')
+        val = val.toString();
+    
     c = val[0];
     if (c == "'") {
       res.type = 'text';
@@ -231,7 +235,7 @@ var evalFormula = function (instance, formula) {
     else if (c == ':') {
       result = { "type": "range", token: c, next: formulaString.substring(1) };
     }
-    else if (c == ';') {
+    else if (c == ';' || c == ',' ) {
       result = { "type": "param", token: c, next: formulaString.substring(1) };
     }
     else if ((c >= '0' && c <= '9') || c == '.') {
@@ -246,7 +250,7 @@ var evalFormula = function (instance, formula) {
         else if (state == 0)
           val = val * 10 + formulaString.charCodeAt(i) - "0".charCodeAt(0);
         else if (state == 1 && c == '.')
-	  return { "type": 'error', error: 'Bad munber', next: null };
+	  return { "type": 'error', error: 'Bad number', next: null };
 	else if (state == 1) {
 	  div /= 10.0;
 	  part = part + (formulaString.charCodeAt(i) - "0".charCodeAt(0)) * div;
@@ -977,7 +981,12 @@ var evalFormula = function (instance, formula) {
       }
     for (i = 1; i < tokens.length - 1; i++)		// Evaluate * /
       if (tokens[i].type == 'operator' && (tokens[i].token == '*' || tokens[i].token == '/')) {
-	var res = { "type": 'number', "token": 0.0, "next": null };
+	
+    if (tokens[i-1].type == 'error')
+          return tokens[i-1];
+    if (tokens[i+1].type == 'error')
+          return tokens[i+1];
+    var res = { "type": 'number', "token": 0.0, "next": null };
 
 	fixBoolean(tokens, i-1);
 	fixBoolean(tokens, i+1);
@@ -994,7 +1003,11 @@ var evalFormula = function (instance, formula) {
       }
     // Unary + and -
     if (tokens[0].type == 'operator' && (tokens[0].token == '-' || tokens[0].token == '+')) {
-	var res = { "type": 'number', "token": 0.0, "next": null };
+	
+    if (tokens[1].type == 'error')
+          return tokens[1];
+    
+    var res = { "type": 'number', "token": 0.0, "next": null };
 
         if (tokens.length > 1) {
 	  fixBoolean(tokens, 1);
@@ -1011,7 +1024,13 @@ var evalFormula = function (instance, formula) {
     }
     for (i = 1; i < tokens.length - 1; i++)	// almost lastly evaluate + -
       if (tokens[i].type == 'operator' && (tokens[i].token == '-' || tokens[i].token == '+')) {
-	var res = { "type": 'number', "token": 0.0, "next": null };
+	
+    if (tokens[i-1].type == 'error')
+          return tokens[i-1];
+    if (tokens[i+1].type == 'error')
+          return tokens[i+1];
+    
+    var res = { "type": 'number', "token": 0.0, "next": null };
 
 	fixBoolean(tokens, i-1);
 	fixBoolean(tokens, i+1);
@@ -1028,7 +1047,13 @@ var evalFormula = function (instance, formula) {
       }
     for (i = 1; i < tokens.length - 1; i++)	// lastly evaluate relation = > < <> <= >=
       if (tokens[i].type == 'relation') {
-	var res = { "type": 'boolean', "token": 0, "next": null };
+	
+    if (tokens[i-1].type == 'error')
+          return tokens[i-1];
+    if (tokens[i+1].type == 'error')
+          return tokens[i+1];
+    
+    var res = { "type": 'boolean', "token": 0, "next": null };
 
 	fixBoolean(tokens,i-1);
 	fixBoolean(tokens,i+1);
@@ -1095,7 +1120,7 @@ function initExcelCell() {
   Handsontable.cellTypes.text = Handsontable._TextCell;
 
   orgtextcellrender = Handsontable.TextCell.renderer;
-  Handsontable.TextCell.renderer = Handsontable.ExcelRenderer;
+  Handsontable.TextCell.renderer = Handsontable.renderers.ExcelRenderer;
 }
 
 /**
@@ -1107,8 +1132,8 @@ Handsontable.TextCell = {
 */
 
 Handsontable._TextCell = {
-  renderer: Handsontable.TextRenderer,
-  editor: Handsontable.TextEditor
+  renderer: Handsontable.renderers.TextRenderer,
+  editor: Handsontable.editors.TextEditor
 };
 
 
@@ -1148,8 +1173,8 @@ Handsontable.NumericRenderer = function (instance, td, row, col, prop, value, ce
 // rewrite old numericrenderer so that it takes account for more different formats
 //
 
-var numericRenderer = Handsontable.NumericRenderer;
-Handsontable.NumericRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+var numericRenderer = Handsontable.renderers.NumericRenderer;
+Handsontable.renderers.NumericRenderer = function (instance, td, row, col, prop, value, cellProperties) {
   var myformat;
   if (typeof value === 'number') {
     if (typeof cellProperties.language !== 'undefined') {
@@ -1165,18 +1190,22 @@ Handsontable.NumericRenderer = function (instance, td, row, col, prop, value, ce
     td.className = 'htNumeric';
   } 
   else {
-    Handsontable.TextRenderer(instance, td, row, col, prop, value, cellProperties);
+    Handsontable.renderers.TextRenderer(instance, td, row, col, prop, value, cellProperties);
   } 
 };
 
 
 
-Handsontable.ExcelRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+Handsontable.renderers.ExcelRenderer = function (instance, td, row, col, prop, value, cellProperties) {
     var c;
     if (typeof value === 'undefined' || value === null || value == '') {
       Handsontable._TextCell.renderer.apply(this, arguments);
       return;
     }
+    
+    if (typeof value === 'number')
+        value = value.toString();
+    
     c = value[0];
     if (c == "'") {		// force value to a string, even things like numeric or formula
       var newValue = value.substring(1);
@@ -1248,15 +1277,14 @@ Handsontable.ExcelRenderer = function (instance, td, row, col, prop, value, cell
   };
 
 Handsontable.ExcelCell = {
-  renderer: Handsontable.ExcelRenderer,
-  editor: Handsontable.TextEditor,
+  renderer: Handsontable.renderers.ExcelRenderer,
+  editor: Handsontable.editors.TextEditor,
   dataType: 'excel'
 };
 
 // Add mapping of our type
 Handsontable.cellTypes['excel'] = Handsontable.ExcelCell;
 
-Handsontable.PluginHooks.push('afterInit', initExcelCell);
+Handsontable.PluginHooks.add('afterInit', initExcelCell);
 
 })(jQuery);
-

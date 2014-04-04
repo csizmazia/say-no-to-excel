@@ -1351,7 +1351,8 @@ Handsontable.Core = function (rootElement, userSettings) {
     }
 
     if (priv.settings.width === void 0) {
-      priv.settingsFromDOM.width = this.rootElement.width();
+      // XXX stefanc i don't want scrollbars when font size is increased in a cell
+      //priv.settingsFromDOM.width = this.rootElement.width();
     }
     else {
       priv.settingsFromDOM.width = void 0;

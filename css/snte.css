@@ -167,10 +167,17 @@ div.snte-element-container div.snte-element-control-handles div.snte-element-del
 }
 
 div.snte-element-container.snte-highlighted {
-  /*background: rgba(255,255,255,0.6);*/
-  background-color: #e4e4e4;
+  /*background: rgba(255,255,255,0.6);
+  background-color: #e4e4e4;*/
 }
 
 div.snte-element-text.snte-highlighted {
   outline: 2px dashed #ccc;
+}
+
+.handsontable td {
+  line-height: normal !important;
+}
+.handsontable th {
+  vertical-align: middle;
 }

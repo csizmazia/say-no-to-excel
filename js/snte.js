@@ -6,6 +6,7 @@ var snteWorkspaceElements = {};
 var $snteWorkspaceFocusedElement;
 
 var snteChromeSize = {left:{width: 180}, top:{height: 100}};
+var snteWorkspaceSize = {width: 9999999999, height: 9999999999};
 
 var snteWYSIWYG = {
   "fontFamily": {"default": "Arial", "values": ["Arial", "Courier New", "Georgia", "Times New Roman", "Trebuchet MS", "Verdana"]},
@@ -50,13 +51,12 @@ $(document).ready(function() {
 function snte_bootstrap() {
   $snteWorkspace = $("div#snte-workspace");
   $snteWorkspaceContainer = $("div#snte-workspace-container");
-  $snteWorkspaceFocusedElement = null;
 
   $("button#snte-menu-font-color").colorpicker({
     format: "rgb",
     color: "#000"
     
-  }).on('changeColor', function(e){
+  }).on('changeColor', function(evt){
     var hexColor = e.color.toHex();
     $("span#snte-menu-font-color-picker-indicator").css("background-color", hexColor);
     $("button#snte-menu-font-color").data("value", hexColor);
@@ -67,37 +67,37 @@ function snte_bootstrap() {
     format: "rgb",
     color: "#fff"
     
-  }).on('changeColor', function(e){
+  }).on('changeColor', function(evt){
     var hexColor = e.color.toHex();
     $("span#snte-menu-fill-color-picker-indicator").css("background-color", hexColor);
     $("button#snte-menu-fill-color").data("value", hexColor);
     snte_wysiwyg_apply_fill_color();
   });
 
-  $("button#snte-menu-undo").click(function(e) {
+  $("button#snte-menu-undo").click(function(evt) {
     document.execCommand("styleWithCSS", false, "true");
     document.execCommand("undo", false, null);
   });
-  $("button#snte-menu-redo").click(function(e) {
+  $("button#snte-menu-redo").click(function(evt) {
     document.execCommand("styleWithCSS", false, "true");
     document.execCommand("redo", false, null);
   });
-  $("button#snte-menu-copy").click(function(e) {
+  $("button#snte-menu-copy").click(function(evt) {
     document.execCommand("styleWithCSS", false, "true");
     document.execCommand("copy", false, null);
   });
-  $("button#snte-menu-paste").click(function(e) {
+  $("button#snte-menu-paste").click(function(evt) {
     document.execCommand("styleWithCSS", false, "true");
     document.execCommand("paste", false, null);
   });
 
-  $("div#snte-menu-add-element ul.dropdown-menu li a").click(function(e) {
+  $("div#snte-menu-add-element ul.dropdown-menu li a").click(function(evt) {
     snte_workspace_add_item($(this).data("item"));
     
-    e.preventDefault();
+    evt.preventDefault();
   });
 
-  $("button#snte-menu-toggle-comments").click(function(e) {
+  $("button#snte-menu-toggle-comments").click(function(evt) {
     snte_chrome_toggle_button($(this));
     if($(this).hasClass("active")) {
       snte_chrome_show_comments();
@@ -108,61 +108,61 @@ function snte_bootstrap() {
       snte_workspace_hide_comments();
     }
 
-    e.preventDefault();
+    evt.preventDefault();
   });
 
-  $("button#snte-menu-font-bold").click(function(e) {
+  $("button#snte-menu-font-bold").click(function(evt) {
     snte_chrome_toggle_button($(this));
     snte_wysiwyg_apply_font_bold();
 
-    e.preventDefault();
+    evt.preventDefault();
 
   });
-  $("button#snte-menu-font-italic").click(function(e) {
+  $("button#snte-menu-font-italic").click(function(evt) {
     snte_chrome_toggle_button($(this));
     snte_wysiwyg_apply_font_italic();
 
-    e.preventDefault();
+    evt.preventDefault();
   });
-  $("button#snte-menu-font-underline").click(function(e) {
+  $("button#snte-menu-font-underline").click(function(evt) {
     snte_chrome_toggle_button($(this));
     snte_wysiwyg_apply_font_underline();
 
-    e.preventDefault();
+    evt.preventDefault();
   });
-  $("button#snte-menu-font-strikethrough").click(function(e) {
+  $("button#snte-menu-font-strikethrough").click(function(evt) {
     snte_chrome_toggle_button($(this));
     snte_wysiwyg_apply_font_strikethrough();
 
-    e.preventDefault();
+    evt.preventDefault();
     
   });
-  $("div#snte-menu-font-family ul.dropdown-menu li a").click(function(e) {
+  $("div#snte-menu-font-family ul.dropdown-menu li a").click(function(evt) {
     $("div#snte-menu-font-family button span.value").text($(this).text());
     $("div#snte-menu-font-family button").data("value", $(this).data("value"));
 
     snte_wysiwyg_apply_font_family();
 
-    e.preventDefault();
+    evt.preventDefault();
   });
-  $("div#snte-menu-font-size ul.dropdown-menu li a").click(function(e) {
+  $("div#snte-menu-font-size ul.dropdown-menu li a").click(function(evt) {
     $("div#snte-menu-font-size button span.value").text($(this).text());
     $("div#snte-menu-font-size button").data("value", $(this).data("value"));
 
    snte_wysiwyg_apply_font_size();
 
-   e.preventDefault();
+   evt.preventDefault();
   });
-  $("button#snte-menu-font-color").click(function(e) {
+  $("button#snte-menu-font-color").click(function(evt) {
     $("div#snte-menu-font-color-picker").colorpicker("show");
 
-    e.preventDefault();
+    evt.preventDefault();
   });
 
-  $("button#snte-menu-fill-color").click(function(e) {
+  $("button#snte-menu-fill-color").click(function(evt) {
     $("div#snte-menu-fill-color-picker").colorpicker("show");
 
-    e.preventDefault();
+    evt.preventDefault();
   });
 }
 
@@ -190,7 +190,7 @@ function snte_wysiwyg_apply_font_styles() {
 }
 
 function snte_wysiwyg_apply_font_bold() {
-  if($snteWorkspaceFocusedElement != null) {
+  if($snteWorkspaceFocusedElement !== void 0) {
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
       $snteWorkspaceFocusedElement.focus();
       document.execCommand("styleWithCSS", false, "true");
@@ -202,7 +202,7 @@ function snte_wysiwyg_apply_font_bold() {
   }
 }
 function snte_wysiwyg_apply_font_italic() {
-  if($snteWorkspaceFocusedElement != null) {
+  if($snteWorkspaceFocusedElement !== void 0) {
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
       $snteWorkspaceFocusedElement.focus();
       document.execCommand("styleWithCSS", false, "true");
@@ -214,7 +214,7 @@ function snte_wysiwyg_apply_font_italic() {
   }
 }
 function snte_wysiwyg_apply_font_underline() {
-  if($snteWorkspaceFocusedElement != null) {
+  if($snteWorkspaceFocusedElement !== void 0) {
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
       $snteWorkspaceFocusedElement.focus();
       document.execCommand("styleWithCSS", false, "true");
@@ -226,7 +226,7 @@ function snte_wysiwyg_apply_font_underline() {
   }
 }
 function snte_wysiwyg_apply_font_strikethrough() {
-  if($snteWorkspaceFocusedElement != null) {
+  if($snteWorkspaceFocusedElement !== void 0) {
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
       $snteWorkspaceFocusedElement.focus();
       document.execCommand("styleWithCSS", false, "true");
@@ -239,7 +239,7 @@ function snte_wysiwyg_apply_font_strikethrough() {
 }
 
 function snte_wysiwyg_apply_font_family() {
-  if($snteWorkspaceFocusedElement != null) {
+  if($snteWorkspaceFocusedElement !== void 0) {
     console.log("apply font family");
     console.log($snteWorkspaceFocusedElement);
     console.log($("div#snte-menu-font-family button").data("value"));
@@ -255,7 +255,7 @@ function snte_wysiwyg_apply_font_family() {
 }
 
 function snte_wysiwyg_apply_font_size() {
-  if($snteWorkspaceFocusedElement != null) {
+  if($snteWorkspaceFocusedElement !== void 0) {
     console.log("apply font size");
     console.log($snteWorkspaceFocusedElement);
     console.log($("div#snte-menu-font-size button").data("value"));
@@ -278,7 +278,7 @@ function snte_wysiwyg_apply_font_size() {
 }
 
 function snte_wysiwyg_apply_font_color() {
-  if($snteWorkspaceFocusedElement != null) {
+  if($snteWorkspaceFocusedElement !== void 0) {
     console.log("apply font color");
     console.log($snteWorkspaceFocusedElement);
     console.log($("button#snte-menu-font-color").data("value"));
@@ -294,7 +294,7 @@ function snte_wysiwyg_apply_font_color() {
 }
 
 function snte_wysiwyg_apply_fill_color() {
-  if($snteWorkspaceFocusedElement != null) {
+  if($snteWorkspaceFocusedElement !== void 0) {
     console.log("apply fill color");
     console.log($snteWorkspaceFocusedElement);
     console.log($("button#snte-menu-fill-color").data("value"));
@@ -345,11 +345,17 @@ function snte_workspace_add_item(type) {
     }
 }
 
+function snte_workspace_remove_element(evt) {
+  if(confirm("MSG-Sure?")) {
+    $(evt.target).closest("div.snte-element-container").remove();
+  }
+}
+
 function snte_workspace_make_draggable($elem) {
   $elem.draggable({
     handle: $("div.snte-element-drag-handle", $elem),
     //containment: snteWorkspaceContainer,
-    containment: [snteChromeSize.left.width, snteChromeSize.top.height, 9999999999, 9999999999],
+    containment: [snteChromeSize.left.width, snteChromeSize.top.height, snteWorkspaceSize.width, snteWorkspaceSize.height],
     cursor: "move",
     opacity: "0.5",
     snap: true
@@ -360,6 +366,7 @@ function snte_workspace_add_table() {
   var nextId = snte_generate_element_id();
   var $newElement = $("<div class=\"snte-element snte-element-table\" id=\"snte-element-"+nextId+"\"></div>");
   $newElement.handsontable({
+    //width: snteWorkspaceSize.width,
     startRows: 10,
     startCols: 10,
     colHeaders: true,
@@ -428,7 +435,7 @@ function snte_workspace_add_table() {
     }
   });
   
-  var $newElementContainer = $("<div class=\"snte-element-container\" id=\"snte-element-"+nextId+"\"><div class=\"snte-element-title\" title=\"MSG-Click-to-edit\">MSG-Unnamed-Table</div><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"></div></div></div>");
+  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-title\" title=\"MSG-Click-to-edit\">MSG-Unnamed-Table</div><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"></div></div></div>");
   $newElementContainer.mouseover(function() {
     $(this).addClass("snte-highlighted");
     $("div.snte-element-control-handles", $(this)).removeClass("snte-hidden");
@@ -437,11 +444,7 @@ function snte_workspace_add_table() {
     $(this).removeClass("snte-highlighted");
     $("div.snte-element-control-handles", $(this)).addClass("snte-hidden");
   });
-  $("div.snte-element-delete", $newElementContainer).click(function() {
-    if(confirm("MSG-Sure?")) {
-      $(this).closest("div.snte-element-container").remove();
-    }
-  });
+  $("div.snte-element-delete", $newElementContainer).click(snte_workspace_remove_element);
   $("div.snte-element-title", $newElementContainer).editable(function(value, settings) {
       if(value == "") {
         value = "MSG-Unnamed-Table";
@@ -455,8 +458,7 @@ function snte_workspace_add_table() {
 
   snteWorkspaceElements[nextId] = $newElement;
   $newElement.appendTo($newElementContainer);
-  $newElementContainer.appendTo($snteWorkspace);
-  
+  $newElementContainer.appendTo($snteWorkspace); 
 }
 
 function snte_workspace_add_text() {
@@ -464,38 +466,32 @@ function snte_workspace_add_text() {
 
   var $newElement = $("<div class=\"snte-element snte-element-text\" id=\"snte-element-"+nextId+"\" contenteditable=\"true\"></div>");
   
-  var $newElementContainer = $("<div class=\"snte-element-container\" id=\"snte-element-"+nextId+"\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"></div></div></div>");
+  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"></div></div></div>");
   $newElementContainer.mouseover(function() {
     $(this).addClass("snte-highlighted");
     $("div.snte-element-control-handles", $(this)).removeClass("snte-hidden");
-    $(this).addClass("snte-highlighted");
   });
   $newElementContainer.mouseout(function() {
     $(this).removeClass("snte-highlighted");
     $("div.snte-element-control-handles", $(this)).addClass("snte-hidden");
-    $(this).removeClass("snte-highlighted");
   });
-  $("div.snte-element-delete", $newElementContainer).click(function() {
-    if(confirm("MSG-Sure?")) {
-      $(this).closest("div.snte-element-container").remove();
-    }
-  });
+  $("div.snte-element-delete", $newElementContainer).click(snte_workspace_remove_element);
 
   snte_workspace_make_draggable($newElementContainer);
 
-  $newElement.focus(function(e) {
-    if($snteWorkspaceFocusedElement != null && $snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
+  $newElement.focus(function(evt) {
+    if($snteWorkspaceFocusedElement !== void 0 && $snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
       $snteWorkspaceFocusedElement.handsontable("getInstance").deselectCell();
     }
     $snteWorkspaceFocusedElement = $(this);
     $(this).addClass("snte-highlighted");
   });
-  $newElement.blur(function(e) {
+  $newElement.blur(function(evt) {
     $(this).removeClass("snte-highlighted");
   });
-  $newElement.click(function(e) {
+  $newElement.click(function(evt) {
     snte_chrome_set_font_controls("text", $(e.target));
-    e.preventDefault();
+    evt.preventDefault();
   });
 
   snteWorkspaceElements[nextId] = $newElement;
@@ -510,7 +506,7 @@ function snte_workspace_add_comment() {
 
   var $newElement = $("<div class=\"snte-element snte-element-comment\" id=\"snte-element-"+nextId+"\" contenteditable=\"true\"></div>");
   
-  var $newElementContainer = $("<div class=\"snte-element-container\" id=\"snte-element-"+nextId+"\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete glyphicon glyphicon-remove\"></div></div></div>");
+  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete glyphicon glyphicon-remove\"></div></div></div>");
   $newElementContainer.mouseover(function() {
     $(this).addClass("snte-highlighted");
     $("div.snte-element-control-handles", $(this)).removeClass("snte-hidden");
@@ -519,31 +515,27 @@ function snte_workspace_add_comment() {
     $(this).removeClass("snte-highlighted");
     $("div.snte-element-control-handles", $(this)).addClass("snte-hidden");
   });
-  $("div.snte-element-delete", $newElementContainer).click(function() {
-    if(confirm("MSG-Sure?")) {
-      $(this).closest("div.snte-element-container").remove();
-    }
-  });
+  $("div.snte-element-delete", $newElementContainer).click(snte_workspace_remove_element);
   
   snte_workspace_make_draggable($newElementContainer);
 
-  $newElement.focus(function(e) {
-    if($snteWorkspaceFocusedElement != null && $snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
+  $newElement.focus(function(evt) {
+    if($snteWorkspaceFocusedElement !== void 0 && $snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
       $snteWorkspaceFocusedElement.handsontable("getInstance").deselectCell();
     }
     $snteWorkspaceFocusedElement = $(this);
     $(this).addClass("snte-highlighted");
   });
-  $newElement.blur(function(e) {
+  $newElement.blur(function(evt) {
     $(this).removeClass("snte-highlighted");
   });
-  $newElement.click(function(e) {
+  $newElement.click(function(evt) {
     snte_chrome_set_font_controls("text", $(e.target));
-    e.preventDefault();
+    evt.preventDefault();
   });
 
   snteWorkspaceElements[nextId] = $newElement;
-  $newElement.appendTo(newElementContainer);
+  $newElement.appendTo($newElementContainer);
   $newElementContainer.appendTo($snteWorkspace);
   $newElement.focus();
   snte_wysiwyg_apply_font();
@@ -602,7 +594,7 @@ function snte_chrome_reset_font_controls() {
 }
 
 function snte_chrome_set_font_controls(element_type, $source) {
-  if(element_type == "text") {
+  if(element_type === "text") {
     var valuesToSet = {"family": true, "size": true, "color": true, "fill": true, "bold": true, "italic": true, "underline": true, "strikethrough": true};
 
     $("button#snte-menu-font-bold").removeClass("active");
@@ -659,7 +651,7 @@ function snte_chrome_set_font_controls(element_type, $source) {
       $currentElement = $currentElement.parent();
     }
   }
-  else if(element_type == "table_cell") {
+  else if(element_type === "table_cell") {
     $("button#snte-menu-font-bold").removeClass("active");
     $("button#snte-menu-font-italic").removeClass("active");
     $("button#snte-menu-font-underline").removeClass("active");

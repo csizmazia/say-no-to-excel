@@ -60,14 +60,14 @@ div#snte-menu-left-empty {
   font-style: 
 }
 
-span#snte-menu-fill-color-picker-indicator {
+span#snte-menu-fill-color-indicator {
   background: #fff;
   border: 1px black solid;
   width: 10px;
   height: 10px;
   display: inline-block;
 }
-span#snte-menu-font-color-picker-indicator {
+span#snte-menu-font-color-indicator {
   background: #000;
   width: 10px;
   height: 10px;
@@ -90,6 +90,9 @@ button#snte-menu-font-underline {
 
 div.snte-element-table {
   margin: 20px 0 0 20px;
+}
+div.snte-element-table table tr {
+  background-color: #fff;
 }
 div.snte-element-text {
   margin: 0 0 0 20px;
@@ -175,8 +178,80 @@ div.snte-element-text.snte-highlighted {
   outline: 2px dashed #ccc;
 }
 
+
+
+
+.snte-menu-colorselector {
+  padding: 5px;
+  width: 255px;
+}
+
+.snte-menu-colorselector.dropdown-menu>li {
+  display: block;
+  float: left;
+  width: 20px;
+  height: 20px;
+  margin: 2px;
+}
+.snte-menu-colorselector.dropdown-menu>li.default {
+  width: 238px;
+}
+
+.snte-menu-colorselector.dropdown-menu>li>.snte-color-btn {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  position: relative;
+  -webkit-transition: all ease 0.1s;
+  transition: all ease 0.1s;
+}
+.snte-menu-colorselector.dropdown-menu>li.default>.snte-color-btn {
+  width: 238px;
+}
+
+.snte-menu-colorselector.dropdown-menu>li>.snte-color-btn:hover {
+  text-decoration: none;
+  opacity: 0.8;
+  filter: alpha(opacity = 80);
+  -webkit-transform: scale(1.08);
+  -ms-transform: scale(1.08);
+  transform: scale(1.08);
+}
+.snte-menu-colorselector.dropdown-menu>li.default>.snte-color-btn:hover {
+  text-decoration: none;
+  opacity: 0.8;
+  filter: alpha(opacity = 80);
+  -webkit-transform: scale(1.01);
+  -ms-transform: scale(1.01);
+  transform: scale(1.01);
+}
+
+.snte-menu-colorselector.dropdown-menu>li>.snte-color-btn.selected:after {
+  content: "\e013";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  font-size: 11px;
+  color: #FFF;
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  line-height: 20px;
+}
+
+.snte-menu-colorselector.dropdown-menu>li>.snte-color-btn.selected.needs-black-font:after {
+  color: #000;
+}
+
+
+
+
 .handsontable td {
   line-height: normal !important;
+  vertical-align: bottom;
 }
 .handsontable th {
   vertical-align: middle;

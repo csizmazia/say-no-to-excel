@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset='utf-8'>
@@ -9,7 +9,7 @@
     <script src="assets/jquery/jquery-ui-1.10.4.custom.js"></script>
     <script src="assets/bootstrap3/js/bootstrap.js"></script>
     <!--<script src="assets/bootstrap2/js/bootstrap-editable.js"></script>-->
-    <script src="assets/bootstrap3/js/bootstrap-colorpicker.js"></script>
+    <!--<script src="assets/bootstrap3/js/bootstrap-colorpicker.js"></script>-->
     <script src="assets/jquery/handsontable/jquery.handsontable.full.js"></script>
     <!--<script src="js/jquery-ui.custom.min.js"></script>-->
     <script src="assets/numeral/numeral.js"></script>
@@ -17,6 +17,7 @@
     <script src="assets/jquery/jquery.jeditable.js"></script>
     <!--<script src="assets/jquery/handsontable/jquery.handsontable-excel.js"></script>-->
 
+    <script src="js/color.js"></script>
     <script src="js/snte.js"></script>
 
     <!--<link rel="stylesheet" media="screen" href="css/ui-bootstrap/jquery-ui.custom.css">
@@ -24,7 +25,8 @@
     <link rel="stylesheet" media="screen" href="assets/jquery/handsontable/jquery.handsontable.full.css">
     <link rel="stylesheet" media="screen" href="assets/bootstrap3/css/bootstrap.css">
     <!--<link rel="stylesheet" media="screen" href="assets/bootstrap2/css/bootstrap-editable.css">-->
-    <link rel="stylesheet" media="screen" href="assets/bootstrap3/css/bootstrap-colorpicker.css">
+    <!--<link rel="stylesheet" media="screen" href="assets/bootstrap3/css/bootstrap-colorpicker.css">
+    <link rel="stylesheet" media="screen" href="assets/bootstrap3/css/bootstrap-colorselector.css">-->
     <link rel="stylesheet" media="screen" href="css/snte.css">
   </head>
   <body>
@@ -41,7 +43,7 @@
           </div>
           <div class="btn-group">
             <div class="btn-group" id="snte-menu-font-family">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="Arial" data-default-value="Arial" title="MSG-Fontfamily" style="min-width:160px; text-align: left;">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="Arial" title="MSG-Fontfamily" style="min-width:160px; text-align: left;">
                 <span class="value">Arial</span>
                 <span class="caret"></span>
               </button>
@@ -55,7 +57,7 @@
               </ul>
             </div>
             <div class="btn-group" id="snte-menu-font-size">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="2" data-default-value="2" title="MSG-Fontsize" style="min-width:55px; text-align: left;">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="2" title="MSG-Fontsize" style="min-width:55px; text-align: left;">
                 <span class="value">13</span>
                 <span class="caret"></span>
               </button>
@@ -70,18 +72,178 @@
               </ul>
             </div>
             <div class="btn-group" id="snte-menu-font-color-container">
-              <button type="button" class="btn btn-default" data-value="#000" data-default-value="#000" title="MSG-Fontcolor" id="snte-menu-font-color">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="rgba(0,0,0,1)" title="MSG-Fontcolor" id="snte-menu-font-color">
                 A
-                <span id="snte-menu-font-color-picker-indicator"></span>
+                <span id="snte-menu-font-color-indicator"></span>
                 <span class="caret"></span>
               </button>
+              <ul class="dropdown-menu dropdown-caret snte-menu-colorselector">
+                <!--<li class="default"><a href="#" data-value="#000000" class="snte-color-btn default selected" style="background-color: #000000;" title="#000000"></a></li>
+
+                <li><a href="#" data-value="#000000" class="snte-color-btn" style="background-color: #000000;" title="#000000"></a></li>
+                <li><a href="#" data-value="#434343" class="snte-color-btn" style="background-color: #434343;" title="#434343"></a></li>
+                <li><a href="#" data-value="#666666" class="snte-color-btn" style="background-color: #666666;" title="#666666"></a></li>
+                <li><a href="#" data-value="#999999" class="snte-color-btn" style="background-color: #999999;" title="#999999"></a></li>
+                <li><a href="#" data-value="#b7b7b7" class="snte-color-btn" style="background-color: #b7b7b7;" title="#b7b7b7"></a></li>
+                <li><a href="#" data-value="#cccccc" class="snte-color-btn" style="background-color: #cccccc;" title="#cccccc"></a></li>
+                <li><a href="#" data-value="#d9d9d9" class="snte-color-btn" style="background-color: #d9d9d9;" title="#d9d9d9"></a></li>
+                <li><a href="#" data-value="#efefef" class="snte-color-btn needs-black-font" style="background-color: #efefef;" title="#efefef"></a></li>
+                <li><a href="#" data-value="#f3f3f3" class="snte-color-btn needs-black-font" style="background-color: #f3f3f3;" title="#f3f3f3"></a></li>
+                <li><a href="#" data-value="#ffffff" class="snte-color-btn needs-black-font" style="background-color: #ffffff;" title="#ffffff"></a></li>
+
+                <li><a href="#" data-value="#980000" class="snte-color-btn" style="background-color: #980000;" title="#980000"></a></li>
+                <li><a href="#" data-value="#ff0000" class="snte-color-btn" style="background-color: #ff0000;" title="#ff0000"></a></li>
+                <li><a href="#" data-value="#ff9900" class="snte-color-btn" style="background-color: #ff9900;" title="#ff9900"></a></li>
+                <li><a href="#" data-value="#ffff00" class="snte-color-btn" style="background-color: #ffff00;" title="#ffff00"></a></li>
+                <li><a href="#" data-value="#00ff00" class="snte-color-btn" style="background-color: #00ff00;" title="#00ff00"></a></li>
+                <li><a href="#" data-value="#00ffff" class="snte-color-btn" style="background-color: #00ffff;" title="#00ffff"></a></li>
+                <li><a href="#" data-value="#4a86e8" class="snte-color-btn" style="background-color: #4a86e8;" title="#4a86e8"></a></li>
+                <li><a href="#" data-value="#0000ff" class="snte-color-btn" style="background-color: #0000ff;" title="#0000ff"></a></li>
+                <li><a href="#" data-value="#9900ff" class="snte-color-btn" style="background-color: #9900ff;" title="#9900ff"></a></li>
+                <li><a href="#" data-value="#ff00ff" class="snte-color-btn" style="background-color: #ff00ff;" title="#ff00ff"></a></li>
+
+                <li><a href="#" data-value="#e6b8af" class="snte-color-btn" style="background-color: #e6b8af;" title="#e6b8af"></a></li>
+                <li><a href="#" data-value="#f4cccc" class="snte-color-btn" style="background-color: #f4cccc;" title="#f4cccc"></a></li>
+                <li><a href="#" data-value="#fce5cd" class="snte-color-btn" style="background-color: #fce5cd;" title="#fce5cd"></a></li>
+                <li><a href="#" data-value="#fff2cc" class="snte-color-btn" style="background-color: #fff2cc;" title="#fff2cc"></a></li>
+                <li><a href="#" data-value="#d9ead3" class="snte-color-btn" style="background-color: #d9ead3;" title="#d9ead3"></a></li>
+                <li><a href="#" data-value="#d0e0e3" class="snte-color-btn" style="background-color: #d0e0e3;" title="#d0e0e3"></a></li>
+                <li><a href="#" data-value="#c9daf8" class="snte-color-btn" style="background-color: #c9daf8;" title="#c9daf8"></a></li>
+                <li><a href="#" data-value="#cfe2f3" class="snte-color-btn" style="background-color: #cfe2f3;" title="#cfe2f3"></a></li>
+                <li><a href="#" data-value="#d9d2e9" class="snte-color-btn" style="background-color: #d9d2e9;" title="#d9d2e9"></a></li>
+                <li><a href="#" data-value="#ead1dc" class="snte-color-btn" style="background-color: #ead1dc;" title="#ead1dc"></a></li>
+
+                <li><a href="#" data-value="#dd7e6b" class="snte-color-btn" style="background-color: #dd7e6b;" title="#dd7e6b"></a></li>
+                <li><a href="#" data-value="#ea9999" class="snte-color-btn" style="background-color: #ea9999;" title="#ea9999"></a></li>
+                <li><a href="#" data-value="#f9cb9c" class="snte-color-btn" style="background-color: #f9cb9c;" title="#f9cb9c"></a></li>
+                <li><a href="#" data-value="#ffe599" class="snte-color-btn" style="background-color: #ffe599;" title="#ffe599"></a></li>
+                <li><a href="#" data-value="#b6d7a8" class="snte-color-btn" style="background-color: #b6d7a8;" title="#b6d7a8"></a></li>
+                <li><a href="#" data-value="#a2c4c9" class="snte-color-btn" style="background-color: #a2c4c9;" title="#a2c4c9"></a></li>
+                <li><a href="#" data-value="#a4c2f4" class="snte-color-btn" style="background-color: #a4c2f4;" title="#a4c2f4"></a></li>
+                <li><a href="#" data-value="#9fc5e8" class="snte-color-btn" style="background-color: #9fc5e8;" title="#9fc5e8"></a></li>
+                <li><a href="#" data-value="#b4a7d6" class="snte-color-btn" style="background-color: #b4a7d6;" title="#b4a7d6"></a></li>
+                <li><a href="#" data-value="#d5a6bd" class="snte-color-btn" style="background-color: #d5a6bd;" title="#d5a6bd"></a></li>
+
+                <li><a href="#" data-value="#cc4125" class="snte-color-btn" style="background-color: #cc4125;" title="#cc4125"></a></li>
+                <li><a href="#" data-value="#e06666" class="snte-color-btn" style="background-color: #e06666;" title="#e06666"></a></li>
+                <li><a href="#" data-value="#f6b26b" class="snte-color-btn" style="background-color: #f6b26b;" title="#f6b26b"></a></li>
+                <li><a href="#" data-value="#ffd966" class="snte-color-btn" style="background-color: #ffd966;" title="#ffd966"></a></li>
+                <li><a href="#" data-value="#93c47d" class="snte-color-btn" style="background-color: #93c47d;" title="#93c47d"></a></li>
+                <li><a href="#" data-value="#76a5af" class="snte-color-btn" style="background-color: #76a5af;" title="#76a5af"></a></li>
+                <li><a href="#" data-value="#6d9eeb" class="snte-color-btn" style="background-color: #6d9eeb;" title="#6d9eeb"></a></li>
+                <li><a href="#" data-value="#6fa8dc" class="snte-color-btn" style="background-color: #6fa8dc;" title="#6fa8dc"></a></li>
+                <li><a href="#" data-value="#8e7cc3" class="snte-color-btn" style="background-color: #8e7cc3;" title="#8e7cc3"></a></li>
+                <li><a href="#" data-value="#c27ba0" class="snte-color-btn" style="background-color: #c27ba0;" title="#c27ba0"></a></li>
+
+                <li><a href="#" data-value="#a61c00" class="snte-color-btn" style="background-color: #a61c00;" title="#a61c00"></a></li>
+                <li><a href="#" data-value="#cc0000" class="snte-color-btn" style="background-color: #cc0000;" title="#cc0000"></a></li>
+                <li><a href="#" data-value="#e69138" class="snte-color-btn" style="background-color: #e69138;" title="#e69138"></a></li>
+                <li><a href="#" data-value="#f1c232" class="snte-color-btn" style="background-color: #f1c232;" title="#f1c232"></a></li>
+                <li><a href="#" data-value="#6aa84f" class="snte-color-btn" style="background-color: #6aa84f;" title="#6aa84f"></a></li>
+                <li><a href="#" data-value="#45818e" class="snte-color-btn" style="background-color: #45818e;" title="#45818e"></a></li>
+                <li><a href="#" data-value="#3c78d8" class="snte-color-btn" style="background-color: #3c78d8;" title="#3c78d8"></a></li>
+                <li><a href="#" data-value="#3d85c6" class="snte-color-btn" style="background-color: #3d85c6;" title="#3d85c6"></a></li>
+                <li><a href="#" data-value="#674ea7" class="snte-color-btn" style="background-color: #674ea7;" title="#674ea7"></a></li>
+                <li><a href="#" data-value="#a64d79" class="snte-color-btn" style="background-color: #a64d79;" title="#a64d79"></a></li>
+
+                <li><a href="#" data-value="#5b0f00" class="snte-color-btn" style="background-color: #5b0f00;" title="#5b0f00"></a></li>
+                <li><a href="#" data-value="#660000" class="snte-color-btn" style="background-color: #660000;" title="#660000"></a></li>
+                <li><a href="#" data-value="#783f04" class="snte-color-btn" style="background-color: #783f04;" title="#783f04"></a></li>
+                <li><a href="#" data-value="#7f6000" class="snte-color-btn" style="background-color: #7f6000;" title="#7f6000"></a></li>
+                <li><a href="#" data-value="#274e13" class="snte-color-btn" style="background-color: #274e13;" title="#274e13"></a></li>
+                <li><a href="#" data-value="#0c343d" class="snte-color-btn" style="background-color: #0c343d;" title="#0c343d"></a></li>
+                <li><a href="#" data-value="#1c4587" class="snte-color-btn" style="background-color: #1c4587;" title="#1c4587"></a></li>
+                <li><a href="#" data-value="#073763" class="snte-color-btn" style="background-color: #073763;" title="#073763"></a></li>
+                <li><a href="#" data-value="#20124d" class="snte-color-btn" style="background-color: #20124d;" title="#20124d"></a></li>
+                <li><a href="#" data-value="#4c1130" class="snte-color-btn" style="background-color: #4c1130;" title="#4c1130"></a></li>-->
+              </ul>
             </div>
             <div class="btn-group" id="snte-menu-fill-color-container">
-              <button type="button" class="btn btn-default" data-value="#fff" data-default-value="#fff" title="MSG-Fillcolor" id="snte-menu-fill-color">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="rgba(0,0,0,0)" title="MSG-Fillcolor" id="snte-menu-fill-color">
                 F
-                <span id="snte-menu-fill-color-picker-indicator"></span>
+                <span id="snte-menu-fill-color-indicator"></span>
                 <span class="caret"></span>
               </button>
+              <ul class="dropdown-menu dropdown-caret snte-menu-colorselector">
+                <!--<li class="default"><a href="#" data-value="rgba(0,0,0,0)" class="snte-color-btn needs-black-font default selected" style="border: 1px solid black; background: none;" title="MSG-none"></a></li>
+
+                <li><a href="#" data-value="#000000" class="snte-color-btn" style="background-color: #000000;" title="#000000"></a></li>
+                <li><a href="#" data-value="#434343" class="snte-color-btn" style="background-color: #434343;" title="#434343"></a></li>
+                <li><a href="#" data-value="#666666" class="snte-color-btn" style="background-color: #666666;" title="#666666"></a></li>
+                <li><a href="#" data-value="#999999" class="snte-color-btn" style="background-color: #999999;" title="#999999"></a></li>
+                <li><a href="#" data-value="#b7b7b7" class="snte-color-btn" style="background-color: #b7b7b7;" title="#b7b7b7"></a></li>
+                <li><a href="#" data-value="#cccccc" class="snte-color-btn" style="background-color: #cccccc;" title="#cccccc"></a></li>
+                <li><a href="#" data-value="#d9d9d9" class="snte-color-btn" style="background-color: #d9d9d9;" title="#d9d9d9"></a></li>
+                <li><a href="#" data-value="#efefef" class="snte-color-btn needs-black-font" style="background-color: #efefef;" title="#efefef"></a></li>
+                <li><a href="#" data-value="#f3f3f3" class="snte-color-btn needs-black-font" style="background-color: #f3f3f3;" title="#f3f3f3"></a></li>
+                <li><a href="#" data-value="#ffffff" class="snte-color-btn needs-black-font" style="background-color: #ffffff;" title="#ffffff"></a></li>
+
+                <li><a href="#" data-value="#980000" class="snte-color-btn" style="background-color: #980000;" title="#980000"></a></li>
+                <li><a href="#" data-value="#ff0000" class="snte-color-btn" style="background-color: #ff0000;" title="#ff0000"></a></li>
+                <li><a href="#" data-value="#ff9900" class="snte-color-btn" style="background-color: #ff9900;" title="#ff9900"></a></li>
+                <li><a href="#" data-value="#ffff00" class="snte-color-btn" style="background-color: #ffff00;" title="#ffff00"></a></li>
+                <li><a href="#" data-value="#00ff00" class="snte-color-btn" style="background-color: #00ff00;" title="#00ff00"></a></li>
+                <li><a href="#" data-value="#00ffff" class="snte-color-btn" style="background-color: #00ffff;" title="#00ffff"></a></li>
+                <li><a href="#" data-value="#4a86e8" class="snte-color-btn" style="background-color: #4a86e8;" title="#4a86e8"></a></li>
+                <li><a href="#" data-value="#0000ff" class="snte-color-btn" style="background-color: #0000ff;" title="#0000ff"></a></li>
+                <li><a href="#" data-value="#9900ff" class="snte-color-btn" style="background-color: #9900ff;" title="#9900ff"></a></li>
+                <li><a href="#" data-value="#ff00ff" class="snte-color-btn" style="background-color: #ff00ff;" title="#ff00ff"></a></li>
+
+                <li><a href="#" data-value="#e6b8af" class="snte-color-btn" style="background-color: #e6b8af;" title="#e6b8af"></a></li>
+                <li><a href="#" data-value="#f4cccc" class="snte-color-btn" style="background-color: #f4cccc;" title="#f4cccc"></a></li>
+                <li><a href="#" data-value="#fce5cd" class="snte-color-btn" style="background-color: #fce5cd;" title="#fce5cd"></a></li>
+                <li><a href="#" data-value="#fff2cc" class="snte-color-btn" style="background-color: #fff2cc;" title="#fff2cc"></a></li>
+                <li><a href="#" data-value="#d9ead3" class="snte-color-btn" style="background-color: #d9ead3;" title="#d9ead3"></a></li>
+                <li><a href="#" data-value="#d0e0e3" class="snte-color-btn" style="background-color: #d0e0e3;" title="#d0e0e3"></a></li>
+                <li><a href="#" data-value="#c9daf8" class="snte-color-btn" style="background-color: #c9daf8;" title="#c9daf8"></a></li>
+                <li><a href="#" data-value="#cfe2f3" class="snte-color-btn" style="background-color: #cfe2f3;" title="#cfe2f3"></a></li>
+                <li><a href="#" data-value="#d9d2e9" class="snte-color-btn" style="background-color: #d9d2e9;" title="#d9d2e9"></a></li>
+                <li><a href="#" data-value="#ead1dc" class="snte-color-btn" style="background-color: #ead1dc;" title="#ead1dc"></a></li>
+
+                <li><a href="#" data-value="#dd7e6b" class="snte-color-btn" style="background-color: #dd7e6b;" title="#dd7e6b"></a></li>
+                <li><a href="#" data-value="#ea9999" class="snte-color-btn" style="background-color: #ea9999;" title="#ea9999"></a></li>
+                <li><a href="#" data-value="#f9cb9c" class="snte-color-btn" style="background-color: #f9cb9c;" title="#f9cb9c"></a></li>
+                <li><a href="#" data-value="#ffe599" class="snte-color-btn" style="background-color: #ffe599;" title="#ffe599"></a></li>
+                <li><a href="#" data-value="#b6d7a8" class="snte-color-btn" style="background-color: #b6d7a8;" title="#b6d7a8"></a></li>
+                <li><a href="#" data-value="#a2c4c9" class="snte-color-btn" style="background-color: #a2c4c9;" title="#a2c4c9"></a></li>
+                <li><a href="#" data-value="#a4c2f4" class="snte-color-btn" style="background-color: #a4c2f4;" title="#a4c2f4"></a></li>
+                <li><a href="#" data-value="#9fc5e8" class="snte-color-btn" style="background-color: #9fc5e8;" title="#9fc5e8"></a></li>
+                <li><a href="#" data-value="#b4a7d6" class="snte-color-btn" style="background-color: #b4a7d6;" title="#b4a7d6"></a></li>
+                <li><a href="#" data-value="#d5a6bd" class="snte-color-btn" style="background-color: #d5a6bd;" title="#d5a6bd"></a></li>
+
+                <li><a href="#" data-value="#cc4125" class="snte-color-btn" style="background-color: #cc4125;" title="#cc4125"></a></li>
+                <li><a href="#" data-value="#e06666" class="snte-color-btn" style="background-color: #e06666;" title="#e06666"></a></li>
+                <li><a href="#" data-value="#f6b26b" class="snte-color-btn" style="background-color: #f6b26b;" title="#f6b26b"></a></li>
+                <li><a href="#" data-value="#ffd966" class="snte-color-btn" style="background-color: #ffd966;" title="#ffd966"></a></li>
+                <li><a href="#" data-value="#93c47d" class="snte-color-btn" style="background-color: #93c47d;" title="#93c47d"></a></li>
+                <li><a href="#" data-value="#76a5af" class="snte-color-btn" style="background-color: #76a5af;" title="#76a5af"></a></li>
+                <li><a href="#" data-value="#6d9eeb" class="snte-color-btn" style="background-color: #6d9eeb;" title="#6d9eeb"></a></li>
+                <li><a href="#" data-value="#6fa8dc" class="snte-color-btn" style="background-color: #6fa8dc;" title="#6fa8dc"></a></li>
+                <li><a href="#" data-value="#8e7cc3" class="snte-color-btn" style="background-color: #8e7cc3;" title="#8e7cc3"></a></li>
+                <li><a href="#" data-value="#c27ba0" class="snte-color-btn" style="background-color: #c27ba0;" title="#c27ba0"></a></li>
+
+                <li><a href="#" data-value="#a61c00" class="snte-color-btn" style="background-color: #a61c00;" title="#a61c00"></a></li>
+                <li><a href="#" data-value="#cc0000" class="snte-color-btn" style="background-color: #cc0000;" title="#cc0000"></a></li>
+                <li><a href="#" data-value="#e69138" class="snte-color-btn" style="background-color: #e69138;" title="#e69138"></a></li>
+                <li><a href="#" data-value="#f1c232" class="snte-color-btn" style="background-color: #f1c232;" title="#f1c232"></a></li>
+                <li><a href="#" data-value="#6aa84f" class="snte-color-btn" style="background-color: #6aa84f;" title="#6aa84f"></a></li>
+                <li><a href="#" data-value="#45818e" class="snte-color-btn" style="background-color: #45818e;" title="#45818e"></a></li>
+                <li><a href="#" data-value="#3c78d8" class="snte-color-btn" style="background-color: #3c78d8;" title="#3c78d8"></a></li>
+                <li><a href="#" data-value="#3d85c6" class="snte-color-btn" style="background-color: #3d85c6;" title="#3d85c6"></a></li>
+                <li><a href="#" data-value="#674ea7" class="snte-color-btn" style="background-color: #674ea7;" title="#674ea7"></a></li>
+                <li><a href="#" data-value="#a64d79" class="snte-color-btn" style="background-color: #a64d79;" title="#a64d79"></a></li>
+
+                <li><a href="#" data-value="#5b0f00" class="snte-color-btn" style="background-color: #5b0f00;" title="#5b0f00"></a></li>
+                <li><a href="#" data-value="#660000" class="snte-color-btn" style="background-color: #660000;" title="#660000"></a></li>
+                <li><a href="#" data-value="#783f04" class="snte-color-btn" style="background-color: #783f04;" title="#783f04"></a></li>
+                <li><a href="#" data-value="#7f6000" class="snte-color-btn" style="background-color: #7f6000;" title="#7f6000"></a></li>
+                <li><a href="#" data-value="#274e13" class="snte-color-btn" style="background-color: #274e13;" title="#274e13"></a></li>
+                <li><a href="#" data-value="#0c343d" class="snte-color-btn" style="background-color: #0c343d;" title="#0c343d"></a></li>
+                <li><a href="#" data-value="#1c4587" class="snte-color-btn" style="background-color: #1c4587;" title="#1c4587"></a></li>
+                <li><a href="#" data-value="#073763" class="snte-color-btn" style="background-color: #073763;" title="#073763"></a></li>
+                <li><a href="#" data-value="#20124d" class="snte-color-btn" style="background-color: #20124d;" title="#20124d"></a></li>
+                <li><a href="#" data-value="#4c1130" class="snte-color-btn" style="background-color: #4c1130;" title="#4c1130"></a></li>-->
+              </ul>
             </div>
             <div class="btn-group">
               <button type="button" class="btn btn-default" title="MSG-Bold" id="snte-menu-font-bold">B</button>

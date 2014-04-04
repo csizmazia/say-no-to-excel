@@ -1350,13 +1350,14 @@ Handsontable.Core = function (rootElement, userSettings) {
       priv.settingsFromDOM.overflow = 'auto';
     }
 
-    if (priv.settings.width === void 0) {
-      // XXX stefanc i don't want scrollbars when font size is increased in a cell
-      //priv.settingsFromDOM.width = this.rootElement.width();
+    // XXX stefanc i don't want scrollbars when font size is increased in a cell
+    /*if (priv.settings.width === void 0) {
+      priv.settingsFromDOM.width = this.rootElement.width();
     }
     else {
       priv.settingsFromDOM.width = void 0;
-    }
+    }*/
+    priv.settingsFromDOM.width = void 0;
 
     priv.settingsFromDOM.height = void 0;
     if (priv.settings.height === void 0) {

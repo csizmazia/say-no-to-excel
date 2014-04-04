@@ -8,16 +8,96 @@ var $snteWorkspaceFocusedElement;
 var snteChromeSize = {left:{width: 180}, top:{height: 100}};
 var snteWorkspaceSize = {width: 9999999999, height: 9999999999};
 
+// http://home.earthlink.net/~silvermaplesoft/standards/size_heading.html
 var snteWYSIWYG = {
   "fontFamily": {"default": "Arial", "values": ["Arial", "Courier New", "Georgia", "Times New Roman", "Trebuchet MS", "Verdana"]},
   "fontSize": {"default": 2, "values": [1, 2, 3, 4, 5, 6, 7], "valueToPixelMap": {1: 10, 2:13, 3:16, 4:18, 5:24, 6:32, 7:48}, "pixelToValueMap": {10: 1, 13:2, 16:3, 18:4, 24:5, 32:6, 48:7}},
-  "fontColor": {"default": "#000"},
-  "fillColor": {"default": "#fff"},
+  "fontColor": {"default": "rgba(0,0,0,1)"},
+  "fillColor": {"default": "rgba(0,0,0,0)"},
   "bold": {"default": false},
   "italic": {"default": false},
   "underline": {"default": false},
   "strikethrough": {"default": false}
 };
+
+var snteFillColorNeedsBlackFont = [
+  "rgba(0,0,0,0)",
+  "rgba(239,239,239,1)",
+  "rgba(243,243,243,1)",
+  "rgba(255,255,255,1)"
+];
+var snteColorPalette = [
+  "rgba(0,0,0,1)",
+  "rgba(67,67,67,1)",
+  "rgba(102,102,102,1)",
+  "rgba(153,153,153,1)",
+  "rgba(183,183,183,1)",
+  "rgba(204,204,204,1)",
+  "rgba(217,217,217,1)",
+  "rgba(239,239,239,1)",
+  "rgba(243,243,243,1)",
+  "rgba(255,255,255,1)",
+  "rgba(152,0,0,1)",
+  "rgba(255,0,0,1)",
+  "rgba(255,153,0,1)",
+  "rgba(255,255,0,1)",
+  "rgba(0,255,0,1)",
+  "rgba(0,255,255,1)",
+  "rgba(73,133,232,1)",
+  "rgba(0,0,255,1)",
+  "rgba(153,0,255,1)",
+  "rgba(255,0,255,1)",
+  "rgba(230,184,175,1)",
+  "rgba(244,204,204,1)",
+  "rgba(252,228,205,1)",
+  "rgba(255,242,204,1)",
+  "rgba(216,234,211,1)",
+  "rgba(208,224,227,1)",
+  "rgba(201,217,248,1)",
+  "rgba(207,225,243,1)",
+  "rgba(216,210,233,1)",
+  "rgba(234,209,219,1)",
+  "rgba(221,126,106,1)",
+  "rgba(234,153,153,1)",
+  "rgba(249,202,156,1)",
+  "rgba(255,229,153,1)",
+  "rgba(182,215,168,1)",
+  "rgba(162,195,201,1)",
+  "rgba(164,194,244,1)",
+  "rgba(158,196,232,1)",
+  "rgba(179,167,214,1)",
+  "rgba(213,166,189,1)",
+  "rgba(204,64,37,1)",
+  "rgba(224,102,102,1)",
+  "rgba(246,177,107,1)",
+  "rgba(255,216,102,1)",
+  "rgba(147,196,125,1)",
+  "rgba(118,164,175,1)",
+  "rgba(109,158,235,1)",
+  "rgba(111,168,220,1)",
+  "rgba(142,123,195,1)",
+  "rgba(194,122,160,1)",
+  "rgba(166,28,0,1)",
+  "rgba(204,0,0,1)",
+  "rgba(230,144,56,1)",
+  "rgba(241,193,49,1)",
+  "rgba(105,168,79,1)",
+  "rgba(69,128,142,1)",
+  "rgba(59,119,216,1)",
+  "rgba(61,133,198,1)",
+  "rgba(102,78,167,1)",
+  "rgba(166,77,120,1)",
+  "rgba(91,14,0,1)",
+  "rgba(102,0,0,1)",
+  "rgba(120,63,3,1)",
+  "rgba(127,95,0,1)",
+  "rgba(38,78,19,1)",
+  "rgba(12,51,61,1)",
+  "rgba(27,68,135,1)",
+  "rgba(7,55,99,1)",
+  "rgba(32,17,77,1)",
+  "rgba(76,16,48,1)"
+];
 
 var snteCellRenderer = function (instance, td, renderer_row, renderer_col, prop, value, cellProperties) {
   Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -45,6 +125,16 @@ var snteCellRenderer = function (instance, td, renderer_row, renderer_col, prop,
 };
 
 $(document).ready(function() {
+  /*var str = [];
+  $("div#snte-menu-font-color-container ul.snte-menu-colorselector li a").each(function() {
+    var color = new Color($(this).data("value"));
+    var colorRGBA = color.toString("rgba");
+    //str.push('<li><a href="#" data-value="'+colorRGBA+'" class="snte-color-btn" style="background-color: '+colorRGBA+';" title="'+$(this).data("value")+'"></a></li>');
+    str.push('"'+colorRGBA+'",');
+    $("#debug").val(str.join("\r"));
+  });*/
+
+
   snte_bootstrap();
 });
 
@@ -52,17 +142,18 @@ function snte_bootstrap() {
   $snteWorkspace = $("div#snte-workspace");
   $snteWorkspaceContainer = $("div#snte-workspace-container");
 
-  $("button#snte-menu-font-color").colorpicker({
+  snte_chome_setup_color_control("font");
+  snte_chome_setup_color_control("fill");
+
+  /*$("button#snte-menu-font-color").colorpicker({
     format: "rgb",
     color: "#000"
-    
   }).on('changeColor', function(evt){
     var hexColor = e.color.toHex();
     $("span#snte-menu-font-color-picker-indicator").css("background-color", hexColor);
     $("button#snte-menu-font-color").data("value", hexColor);
     snte_wysiwyg_apply_font_color();
   });
-
   $("button#snte-menu-fill-color").colorpicker({
     format: "rgb",
     color: "#fff"
@@ -72,23 +163,19 @@ function snte_bootstrap() {
     $("span#snte-menu-fill-color-picker-indicator").css("background-color", hexColor);
     $("button#snte-menu-fill-color").data("value", hexColor);
     snte_wysiwyg_apply_fill_color();
-  });
+  });*/
 
   $("button#snte-menu-undo").click(function(evt) {
-    document.execCommand("styleWithCSS", false, "true");
-    document.execCommand("undo", false, null);
+    snte_wysiwyg_exec_command("undo", null);
   });
   $("button#snte-menu-redo").click(function(evt) {
-    document.execCommand("styleWithCSS", false, "true");
-    document.execCommand("redo", false, null);
+    snte_wysiwyg_exec_command("redo", null);
   });
   $("button#snte-menu-copy").click(function(evt) {
-    document.execCommand("styleWithCSS", false, "true");
-    document.execCommand("copy", false, null);
+    snte_wysiwyg_exec_command("copy", null);
   });
   $("button#snte-menu-paste").click(function(evt) {
-    document.execCommand("styleWithCSS", false, "true");
-    document.execCommand("paste", false, null);
+    snte_wysiwyg_exec_command("paste", null);
   });
 
   $("div#snte-menu-add-element ul.dropdown-menu li a").click(function(evt) {
@@ -116,7 +203,6 @@ function snte_bootstrap() {
     snte_wysiwyg_apply_font_bold();
 
     evt.preventDefault();
-
   });
   $("button#snte-menu-font-italic").click(function(evt) {
     snte_chrome_toggle_button($(this));
@@ -135,7 +221,6 @@ function snte_bootstrap() {
     snte_wysiwyg_apply_font_strikethrough();
 
     evt.preventDefault();
-    
   });
   $("div#snte-menu-font-family ul.dropdown-menu li a").click(function(evt) {
     $("div#snte-menu-font-family button span.value").text($(this).text());
@@ -149,11 +234,23 @@ function snte_bootstrap() {
     $("div#snte-menu-font-size button span.value").text($(this).text());
     $("div#snte-menu-font-size button").data("value", $(this).data("value"));
 
-   snte_wysiwyg_apply_font_size();
+    snte_wysiwyg_apply_font_size();
 
-   evt.preventDefault();
+    evt.preventDefault();
   });
-  $("button#snte-menu-font-color").click(function(evt) {
+  $("div#snte-menu-font-color-container ul.dropdown-menu li a").click(function(evt) {
+    snte_chrome_set_color_control("font", $(this).data("value"));
+    snte_wysiwyg_apply_font_color();
+
+    evt.preventDefault();
+  });
+  $("div#snte-menu-fill-color-container ul.dropdown-menu li a").click(function(evt) {
+    snte_chrome_set_color_control("fill", $(this).data("value"));
+    snte_wysiwyg_apply_fill_color();
+
+    evt.preventDefault();
+  });
+  /*$("button#snte-menu-font-color").click(function(evt) {
     $("div#snte-menu-font-color-picker").colorpicker("show");
 
     evt.preventDefault();
@@ -163,7 +260,7 @@ function snte_bootstrap() {
     $("div#snte-menu-fill-color-picker").colorpicker("show");
 
     evt.preventDefault();
-  });
+  });*/
 }
 
 function snte_wysiwyg_apply_font() {
@@ -192,9 +289,8 @@ function snte_wysiwyg_apply_font_styles() {
 function snte_wysiwyg_apply_font_bold() {
   if($snteWorkspaceFocusedElement !== void 0) {
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
+      snte_wysiwyg_exec_command("bold", null);
       $snteWorkspaceFocusedElement.focus();
-      document.execCommand("styleWithCSS", false, "true");
-      document.execCommand("bold", false, null);
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
       snte_wysiwyg_update_table_cell_meta("bold", $("button#snte-menu-font-bold").hasClass("active"));
@@ -204,9 +300,8 @@ function snte_wysiwyg_apply_font_bold() {
 function snte_wysiwyg_apply_font_italic() {
   if($snteWorkspaceFocusedElement !== void 0) {
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
+      snte_wysiwyg_exec_command("italic", null);
       $snteWorkspaceFocusedElement.focus();
-      document.execCommand("styleWithCSS", false, "true");
-      document.execCommand("italic", false, null);
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
       snte_wysiwyg_update_table_cell_meta("italic", $("button#snte-menu-font-italic").hasClass("active"));
@@ -216,9 +311,8 @@ function snte_wysiwyg_apply_font_italic() {
 function snte_wysiwyg_apply_font_underline() {
   if($snteWorkspaceFocusedElement !== void 0) {
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
+      snte_wysiwyg_exec_command("underline", null);
       $snteWorkspaceFocusedElement.focus();
-      document.execCommand("styleWithCSS", false, "true");
-      document.execCommand("underline", false, null);
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
       snte_wysiwyg_update_table_cell_meta("underline", $("button#snte-menu-font-underline").hasClass("active"));
@@ -228,9 +322,8 @@ function snte_wysiwyg_apply_font_underline() {
 function snte_wysiwyg_apply_font_strikethrough() {
   if($snteWorkspaceFocusedElement !== void 0) {
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
+      snte_wysiwyg_exec_command("strikeThrough", null);
       $snteWorkspaceFocusedElement.focus();
-      document.execCommand("styleWithCSS", false, "true");
-      document.execCommand("strikeThrough", false, null);
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
       snte_wysiwyg_update_table_cell_meta("strikethrough", $("button#snte-menu-font-strikethrough").hasClass("active"));
@@ -240,12 +333,8 @@ function snte_wysiwyg_apply_font_strikethrough() {
 
 function snte_wysiwyg_apply_font_family() {
   if($snteWorkspaceFocusedElement !== void 0) {
-    console.log("apply font family");
-    console.log($snteWorkspaceFocusedElement);
-    console.log($("div#snte-menu-font-family button").data("value"));
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
-      document.execCommand("styleWithCSS", false, "true");
-      document.execCommand("fontName", false, $("div#snte-menu-font-family button").data("value"));
+      snte_wysiwyg_exec_command("fontName", $("div#snte-menu-font-family button").data("value"));
       $snteWorkspaceFocusedElement.focus();
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
@@ -256,19 +345,8 @@ function snte_wysiwyg_apply_font_family() {
 
 function snte_wysiwyg_apply_font_size() {
   if($snteWorkspaceFocusedElement !== void 0) {
-    console.log("apply font size");
-    console.log($snteWorkspaceFocusedElement);
-    console.log($("div#snte-menu-font-size button").data("value"));
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
-      // http://home.earthlink.net/~silvermaplesoft/standards/size_heading.html
-      document.execCommand("styleWithCSS", false, "true");
-      document.execCommand("fontSize", false, $("div#snte-menu-font-size button").data("value"));
-      /*
-      // fontSize only accepts values from 1-7, see https://developer.mozilla.org/en-US/docs/Rich-Text_Editing_in_Mozilla#Executing_Commands
-      // workaround found here http://stackoverflow.com/questions/5868295/document-execcommand-fontsize-in-pixels
-      document.execCommand("fontSize", false, 1);
-      $("font[size=1]", snteWorkspace).removeAttr("size").css("font-size", $("div#snte-menu-font-size button").data("value"));
-      */
+      snte_wysiwyg_exec_command("fontSize", $("div#snte-menu-font-size button").data("value"));
       $snteWorkspaceFocusedElement.focus();
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
@@ -279,12 +357,8 @@ function snte_wysiwyg_apply_font_size() {
 
 function snte_wysiwyg_apply_font_color() {
   if($snteWorkspaceFocusedElement !== void 0) {
-    console.log("apply font color");
-    console.log($snteWorkspaceFocusedElement);
-    console.log($("button#snte-menu-font-color").data("value"));
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
-      document.execCommand("styleWithCSS", false, "true");
-      document.execCommand("foreColor", false, $("button#snte-menu-font-color").data("value"));
+      snte_wysiwyg_exec_command("foreColor", $("button#snte-menu-font-color").data("value"));
       $snteWorkspaceFocusedElement.focus();
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
@@ -295,12 +369,8 @@ function snte_wysiwyg_apply_font_color() {
 
 function snte_wysiwyg_apply_fill_color() {
   if($snteWorkspaceFocusedElement !== void 0) {
-    console.log("apply fill color");
-    console.log($snteWorkspaceFocusedElement);
-    console.log($("button#snte-menu-fill-color").data("value"));
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
-      document.execCommand("styleWithCSS", false, "true");
-      document.execCommand("hiliteColor", false, $("button#snte-menu-fill-color").data("value"));
+      snte_wysiwyg_exec_command("hiliteColor", $("button#snte-menu-fill-color").data("value"));
       $snteWorkspaceFocusedElement.focus();
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
@@ -319,6 +389,11 @@ function snte_wysiwyg_update_table_cell_meta(field, value) {
     }
   }
   tableInstance.render();
+}
+
+function snte_wysiwyg_exec_command(name, value) {
+  document.execCommand("styleWithCSS", false, "true");
+  document.execCommand(name, false, value);
 }
 
 function snte_workspace_add_item(type) {
@@ -490,7 +565,7 @@ function snte_workspace_add_text() {
     $(this).removeClass("snte-highlighted");
   });
   $newElement.click(function(evt) {
-    snte_chrome_set_font_controls("text", $(e.target));
+    snte_chrome_set_font_controls("text", $(evt.target));
     evt.preventDefault();
   });
 
@@ -530,7 +605,7 @@ function snte_workspace_add_comment() {
     $(this).removeClass("snte-highlighted");
   });
   $newElement.click(function(evt) {
-    snte_chrome_set_font_controls("text", $(e.target));
+    snte_chrome_set_font_controls("text", $(evt.target));
     evt.preventDefault();
   });
 
@@ -574,6 +649,58 @@ function snte_chrome_hide_comments() {
   $("button#snte-menu-toggle-comments span.value").text("MSG-Show-Comments-Off");
 }
 
+function snte_chome_setup_color_control(type) {
+  var $list = $("div#snte-menu-"+type+"-color-container ul.snte-menu-colorselector");
+
+  var $a = $("<a>").attr("href", "#").attr("title", "MSG-none").attr("data-value", snteWYSIWYG[type+"Color"].default).addClass("snte-color-btn default selected").css({"border": "1px solid black", "background-color": snteWYSIWYG[type+"Color"].default});
+  if($.inArray(snteWYSIWYG[type+"Color"].default, snteFillColorNeedsBlackFont) >= 0) {
+    $a.addClass("needs-black-font");
+  }
+  var $li = $("<li>").addClass("default").append($a);
+  $list.append($li);
+
+  for(var ii = 0; ii < snteColorPalette.length; ii++) {
+    var $a = $("<a>").attr("href", "#").attr("title", "MSG-todo").attr("data-value", snteColorPalette[ii]).addClass("snte-color-btn").css("background-color", snteColorPalette[ii]);
+    if($.inArray(snteColorPalette[ii], snteFillColorNeedsBlackFont) >= 0) {
+      $a.addClass("needs-black-font");
+    }
+    var $li = $("<li>").append($a);
+
+    $list.append($li);
+  }
+
+  snte_chrome_reset_color_control(type);
+}
+
+function snte_chrome_set_color_control(type, colorString) {
+  var colorToSet;
+  if(colorString === "transparent") {
+    colorToSet = "rgba(0,0,0,0)";
+  }
+  else {
+    colorToSet = new Color(colorString).toString("rgba");
+  }
+
+  $("span#snte-menu-"+type+"-color-indicator").css("background-color", colorToSet);
+  $("button#snte-menu-"+type+"-color").data("value", colorToSet);
+
+  $("div#snte-menu-"+type+"-color-container ul.snte-menu-colorselector li a").removeClass("selected");
+  if(colorToSet === snteWYSIWYG[type+"Color"].default) {
+    $("div#snte-menu-"+type+"-color-container ul.snte-menu-colorselector li.default a").addClass("selected");  
+  }
+  else {
+    $("div#snte-menu-"+type+"-color-container ul.snte-menu-colorselector li a[data-value='"+colorToSet+"']").not(".default").addClass("selected");  
+  }
+}
+
+function snte_chrome_reset_color_control(type) {
+  $("span#snte-menu-"+type+"-color-indicator").css("background-color", snteWYSIWYG[type+"Color"].default);
+  $("button#snte-menu-"+type+"-color").data("value", snteWYSIWYG[type+"Color"].default);
+
+  $("div#snte-menu-"+type+"-color-container ul.snte-menu-colorselector li a").removeClass("selected");
+  $("div#snte-menu-"+type+"-color-container ul.snte-menu-colorselector li.default a").addClass("selected");
+}
+
 function snte_chrome_reset_font_controls() {
   $("button#snte-menu-font-bold").removeClass("active");
   $("button#snte-menu-font-italic").removeClass("active");
@@ -586,11 +713,8 @@ function snte_chrome_reset_font_controls() {
   $("div#snte-menu-font-size button span.value").text(snteWYSIWYG.fontSize.valueToPixelMap[snteWYSIWYG.fontSize.default]);
   $("div#snte-menu-font-size button").data("value", snteWYSIWYG.fontSize.default);
 
-  $("span#snte-menu-font-color-picker-indicator").css("background-color", snteWYSIWYG.fontColor.default);
-  $("button#snte-menu-font-color").data("value", snteWYSIWYG.fontColor.default);
-
-  $("span#snte-menu-fill-color-picker-indicator").css("background-color", snteWYSIWYG.fillColor.default);
-  $("button#snte-menu-fill-color").data("value", snteWYSIWYG.fillColor.default);
+  snte_chrome_reset_color_control("font");
+  snte_chrome_reset_color_control("fill");
 }
 
 function snte_chrome_set_font_controls(element_type, $source) {
@@ -604,22 +728,18 @@ function snte_chrome_set_font_controls(element_type, $source) {
 
     var $currentElement = $source;
     while(!$currentElement.hasClass("snte-element")) {
-      console.log($currentElement);
       if($currentElement.is("span") && $currentElement.attr("style")) {
-        console.log($currentElement.attr("style"));
         if($currentElement.attr("style").contains("font-family") && valuesToSet.family) {
           $("div#snte-menu-font-family button span.value").text($currentElement.css("font-family"));
           $("div#snte-menu-font-family button").data("value", $currentElement.css("font-family"));
           valuesToSet.family = false;
         }
         if($currentElement.attr("style").contains("color") && valuesToSet.color) {
-          $("span#snte-menu-font-color-picker-indicator").css("background-color", $currentElement.css("color"));
-          $("button#snte-menu-font-color").data("value", $currentElement.css("color"));
+          snte_chrome_set_color_control("font", $currentElement.css("color"));
           valuesToSet.color = false;
         }
         if($currentElement.attr("style").contains("background-color") && valuesToSet.fill) {
-          $("span#snte-menu-fill-color-picker-indicator").css("background-color", $currentElement.css("background-color"));
-          $("button#snte-menu-fill-color").data("value", $currentElement.css("background-color"));
+          snte_chrome_set_color_control("fill", $currentElement.css("background-color"));
           valuesToSet.fill = false;
         }
         if($currentElement.attr("style").contains("font-weight") && valuesToSet.bold) {
@@ -676,21 +796,17 @@ function snte_chrome_set_font_controls(element_type, $source) {
     }
 
     if($source.attr("style") && $source.attr("style").contains("color")) {
-      $("span#snte-menu-font-color-picker-indicator").css("background-color", $source.css("color"));
-      $("button#snte-menu-font-color").data("value", $source.css("color"));
+      snte_chrome_set_color_control("font", $source.css("color"));
     }
     else {
-      $("span#snte-menu-font-color-picker-indicator").css("background-color", snteWYSIWYG.fontColor.default);
-      $("button#snte-menu-font-color").data("value", snteWYSIWYG.fontColor.default);
+      snte_chrome_reset_color_control("font");
     }
 
     if($source.attr("style") && $source.attr("style").contains("background")) {
-      $("span#snte-menu-fill-color-picker-indicator").css("background-color", $source.css("background-color"));
-      $("button#snte-menu-fill-color").data("value", $source.css("background-color"));
+      snte_chrome_set_color_control("fill", $source.css("background-color"));
     }
     else {
-      $("span#snte-menu-fill-color-picker-indicator").css("background-color", snteWYSIWYG.fillColor.default);
-      $("button#snte-menu-fill-color").data("value", snteWYSIWYG.fillColor.default);
+      snte_chrome_reset_color_control("fill");
     }
 
     if($source.attr("style") && $source.attr("style").contains("font-weight") && ($source.css("font-weight") === "bold" || parseInt($source.css("font-weight")) === 700)) {

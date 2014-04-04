@@ -7,8 +7,9 @@ var $snteWorkspaceContainer;
 var snteWorkspaceElements = {};
 var $snteWorkspaceFocusedElement;
 
-var snteChromeSize = {left:{width: 180}, top:{height: 100}};
-var snteWorkspaceSize = {width: 9999999999, height: 9999999999};
+var snteChromeSize = {"left": {"width": 180}, "top": {"height": 100}};
+var snteWorkspaceSize = {"width": 9999999999, "height": 9999999999};
+var snteDefaultElementSizes = {"comment": {"width": 275, "height": 150}};
 
 // http://home.earthlink.net/~silvermaplesoft/standards/size_heading.html
 var snteWYSIWYG = {
@@ -624,11 +625,9 @@ function snte_workspace_add_table() {
 function snte_workspace_add_text() {
   var nextId = snte_generate_element_id();
 
-  var $newElement = $("<div class=\"snte-element snte-element-text\" id=\"snte-element-"+nextId+"\" contenteditable=\"true\"></div>");
+  var $newElement = $("<div>").addClass("snte-element snte-element-text").attr("id", "snte-element-"+nextId).attr("contenteditable", "true");
   
-  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-controls\"></div><div class=\"snte-element-delete\"><span class=\"glyphicon glyphicon-remove\"></div></div></div>");
-
-  $("div.snte-element-delete", $newElementContainer).click(snte_workspace_remove_element);
+  $newElementContainer = snte_workspace_create_element_container(false);
 
   snte_workspace_make_draggable($newElementContainer);
 
@@ -657,10 +656,10 @@ function snte_workspace_add_text() {
 function snte_workspace_add_comment() {
   var nextId = snte_generate_element_id();
 
-  var $newElement = $("<div class=\"snte-element snte-element-comment\" id=\"snte-element-"+nextId+"\" contenteditable=\"true\"></div>");
+  var $newElement = $("<div>").addClass("snte-element snte-element-comment").attr("id", "snte-element-"+nextId).attr("contenteditable", "true");
   
-  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-controls\"><div class=\"snte-element-delete\"><span class=\"glyphicon glyphicon-remove\"></div></div></div>");
-  $newElementContainer.width(275).height(150);
+  $newElementContainer = snte_workspace_create_element_container(false);
+  $newElementContainer.width(snteDefaultElementSizes.comment.width).height(snteDefaultElementSizes.comment.height);
 
   $("div.snte-element-delete", $newElementContainer).click(snte_workspace_remove_element);
   

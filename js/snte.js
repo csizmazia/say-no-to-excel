@@ -1,4 +1,5 @@
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
+String.prototype.capitalize = function() { return this.charAt(0).toUpperCase() + this.slice(1); };
 
 var $snteWorkspace;
 var $snteWorkspaceContainer;
@@ -17,7 +18,8 @@ var snteWYSIWYG = {
   "bold": {"default": false},
   "italic": {"default": false},
   "underline": {"default": false},
-  "strikethrough": {"default": false}
+  "strikethrough": {"default": false},
+  "align": {"default": "left"}
 };
 
 var snteFillColorNeedsBlackFont = [
@@ -120,21 +122,12 @@ var snteCellRenderer = function (instance, td, renderer_row, renderer_col, prop,
     "background": cellProperties.snteWYSIWYG.fillColor,
     "font-weight": cellProperties.snteWYSIWYG.bold?"bold":"normal",
     "font-style": cellProperties.snteWYSIWYG.italic?"italic":"normal",
-    "text-decoration": textDecoration
+    "text-decoration": textDecoration,
+    "text-align": cellProperties.snteWYSIWYG.align
   });
 };
 
 $(document).ready(function() {
-  /*var str = [];
-  $("div#snte-menu-font-color-container ul.snte-menu-colorselector li a").each(function() {
-    var color = new Color($(this).data("value"));
-    var colorRGBA = color.toString("rgba");
-    //str.push('<li><a href="#" data-value="'+colorRGBA+'" class="snte-color-btn" style="background-color: '+colorRGBA+';" title="'+$(this).data("value")+'"></a></li>');
-    str.push('"'+colorRGBA+'",');
-    $("#debug").val(str.join("\r"));
-  });*/
-
-
   snte_bootstrap();
 });
 
@@ -222,6 +215,30 @@ function snte_bootstrap() {
 
     evt.preventDefault();
   });
+  $("button#snte-menu-font-align-left").click(function(evt) {
+    $("button#snte-menu-font-align-center").removeClass("active");
+    $("button#snte-menu-font-align-right").removeClass("active");
+    snte_chrome_toggle_button($(this));
+    snte_wysiwyg_apply_font_align("left");
+
+    evt.preventDefault();
+  });
+  $("button#snte-menu-font-align-center").click(function(evt) {
+    $("button#snte-menu-font-align-left").removeClass("active");
+    $("button#snte-menu-font-align-right").removeClass("active");
+    snte_chrome_toggle_button($(this));
+    snte_wysiwyg_apply_font_align("center");
+
+    evt.preventDefault();
+  });
+  $("button#snte-menu-font-align-right").click(function(evt) {
+    $("button#snte-menu-font-align-left").removeClass("active");
+    $("button#snte-menu-font-align-center").removeClass("active");
+    snte_chrome_toggle_button($(this));
+    snte_wysiwyg_apply_font_align("right");
+
+    evt.preventDefault();
+  });
   $("div#snte-menu-font-family ul.dropdown-menu li a").click(function(evt) {
     $("div#snte-menu-font-family button span.value").text($(this).text());
     $("div#snte-menu-font-family button").data("value", $(this).data("value"));
@@ -269,6 +286,34 @@ function snte_wysiwyg_apply_font() {
   snte_wysiwyg_apply_font_color();
   snte_wysiwyg_apply_fill_color();
   snte_wysiwyg_apply_font_styles();
+  snte_wysiwyg_apply_font_align();
+}
+
+function snte_wysiwyg_apply_font_align() {
+  if($("button#snte-menu-font-align-left").hasClass("active")) {
+    snte_wysiwyg_apply_font_align("left");
+  }
+  else if($("button#snte-menu-font-align-center").hasClass("active")) {
+    snte_wysiwyg_apply_font_align("center");
+  }
+  else if($("button#snte-menu-font-align-right").hasClass("active")) {
+    snte_wysiwyg_apply_font_align("right");
+  }
+  else {
+    alert("da stimmt was nicht");
+  }
+}
+
+function snte_wysiwyg_apply_font_align(value) {
+  if($snteWorkspaceFocusedElement !== void 0) {
+    if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
+      snte_wysiwyg_exec_command("justify"+value.capitalize(), null);
+      $snteWorkspaceFocusedElement.focus();
+    }
+    else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
+      snte_wysiwyg_update_table_cell_meta("align", value);
+    }
+  }
 }
 
 function snte_wysiwyg_apply_font_styles() {
@@ -462,7 +507,8 @@ function snte_workspace_add_table() {
           "bold": snteWYSIWYG.bold.default,
           "italic": snteWYSIWYG.italic.default,
           "underline": snteWYSIWYG.underline.default,
-          "strikethrough": snteWYSIWYG.strikethrough.default
+          "strikethrough": snteWYSIWYG.strikethrough.default,
+          "align": snteWYSIWYG.align.default,
         };
       }
     },
@@ -725,6 +771,9 @@ function snte_chrome_set_font_controls(element_type, $source) {
     $("button#snte-menu-font-italic").removeClass("active");
     $("button#snte-menu-font-underline").removeClass("active");
     $("button#snte-menu-font-strikethrough").removeClass("active");
+    $("button#snte-menu-font-align-left").removeClass("active");
+    $("button#snte-menu-font-align-center").removeClass("active");
+    $("button#snte-menu-font-align-right").removeClass("active");
 
     var $currentElement = $source;
     while(!$currentElement.hasClass("snte-element")) {
@@ -761,6 +810,11 @@ function snte_chrome_set_font_controls(element_type, $source) {
           }
         }
       }
+      if($currentElement.is("div") && $currentElement.attr("style")) {
+        if($currentElement.attr("style").contains("text-align")) {
+          $("button#snte-menu-font-align-"+$currentElement.css("text-align")).addClass("active");
+        }
+      }
       if($currentElement.is("font") && $currentElement.attr("size")) {
         if(valuesToSet.size) {
           $("div#snte-menu-font-size button span.value").text(snteWYSIWYG.fontSize.valueToPixelMap[$currentElement.attr("size")]);
@@ -776,6 +830,9 @@ function snte_chrome_set_font_controls(element_type, $source) {
     $("button#snte-menu-font-italic").removeClass("active");
     $("button#snte-menu-font-underline").removeClass("active");
     $("button#snte-menu-font-strikethrough").removeClass("active");
+    $("button#snte-menu-font-align-left").removeClass("active");
+    $("button#snte-menu-font-align-center").removeClass("active");
+    $("button#snte-menu-font-align-right").removeClass("active");
 
     if($source.attr("style") && $source.attr("style").contains("font-family")) {
       $("div#snte-menu-font-family button span.value").text($source.css("font-family"));
@@ -812,30 +869,22 @@ function snte_chrome_set_font_controls(element_type, $source) {
     if($source.attr("style") && $source.attr("style").contains("font-weight") && ($source.css("font-weight") === "bold" || parseInt($source.css("font-weight")) === 700)) {
       $("button#snte-menu-font-bold").addClass("active");
     }
-    else {
-      $("button#snte-menu-font-bold").removeClass("active");
-    }
 
     if($source.attr("style") && $source.attr("style").contains("font-style") && $source.css("font-style") === "italic") {
       $("button#snte-menu-font-italic").addClass("active");
-    }
-    else {
-      $("button#snte-menu-font-italic").removeClass("active");
     }
 
     if($source.attr("style") && $source.attr("style").contains("text-decoration")) {
       if($source.attr("style").contains("underline")) {
         $("button#snte-menu-font-underline").addClass("active");
       }
-      else {
-        $("button#snte-menu-font-underline").removeClass("active");
-      }
       if($source.attr("style").contains("line-through")) {
         $("button#snte-menu-font-strikethrough").addClass("active");
       }
-      else {
-        $("button#snte-menu-font-strikethrough").removeClass("active");
-      }
+    }
+
+    if($source.attr("style") && $source.attr("style").contains("text-align")) {
+      $("button#snte-menu-font-align-"+$source.css("text-align")).addClass("active");
     }
   }
 }

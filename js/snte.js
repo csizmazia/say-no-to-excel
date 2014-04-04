@@ -710,11 +710,9 @@ function snte_workspace_hide_comments() {
 
 function snte_chrome_show_comments() {
   $("button#snte-menu-toggle-comments").addClass("active").attr("title", "MSG-Show-Comments-On");
-  $("button#snte-menu-toggle-comments span.value").text("MSG-Show-Comments-On");
 }
 function snte_chrome_hide_comments() {
   $("button#snte-menu-toggle-comments").removeClass("active").attr("title", "MSG-Show-Comments-Off");
-  $("button#snte-menu-toggle-comments span.value").text("MSG-Show-Comments-Off");
 }
 
 function snte_chome_setup_color_control(type) {

@@ -5,7 +5,7 @@ body {
 div#snte-page {
   width: 100%;
   height: 100%;
-  margin: -10px 0 0 0;
+  margin: 0;
   padding: 0;
 }
 div#snte-chrome-top {
@@ -13,9 +13,7 @@ div#snte-chrome-top {
   height: 100px;
   border-bottom: 1px darkgray solid;
   background: lightgray;
-}
-div#snte-menubar-top {
-  margin: 10px 0 0 10px;
+  padding: 10px;
 }
 div#snte-main {
   width: 100%;
@@ -35,13 +33,10 @@ div#snte-workspace-container {
   min-width: 790px;
   height: 100%;
   min-height: 800px;
-  /*background: lightblue;*/
   overflow: auto;
 }
 
 div#snte-workspace {
-  /*width: 5000px;
-  height: 5000px;*/
   position: relative;
 }
 
@@ -198,6 +193,16 @@ div.snte-element-container div.snte-element-controls div.snte-element-delete {
 }
 div.snte-element-container div.snte-element-controls div.snte-element-delete:hover {
   cursor: pointer;
+}
+
+
+button#snte-menu-toggle-comments {
+  color: #ccc;
+}
+
+button#snte-menu-toggle-comments.active {
+  color: #fcee16;
+  text-shadow: -1px 0 #adadad, 0 1px #adadad, 1px 0 #adadad, 0 -1px #adadad;
 }
 
 .snte-hidden {

@@ -443,8 +443,6 @@ function snte_wysiwyg_exec_command(name, value) {
 }
 
 function snte_workspace_add_item(type) {
-  console.log("Add item of type "+type);
-
   snte_chrome_reset_font_controls();
 
   switch(type) {
@@ -473,8 +471,7 @@ function snte_workspace_remove_element(evt) {
 }
 
 function snte_workspace_set_focus($elem) {
-  console.log("set focus to "+$elem.attr("id")+" "+$elem.attr("class"));
-  if($snteWorkspaceFocusedElement !== void 0 && $elem.attr("id") !== $snteWorkspaceFocusedElement.attr("id")) {
+  if($snteWorkspaceFocusedElement !== void 0 && $elem.attr("id") !== $snteWorkspaceFocusedElement.attr("id") && jQuery.contains(document, $elem[0])) {
     $snteWorkspaceFocusedElement.removeClass("snte-highlighted");
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text")) {
       
@@ -493,7 +490,7 @@ function snte_workspace_set_focus($elem) {
 
 function snte_workspace_make_draggable($elem) {
   $elem.draggable({
-    handle: $("div.snte-element-drag-handle", $elem),
+    handle: $("div.snte-element-controls", $elem),
     containment: [snteChromeSize.left.width, snteChromeSize.top.height, snteWorkspaceSize.width, snteWorkspaceSize.height],
     cursor: "move",
     opacity: "0.5",
@@ -509,17 +506,44 @@ function snte_workspace_make_resizable($elem) {
     handles: "se",
     minHeight: 50,
     minWidth: 70,
-    stop: function(event, ui) {
+    /*stop: function(event, ui) {
       ui.element.find(".snte-element").width(ui.element.width-20).height(ui.element.height)
-    }
+    }*/
   });
+}
+
+function snte_workspace_create_element_container(withTitle) {
+  var $newElementContainer = $("<div>").addClass("snte-element-container");
+  if(withTitle) {
+    $titleControl = $("<div>MSG-Unnamed-Table</div>").addClass("snte-element-title").attr("title", "MSG-Click-to-edit");
+    $titleControl.editable(
+      function(value, settings) {
+        if(value == "") {
+          value = "MSG-Unnamed-Table";
+        }
+        return value;
+      }, {
+        onblur: "submit"
+      }
+    );
+    $newElementContainer.append($titleControl);
+  }
+
+  $deleteControl = $("<div>").addClass("snte-element-delete").append($("<span>").addClass("glyphicon glyphicon-remove"));
+  $controls = $("<div>").addClass("snte-element-controls").append($deleteControl);
+  $newElementContainer.append($controls);
+
+  $deleteControl.click(snte_workspace_remove_element);
+  
+  return $newElementContainer;
 }
 
 function snte_workspace_add_table() {
   var nextId = snte_generate_element_id();
-  var $newElement = $("<div class=\"snte-element snte-element-table\" id=\"snte-element-"+nextId+"\"></div>");
+
+  var $newElement = $("<div>").addClass("snte-element snte-element-table").attr("id", "snte-element-"+nextId);
+
   $newElement.handsontable({
-    //width: snteWorkspaceSize.width,
     startRows: 10,
     startCols: 10,
     colHeaders: true,
@@ -571,7 +595,6 @@ function snte_workspace_add_table() {
             break;
           }
 
-          console.log("copy cell meta from "+realR+" "+realC+" to "+current.row+" "+current.col);
           var cellMetaSource = tableInstance.getCellMeta(realR, realC);
           var cellMetaTarget = tableInstance.getCellMeta(current.row, current.col);
           cellMetaTarget.snteWYSIWYG = $.extend(true, {}, cellMetaSource.snteWYSIWYG);
@@ -589,17 +612,7 @@ function snte_workspace_add_table() {
     }
   });
   
-  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-title\" title=\"MSG-Click-to-edit\">MSG-Unnamed-Table</div><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"><span class=\"glyphicon glyphicon-remove\"></div></div></div>");
-
-  $("div.snte-element-delete", $newElementContainer).click(snte_workspace_remove_element);
-  $("div.snte-element-title", $newElementContainer).editable(function(value, settings) {
-      if(value == "") {
-        value = "MSG-Unnamed-Table";
-      }
-      return value;
-    }, {
-    onblur: "submit"
-  });
+  $newElementContainer = snte_workspace_create_element_container(true);
 
   snte_workspace_make_draggable($newElementContainer);
 
@@ -613,7 +626,7 @@ function snte_workspace_add_text() {
 
   var $newElement = $("<div class=\"snte-element snte-element-text\" id=\"snte-element-"+nextId+"\" contenteditable=\"true\"></div>");
   
-  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"><span class=\"glyphicon glyphicon-remove\"></div></div></div>");
+  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-controls\"></div><div class=\"snte-element-delete\"><span class=\"glyphicon glyphicon-remove\"></div></div></div>");
 
   $("div.snte-element-delete", $newElementContainer).click(snte_workspace_remove_element);
 
@@ -646,7 +659,7 @@ function snte_workspace_add_comment() {
 
   var $newElement = $("<div class=\"snte-element snte-element-comment\" id=\"snte-element-"+nextId+"\" contenteditable=\"true\"></div>");
   
-  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"><span class=\"glyphicon glyphicon-remove\"></div></div></div>");
+  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-controls\"><div class=\"snte-element-delete\"><span class=\"glyphicon glyphicon-remove\"></div></div></div>");
   $newElementContainer.width(275).height(150);
 
   $("div.snte-element-delete", $newElementContainer).click(snte_workspace_remove_element);

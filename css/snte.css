@@ -151,7 +151,7 @@ div.snte-element-container {
   top: 50px;
   left: 50px;
 }
-div.snte-element-container div.snte-element-control-handles {
+div.snte-element-container div.snte-element-controls {
   display: none;
   width: 20px;
   height: 100%;
@@ -164,8 +164,11 @@ div.snte-element-container div.snte-element-control-handles {
   -moz-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);*/
 }
-div.snte-element-container:hover div.snte-element-control-handles {
+div.snte-element-container:hover div.snte-element-controls {
   display: block;
+}
+div.snte-element-container div.snte-element-controls:hover {
+  cursor: move;
 }
 
 div.snte-element-container div.snte-element-title {
@@ -176,25 +179,24 @@ div.snte-element-container div.snte-element-title {
   left: 20px;
 }
 
-div.snte-element-container div.snte-element-control-handles div.snte-element-drag-handle {
+/*div.snte-element-container div.snte-element-controls div.snte-element-drag-handle {
   margin: 1px 0 0 1px;
   width: 18px;
   height: 18px;
   background: url('../img/drag-handle-icon.png');
-  
 }
-div.snte-element-container div.snte-element-control-handles div.snte-element-drag-handle:hover {
+div.snte-element-container div.snte-element-controls div.snte-element-drag-handle:hover {
   cursor: move;
-}
+}*/
 
-div.snte-element-container div.snte-element-control-handles div.snte-element-delete {
+div.snte-element-container div.snte-element-controls div.snte-element-delete {
   width: 20px;
   height: 20px;
   text-align: center;
   vertical-align: middle;
   color: #747474;
 }
-div.snte-element-container div.snte-element-control-handles div.snte-element-delete:hover {
+div.snte-element-container div.snte-element-controls div.snte-element-delete:hover {
   cursor: pointer;
 }
 

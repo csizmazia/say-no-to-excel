@@ -1,5 +1,6 @@
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 String.prototype.capitalize = function() { return this.charAt(0).toUpperCase() + this.slice(1); };
+String.prototype.trim = function() { return String(this).replace(/^\s+|\s+$/g, ''); };
 
 var $snteWorkspace;
 var $snteWorkspaceContainer;
@@ -471,15 +472,46 @@ function snte_workspace_remove_element(evt) {
   }
 }
 
+function snte_workspace_set_focus($elem) {
+  console.log("set focus to "+$elem.attr("id")+" "+$elem.attr("class"));
+  if($snteWorkspaceFocusedElement !== void 0 && $elem.attr("id") !== $snteWorkspaceFocusedElement.attr("id")) {
+    $snteWorkspaceFocusedElement.removeClass("snte-highlighted");
+    if($snteWorkspaceFocusedElement.hasClass("snte-element-text")) {
+      
+    }
+    else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
+      $snteWorkspaceFocusedElement.handsontable("getInstance").deselectCell();
+    }
+  }
+
+  $snteWorkspaceFocusedElement = $elem;
+
+  if($snteWorkspaceFocusedElement !== void 0) {
+    $snteWorkspaceFocusedElement.addClass("snte-highlighted");
+  }
+}
+
 function snte_workspace_make_draggable($elem) {
   $elem.draggable({
     handle: $("div.snte-element-drag-handle", $elem),
-    //containment: snteWorkspaceContainer,
     containment: [snteChromeSize.left.width, snteChromeSize.top.height, snteWorkspaceSize.width, snteWorkspaceSize.height],
     cursor: "move",
     opacity: "0.5",
     snap: true,
     stack: ".snte-element-container"
+  });
+}
+function snte_workspace_make_resizable($elem) {
+  $elem.resizable({
+    autoHide: true,
+    ghost: true,
+    grid: [20, 20],
+    handles: "se",
+    minHeight: 50,
+    minWidth: 70,
+    stop: function(event, ui) {
+      ui.element.find(".snte-element").width(ui.element.width-20).height(ui.element.height)
+    }
   });
 }
 
@@ -517,7 +549,7 @@ function snte_workspace_add_table() {
       this.selectCell(0, 0);
     },
     afterSelectionEnd: function (row_start, column_start, row_end, column_end) {
-      $snteWorkspaceFocusedElement = this.rootElement;
+      snte_workspace_set_focus(this.rootElement);
       snte_chrome_set_font_controls("table_cell", $(this.getCell(row_start, column_start)));
     },
     beforeAutofill: function(start, end, data) {
@@ -557,15 +589,8 @@ function snte_workspace_add_table() {
     }
   });
   
-  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-title\" title=\"MSG-Click-to-edit\">MSG-Unnamed-Table</div><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"></div></div></div>");
-  $newElementContainer.mouseover(function() {
-    $(this).addClass("snte-highlighted");
-    $("div.snte-element-control-handles", $(this)).removeClass("snte-hidden");
-  });
-  $newElementContainer.mouseout(function() {
-    $(this).removeClass("snte-highlighted");
-    $("div.snte-element-control-handles", $(this)).addClass("snte-hidden");
-  });
+  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-title\" title=\"MSG-Click-to-edit\">MSG-Unnamed-Table</div><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"><span class=\"glyphicon glyphicon-remove\"></div></div></div>");
+
   $("div.snte-element-delete", $newElementContainer).click(snte_workspace_remove_element);
   $("div.snte-element-title", $newElementContainer).editable(function(value, settings) {
       if(value == "") {
@@ -588,28 +613,21 @@ function snte_workspace_add_text() {
 
   var $newElement = $("<div class=\"snte-element snte-element-text\" id=\"snte-element-"+nextId+"\" contenteditable=\"true\"></div>");
   
-  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"></div></div></div>");
-  $newElementContainer.mouseover(function() {
-    $(this).addClass("snte-highlighted");
-    $("div.snte-element-control-handles", $(this)).removeClass("snte-hidden");
-  });
-  $newElementContainer.mouseout(function() {
-    $(this).removeClass("snte-highlighted");
-    $("div.snte-element-control-handles", $(this)).addClass("snte-hidden");
-  });
+  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"><span class=\"glyphicon glyphicon-remove\"></div></div></div>");
+
   $("div.snte-element-delete", $newElementContainer).click(snte_workspace_remove_element);
 
   snte_workspace_make_draggable($newElementContainer);
 
   $newElement.focus(function(evt) {
-    if($snteWorkspaceFocusedElement !== void 0 && $snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
-      $snteWorkspaceFocusedElement.handsontable("getInstance").deselectCell();
-    }
-    $snteWorkspaceFocusedElement = $(this);
-    $(this).addClass("snte-highlighted");
+    snte_workspace_set_focus($(this));
+    evt.preventDefault();
   });
   $newElement.blur(function(evt) {
-    $(this).removeClass("snte-highlighted");
+    if($(this).text().trim() === "") {
+      $(this).closest("div.snte-element-container").remove();
+    }
+    evt.preventDefault;
   });
   $newElement.click(function(evt) {
     snte_chrome_set_font_controls("text", $(evt.target));
@@ -628,28 +646,16 @@ function snte_workspace_add_comment() {
 
   var $newElement = $("<div class=\"snte-element snte-element-comment\" id=\"snte-element-"+nextId+"\" contenteditable=\"true\"></div>");
   
-  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete glyphicon glyphicon-remove\"></div></div></div>");
-  $newElementContainer.mouseover(function() {
-    $(this).addClass("snte-highlighted");
-    $("div.snte-element-control-handles", $(this)).removeClass("snte-hidden");
-  });
-  $newElementContainer.mouseout(function() {
-    $(this).removeClass("snte-highlighted");
-    $("div.snte-element-control-handles", $(this)).addClass("snte-hidden");
-  });
+  var $newElementContainer = $("<div class=\"snte-element-container\"><div class=\"snte-element-control-handles snte-hidden\"><div class=\"snte-element-drag-handle\"></div><div class=\"snte-element-delete\"><span class=\"glyphicon glyphicon-remove\"></div></div></div>");
+  $newElementContainer.width(275).height(150);
+
   $("div.snte-element-delete", $newElementContainer).click(snte_workspace_remove_element);
   
   snte_workspace_make_draggable($newElementContainer);
+  snte_workspace_make_resizable($newElementContainer);
 
   $newElement.focus(function(evt) {
-    if($snteWorkspaceFocusedElement !== void 0 && $snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
-      $snteWorkspaceFocusedElement.handsontable("getInstance").deselectCell();
-    }
-    $snteWorkspaceFocusedElement = $(this);
-    $(this).addClass("snte-highlighted");
-  });
-  $newElement.blur(function(evt) {
-    $(this).removeClass("snte-highlighted");
+    snte_workspace_set_focus($(this));
   });
   $newElement.click(function(evt) {
     snte_chrome_set_font_controls("text", $(evt.target));
@@ -753,6 +759,9 @@ function snte_chrome_reset_font_controls() {
   $("button#snte-menu-font-italic").removeClass("active");
   $("button#snte-menu-font-underline").removeClass("active");
   $("button#snte-menu-font-strikethrough").removeClass("active");
+  $("button#snte-menu-font-align-left").addClass("active");
+  $("button#snte-menu-font-align-center").removeClass("active");
+  $("button#snte-menu-font-align-right").removeClass("active");
 
   $("div#snte-menu-font-family button span.value").text(snteWYSIWYG.fontFamily.default);
   $("div#snte-menu-font-family button").data("value", snteWYSIWYG.fontFamily.default);

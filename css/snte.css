@@ -276,13 +276,32 @@ button#snte-menu-toggle-comments.active {
   color: #000;
 }
 
+.snte-search-match {
+  background-color: #FCEDD9 !important;
+  color: #583707 !important;
+}
+div.snte-searchbox-resultcount {
+  float: right;
+  color: #cccccc;
+}
 
 
 
+/*
+override handsontable
+*/
 .handsontable td {
   line-height: normal !important;
   vertical-align: bottom;
 }
 .handsontable th {
   vertical-align: middle;
+}
+
+/*
+override bootstrap
+*/
+.popover {
+  max-width: none !important;
+  width: auto !important;
 }

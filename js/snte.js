@@ -130,6 +130,8 @@ var snteCellRenderer = function (instance, td, renderer_row, renderer_col, prop,
   });
 };
 
+var snteSearchResultCounter = 0;
+
 $(document).ready(function() {
   snte_bootstrap();
 });
@@ -176,6 +178,29 @@ function snte_bootstrap() {
 
   $("div#snte-menu-add-element ul.dropdown-menu li a").click(function(evt) {
     snte_workspace_add_item($(this).data("item"));
+    
+    evt.preventDefault();
+  });
+
+  $("button#snte-menu-toggle-search").popover({
+    placement: "auto",
+    html: true,
+    title: function () {
+     return $("div#snte-searchbox-title").html();
+    },
+    content: function() {
+      return $("div#snte-searchbox-content").html();
+    },
+    container: "body"
+  });
+
+  $("button#snte-menu-toggle-search").click(function(evt) {
+    snte_chrome_toggle_button($(this));
+    if($(this).hasClass("active")) {
+      snte_chrome_setup_search();
+      snte_workspace_reset_focus();
+      $("input.snte-menu-search-input").focus();
+    }
     
     evt.preventDefault();
   });
@@ -281,6 +306,77 @@ function snte_bootstrap() {
 
     evt.preventDefault();
   });*/
+}
+
+function snte_chrome_setup_search() {
+  $("button.snte-menu-search-next").click(function(evt) {
+    console.log("next");
+    snte_search_mark("next");
+    
+    evt.preventDefault();
+  });
+  $("button.snte-menu-search-prev").click(function(evt) {
+    console.log("prev");
+    snte_search_mark("prev");
+    
+    evt.preventDefault();
+  });
+  $("button.snte-menu-search-clear").click(function(evt) {
+    console.log("clear");
+    $("button.snte-menu-toggle-search").click();
+    $("input.snte-menu-search-input").val("");
+    snte_search("");
+
+    evt.preventDefault();
+  });
+  $("input.snte-menu-search-input").keyup(function(evt) {
+    $(this).closest("div").removeClass("has-success");
+    $(this).closest("div").removeClass("has-error");
+    if(evt.which === 13) {
+      console.log("enter");
+      snte_search($(this).val());
+    }
+    else {
+      //snte_search($(this).val());
+    }
+  })
+}
+
+function snte_search(needle) {
+  snteSearchResultCounter = 0;
+  /*$snteWorkspace.unhighlight({"className": "snte-search-match"});
+  $snteWorkspace.highlight(needle, {"className": "snte-search-match"});*/
+  for(var ii in snteWorkspaceElements) {
+    $elem = snteWorkspaceElements[ii];
+    if($elem.hasClass("snte-element-text")) {
+      $elem.unhighlight({"className": "snte-search-match"});
+      console.log($elem.highlight(needle, {"className": "snte-search-match"}));
+    }
+    else if($elem.hasClass("snte-element-comment") && $("button#snte-menu-toggle-comments").hasClass("active")) {
+      $elem.unhighlight({"className": "snte-search-match"});
+      console.log($elem.highlight(needle, {"className": "snte-search-match"}));
+    }
+    else if($elem.hasClass("snte-element-table")) {
+      var tableInstance = $elem.handsontable("getInstance");
+      var queryResult = tableInstance.search.query(needle);
+      tableInstance.render();
+    }
+  }
+
+  snteSearchResultCounter = $(".snte-search-match").length;
+
+  if(snteSearchResultCounter > 0) {
+    $("input.snte-menu-search-input").closest("div").addClass("has-success");
+  }
+  else {
+    $("input.snte-menu-search-input").closest("div").addClass("has-error");
+  }
+  console.log($("div.snte-searchbox-resultcount"));
+  $("div.snte-searchbox-resultcount").text(snteSearchResultCounter+" results");
+}
+
+function snte_search_mark(direction) {
+
 }
 
 function snte_wysiwyg_apply_font() {
@@ -466,10 +562,29 @@ function snte_workspace_add_item(type) {
     }
 }
 
-function snte_workspace_remove_element(evt) {
+function snte_workspace_remove_element($elem) {
+  // delete is slow: http://stackoverflow.com/questions/208105/how-to-remove-a-property-from-a-javascript-object
+  delete snteWorkspaceElements[$elem.attr("id")];
+  $elem.closest("div.snte-element-container").remove();
+}
+
+function snte_workspace_remove_element_confirm(evt) {
   if(confirm("MSG-Sure?")) {
-    $(evt.target).closest("div.snte-element-container").remove();
+    snte_workspace_remove_element($(evt.target));
   }
+}
+
+function snte_workspace_reset_focus() {
+  if($snteWorkspaceFocusedElement !== void 0) {
+    $snteWorkspaceFocusedElement.removeClass("snte-highlighted");
+    if($snteWorkspaceFocusedElement.hasClass("snte-element-text")) {
+      
+    }
+    else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
+      $snteWorkspaceFocusedElement.handsontable("getInstance").deselectCell();
+    }
+  }
+  $snteWorkspaceFocusedElement = void 0;
 }
 
 function snte_workspace_set_focus($elem) {
@@ -485,9 +600,7 @@ function snte_workspace_set_focus($elem) {
 
   $snteWorkspaceFocusedElement = $elem;
 
-  if($snteWorkspaceFocusedElement !== void 0) {
-    $snteWorkspaceFocusedElement.addClass("snte-highlighted");
-  }
+  $snteWorkspaceFocusedElement.addClass("snte-highlighted");
 }
 
 function snte_workspace_make_draggable($elem) {
@@ -535,7 +648,7 @@ function snte_workspace_create_element_container(withTitle) {
   $controls = $("<div>").addClass("snte-element-controls").append($deleteControl);
   $newElementContainer.append($controls);
 
-  $deleteControl.click(snte_workspace_remove_element);
+  $deleteControl.click(snte_workspace_remove_element_confirm);
   
   return $newElementContainer;
 }
@@ -556,6 +669,17 @@ function snte_workspace_add_table() {
     scrollH: "none",
     outsideClickDeselects: false,
     useFormula: true,
+    search: true,
+    search: {
+      searchResultClass: "snte-search-match"/*,
+      callback: function (instance, row, col, value, result) {
+        Handsontable.Search.DEFAULT_CALLBACK.apply(this, arguments);
+
+        if (result) {
+          snteSearchResultCounter++;
+        }
+      }*/
+    },
     cells: function (row, col, prop) {
       this.renderer = snteCellRenderer;
       this.type = "excel";
@@ -640,7 +764,7 @@ function snte_workspace_add_text() {
   });
   $newElement.blur(function(evt) {
     if($(this).text().trim() === "") {
-      $(this).closest("div.snte-element-container").remove();
+      snte_workspace_remove_element($(this));
     }
     evt.preventDefault;
   });
@@ -663,8 +787,6 @@ function snte_workspace_add_comment() {
   
   $newElementContainer = snte_workspace_create_element_container(false);
   $newElementContainer.width(snteDefaultElementSizes.comment.width).height(snteDefaultElementSizes.comment.height);
-
-  $("div.snte-element-delete", $newElementContainer).click(snte_workspace_remove_element);
   
   snte_workspace_make_draggable($newElementContainer);
   snte_workspace_make_resizable($newElementContainer);
@@ -849,6 +971,10 @@ function snte_chrome_set_font_controls(element_type, $source) {
     }
   }
   else if(element_type === "table_cell") {
+    var cellIsSearchMatch = $source.hasClass("snte-search-match");
+    if(cellIsSearchMatch) {
+      $source.removeClass("snte-search-match");
+    }
     $("button#snte-menu-font-bold").removeClass("active");
     $("button#snte-menu-font-italic").removeClass("active");
     $("button#snte-menu-font-underline").removeClass("active");
@@ -908,6 +1034,10 @@ function snte_chrome_set_font_controls(element_type, $source) {
 
     if($source.attr("style") && $source.attr("style").contains("text-align")) {
       $("button#snte-menu-font-align-"+$source.css("text-align")).addClass("active");
+    }
+
+    if(cellIsSearchMatch) {
+      $source.addClass("snte-search-match");
     }
   }
 }

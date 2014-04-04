@@ -286,10 +286,10 @@ function snte_wysiwyg_apply_font() {
   snte_wysiwyg_apply_font_color();
   snte_wysiwyg_apply_fill_color();
   snte_wysiwyg_apply_font_styles();
-  snte_wysiwyg_apply_font_align();
+  snte_wysiwyg_apply_font_aligns();
 }
 
-function snte_wysiwyg_apply_font_align() {
+function snte_wysiwyg_apply_font_aligns() {
   if($("button#snte-menu-font-align-left").hasClass("active")) {
     snte_wysiwyg_apply_font_align("left");
   }
@@ -478,7 +478,8 @@ function snte_workspace_make_draggable($elem) {
     containment: [snteChromeSize.left.width, snteChromeSize.top.height, snteWorkspaceSize.width, snteWorkspaceSize.height],
     cursor: "move",
     opacity: "0.5",
-    snap: true
+    snap: true,
+    stack: ".snte-element-container"
   });
 }
 

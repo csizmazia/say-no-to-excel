@@ -98,7 +98,6 @@ div.snte-element-text {
   margin: 0 0 0 20px;
   min-width: 200px;
   min-height: 200px;
-  background: #fff;
 }
 div.snte-element-text:hover {
   outline: 2px dashed #ccc;

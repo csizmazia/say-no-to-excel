@@ -1,3 +1,8 @@
+/*
+Original class taken from bootstrap-colorpicker
+https://github.com/mjolnic/bootstrap-colorpicker/
+*/
+
 // Color object
 var Color = function(val) {
     this.value = {

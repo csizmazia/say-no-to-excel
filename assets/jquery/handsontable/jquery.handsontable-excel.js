@@ -1247,12 +1247,9 @@ Handsontable.renderers.NumericRenderer = function (instance, td, row, col, prop,
     else {
       myformat = cellProperties.snteFormats["numeric"];
     }
-    console.log(myformat);
     value = numeral(value).format(myformat || '0');
   }
-  else {
-    console.log("helper says this is not numeric");
-  }
+  
   Handsontable.renderers.TextRenderer(instance, td, row, col, prop, value, cellProperties);
 };
 Handsontable.NumericCell.renderer = Handsontable.renderers.NumericRenderer;
@@ -1284,7 +1281,6 @@ Handsontable.renderers.ExcelRenderer = function (instance, td, row, col, prop, v
     else if (c == "=") {  // Hmm, now we are cooked, boiled and fried. Trying to evaluate a formula
       cellProperties.snteFormula = value.substring(1);
 
-      console.log("evaluateFormula");
       var theToken = evaluateFormula(instance, {"row": row, "col": col}, value.substring(1));
 
       if (theToken.type == 'error') {

@@ -269,11 +269,12 @@ function snte_bootstrap() {
     evt.preventDefault();
   });
 
-  /*$("button").tooltip({
+  $("button").tooltip({
     container: "body",
     placement: "bottom",
+    trigger: "hover",
     animation: false
-  });//.click(function() { $(this).tooltip("hide"); });*/
+  }).click(function() { $(this).tooltip("hide"); });
 
   $("button#snte-menu-toggle-search").popover({
     placement: "bottom",

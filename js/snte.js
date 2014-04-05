@@ -182,14 +182,20 @@ function snte_bootstrap() {
     evt.preventDefault();
   });
 
+  /*$("button").tooltip({
+    container: "body",
+    placement: "bottom",
+    animation: false
+  });//.click(function() { $(this).tooltip("hide"); });*/
+
   $("button#snte-menu-toggle-search").popover({
-    placement: "auto",
+    placement: "bottom",
     html: true,
     title: function () {
      return $("div#snte-searchbox-title").html();
     },
     content: function() {
-      return $("div#snte-searchbox-content").html();
+      return $("div#snte-searchbox-content");
     },
     container: "body"
   });
@@ -309,32 +315,36 @@ function snte_bootstrap() {
 }
 
 function snte_chrome_setup_search() {
-  $("button.snte-menu-search-next").click(function(evt) {
+  $("div.popover-content button.snte-menu-search-next").off("click").click(function(evt) {
     console.log("next");
     snte_search_mark("next");
     
     evt.preventDefault();
   });
-  $("button.snte-menu-search-prev").click(function(evt) {
+  $("div.popover-content button.snte-menu-search-prev").off("click").click(function(evt) {
     console.log("prev");
     snte_search_mark("prev");
     
     evt.preventDefault();
   });
-  $("button.snte-menu-search-clear").click(function(evt) {
+  $("div.popover-content button.snte-menu-search-clear").off("click").click(function(evt) {
     console.log("clear");
-    $("button.snte-menu-toggle-search").click();
-    $("input.snte-menu-search-input").val("");
-    snte_search("");
+    $("button#snte-menu-toggle-search").click();
+    $("div.popover-content input.snte-menu-search-input").val("");
+    snte_reset_search();
 
     evt.preventDefault();
   });
-  $("input.snte-menu-search-input").keyup(function(evt) {
+  $("div.popover-content input.snte-menu-search-input").off("keyup").keyup(function(evt) {
     $(this).closest("div").removeClass("has-success");
     $(this).closest("div").removeClass("has-error");
     if(evt.which === 13) {
       console.log("enter");
       snte_search($(this).val());
+    }
+    else if(evt.which === 27) {
+      console.log("esc");
+      $("div.popover-content button.snte-menu-search-clear").click();
     }
     else {
       //snte_search($(this).val());
@@ -342,19 +352,37 @@ function snte_chrome_setup_search() {
   })
 }
 
+function snte_reset_search_on_element($elem) {
+  if($elem.hasClass("snte-element-text")) {
+    $elem.unhighlight({"className": "snte-search-match"});
+  }
+  else if($elem.hasClass("snte-element-comment") && $("button#snte-menu-toggle-comments").hasClass("active")) {
+    $elem.unhighlight({"className": "snte-search-match"});
+  }
+  else if($elem.hasClass("snte-element-table")) {
+    $elem.find("td").removeClass("snte-search-match");
+  }
+}
+
+function snte_reset_search() {
+  for(var ii in snteWorkspaceElements) {
+    snte_reset_search_on_element(snteWorkspaceElements[ii]);
+  }
+  $("div.popover div.snte-searchbox-resultcount").text("");
+}
+
 function snte_search(needle) {
   snteSearchResultCounter = 0;
-  /*$snteWorkspace.unhighlight({"className": "snte-search-match"});
-  $snteWorkspace.highlight(needle, {"className": "snte-search-match"});*/
+
   for(var ii in snteWorkspaceElements) {
     $elem = snteWorkspaceElements[ii];
+    snte_reset_search_on_element($elem);
+
     if($elem.hasClass("snte-element-text")) {
-      $elem.unhighlight({"className": "snte-search-match"});
-      console.log($elem.highlight(needle, {"className": "snte-search-match"}));
+      $elem.highlight(needle, {"className": "snte-search-match"});
     }
     else if($elem.hasClass("snte-element-comment") && $("button#snte-menu-toggle-comments").hasClass("active")) {
-      $elem.unhighlight({"className": "snte-search-match"});
-      console.log($elem.highlight(needle, {"className": "snte-search-match"}));
+      $elem.highlight(needle, {"className": "snte-search-match"});
     }
     else if($elem.hasClass("snte-element-table")) {
       var tableInstance = $elem.handsontable("getInstance");
@@ -366,13 +394,13 @@ function snte_search(needle) {
   snteSearchResultCounter = $(".snte-search-match").length;
 
   if(snteSearchResultCounter > 0) {
-    $("input.snte-menu-search-input").closest("div").addClass("has-success");
+    $("div.popover-content input.snte-menu-search-input").closest("div").addClass("has-success");
   }
   else {
-    $("input.snte-menu-search-input").closest("div").addClass("has-error");
+    $("div.popover-content input.snte-menu-search-input").closest("div").addClass("has-error");
   }
-  console.log($("div.snte-searchbox-resultcount"));
-  $("div.snte-searchbox-resultcount").text(snteSearchResultCounter+" results");
+
+  $("div.popover div.snte-searchbox-resultcount").text(snteSearchResultCounter+" results");
 }
 
 function snte_search_mark(direction) {

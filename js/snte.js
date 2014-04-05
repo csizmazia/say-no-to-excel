@@ -80,11 +80,11 @@ var snteWYSIWYG = {
 
 var snteCellTypes =  {
   "auto": {"title": "MSG-Auto"},
-  "text": {"title": "MSG-Auto"},
-  "numeric": {"title": "MSG-Auto", "format": "0,0.00"},
-  "percent": {"title": "MSG-Auto", "format": "0.00%"},
-  "currency": {"title": "MSG-Auto", "format": "$ 0,0.00"},
-  "date": {"title": "MSG-Auto"},
+  "text": {"title": "MSG-Text"},
+  "numeric": {"title": "MSG-Number", "format": "0,0.00"},
+  "percent": {"title": "MSG-Percent", "format": "0.00%"},
+  "currency": {"title": "MSG-Currency", "format": "$ 0,0.00"},
+  "date": {"title": "MSG-Date"},
 }
 
 var snteFillColorNeedsBlackFont = [

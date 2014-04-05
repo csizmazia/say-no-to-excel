@@ -618,25 +618,27 @@ function snte_search(needle) {
 }
 
 function snte_search_mark(direction) {
-  if(direction === "next") {
-    snteSearchActiveResultIndex++;
-    if(snteSearchActiveResultIndex === snteSearchResultCounter) {
-      snteSearchActiveResultIndex = 0;
+  if(snteSearchResultCounter > 0) {
+    if(direction === "next") {
+      snteSearchActiveResultIndex++;
+      if(snteSearchActiveResultIndex === snteSearchResultCounter) {
+        snteSearchActiveResultIndex = 0;
+      }
     }
-  }
-  else if(direction === "prev") {
-    snteSearchActiveResultIndex--;
-    if(snteSearchActiveResultIndex < 0) {
-      snteSearchActiveResultIndex = snteSearchResultCounter-1;
+    else if(direction === "prev") {
+      snteSearchActiveResultIndex--;
+      if(snteSearchActiveResultIndex < 0) {
+        snteSearchActiveResultIndex = snteSearchResultCounter-1;
+      }
     }
+
+    $(".snte-search-match").eq(snteSearchActiveResultIndex).pulsate({
+      color: "#ffa123",
+      speed: 300,
+      reach: 10,
+      repeat: 1
+    });
   }
-  //$(".snte-search-match").eq(snteSearchActiveResultIndex).effect("pulsate");
-  $(".snte-search-match").eq(snteSearchActiveResultIndex).pulsate({
-    color: "#ffa123",
-    speed: 300,
-    reach: 10,
-    repeat: 1
-  });
 }
 
 function snte_wysiwyg_apply_font() {

@@ -277,6 +277,7 @@ function snte_bootstrap() {
       $(evt.target).removeClass("dragover");
     }).bind('drop', function(evt) {
       $(evt.target).removeClass("dragover");
+      $("#snte-image-modal").modal("hide");
       var dataTransfer = evt.originalEvent.dataTransfer;
       if (dataTransfer && dataTransfer.files) {
         $.each(dataTransfer.files, function (idx, file) {
@@ -868,6 +869,7 @@ function snte_workspace_make_draggable($elem) {
     stack: ".snte-element-container"
   });
 }
+
 function snte_workspace_make_resizable($elem) {
   $elem.resizable({
     autoHide: true,
@@ -876,9 +878,6 @@ function snte_workspace_make_resizable($elem) {
     handles: "se",
     minHeight: 50,
     minWidth: 70,
-    /*stop: function(event, ui) {
-      ui.element.find(".snte-element").width(ui.element.width-20).height(ui.element.height)
-    }*/
   });
 }
 
@@ -1076,7 +1075,7 @@ function snte_workspace_add_image(url) {
   $newElementContainer = snte_workspace_create_element_container(false);
 
   snte_workspace_make_draggable($newElementContainer);
-  snte_workspace_make_resizable($newElementContainer);
+  //snte_workspace_make_resizable($newElementContainer);
 
   snteWorkspaceElements[nextId] = $newElement;
   $newElement.appendTo($newElementContainer);
@@ -1090,7 +1089,7 @@ function snte_workspace_add_image(url) {
     });
     $newElement.append($image);
   }).fail(function () {
-    alert("upload error 2");
+    alert("MSG-Error-Not-An-Image-File");
   });
 }
 

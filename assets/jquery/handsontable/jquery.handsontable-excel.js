@@ -93,7 +93,7 @@ Token.number = function () {
   // and make an array of tokens
   // Take the array of tokens and evaluate it
   // Return the result of that evaluation
-  var evaluateFormula = function (instance,formula) {
+  var evaluateFormula = function (instance, activeCell, formula) {
 
 /*
 var evalFormula = function (instance, formula) {
@@ -118,7 +118,8 @@ var evalFormula = function (instance, formula) {
     var radix = "Z".charCodeAt(0) - "A".charCodeAt(0) + 1;
     var moff = "A".charCodeAt(0);
 //    var res = {};
-    var errres = { "type": 'error', error: 'Bad reference', next: null };
+    var referenceError = { "type": 'error', error: 'Bad reference', next: null };
+    var circularError = { "type": 'error', error: 'Circular reference', next: null };
     var state = 0;
 
     for (i = 0; i < cellRef.length; i++) {
@@ -134,10 +135,14 @@ var evalFormula = function (instance, formula) {
         row = row * 10 + c.charCodeAt(0) - "0".charCodeAt(0);
       }
       else
-        return errres;
+        return referenceError;
     }
     if (state < 2 || row < 1 || col < 0)
-      return errres;
+      return referenceError;
+
+    if(row-1 === activeCell.row && col === activeCell.col) {
+      return circularError;
+    }
     return { "type": 'coord', row: row-1, col: col };
   };
 
@@ -173,9 +178,9 @@ var evalFormula = function (instance, formula) {
       return res;
     }
     if (c == "=") {
-      return evaluateFormula(instance,val.substring(1));
+      return evaluateFormula(instance, activeCell, val.substring(1));
     }
-    if (c == '-' || c == '+' || c == '.' || (c >= '0' && c <= '9')) {	// Numeric constant
+    if (c == '-' || c == '+' || c == '.'|| c == ',' || (c >= '0' && c <= '9')) {	// Numeric constant
       res.type = 'number';
       res.token = (val * 1.0);
       return res;
@@ -213,17 +218,21 @@ var evalFormula = function (instance, formula) {
   // in the process
   //
   var nextToken = function (formulaString) {	// split the textstring into tokens one at a time
-    var result = { "type": '', "token": null, "next": null};
+    var result = { "type": 'empty', "token": null, "next": null};
     var i;
     var c;
     var l;
 
-    if (formulaString == null || formulaString == '')
+    if (formulaString == null || formulaString == '') {
       return result;
-    while (formulaString.length > 0 && formulaString[0] == ' ')
+    }
+    while (formulaString.length > 0 && formulaString[0] == ' ') {
       formulaString = formulaString.substring(1);
-    if (formulaString == null || formulaString == '')
+    }
+    if (formulaString == null || formulaString == '') {
       return result;
+    }
+    
     l = formulaString.length;
     c = formulaString[0].toUpperCase();
     if (c == '-' || c == '+' || c == '*' || c == '/') {
@@ -235,26 +244,39 @@ var evalFormula = function (instance, formula) {
     else if (c == ':') {
       result = { "type": "range", token: c, next: formulaString.substring(1) };
     }
-    else if (c == ';' || c == ',' ) {
+    // XXX stefanc
+    //else if (c == ';' || c == ',' ) {
+    else if (c == ';' ) {
       result = { "type": "param", token: c, next: formulaString.substring(1) };
     }
-    else if ((c >= '0' && c <= '9') || c == '.') {
+    // XXX stefanc
+    // else if ((c >= '0' && c <= '9') || c == '.') {
+    else if ((c >= '0' && c <= '9') || c == '.' || c == ',') {
       var val = 0.0;
       var part = 0.0;
       var state = 0;
       var div = 1.0;
-      for (i = 0; i < formulaString.length && ((formulaString[i] >= '0' && formulaString[i] <= '9') || formulaString[i] == '.'); i++) {
+      // XXX stefanc
+      // for (i = 0; i < formulaString.length && ((formulaString[i] >= '0' && formulaString[i] <= '9') || formulaString[i] == '.'); i++) {
+      for (i = 0; i < formulaString.length && ((formulaString[i] >= '0' && formulaString[i] <= '9') || formulaString[i] == '.' || formulaString[i] == ','); i++) {
         c = formulaString[i];
-        if (state == 0 && c == '.')
-	  state = 1;
-        else if (state == 0)
+        // XXX stefanc
+        // if (state == 0 && c == '.') {
+        if (state == 0 && (c == '.' || c == ','))  {
+          state = 1;
+        }
+        else if (state == 0) {
           val = val * 10 + formulaString.charCodeAt(i) - "0".charCodeAt(0);
-        else if (state == 1 && c == '.')
-	  return { "type": 'error', error: 'Bad number', next: null };
-	else if (state == 1) {
-	  div /= 10.0;
-	  part = part + (formulaString.charCodeAt(i) - "0".charCodeAt(0)) * div;
-	}
+        }
+        // XXX stefanc
+        // else if (state == 0 && c == '.') {
+        else if (state == 1 && (c == '.' || c == ',')) {
+          return { "type": 'error', error: 'Bad number', next: null };
+        }
+        else if (state == 1) {
+          div /= 10.0;
+          part = part + (formulaString.charCodeAt(i) - "0".charCodeAt(0)) * div;
+        }
       }
       result = { "type": "number", token: val + part, next: formulaString.substring(i) };
     }
@@ -268,8 +290,9 @@ var evalFormula = function (instance, formula) {
         ref = ref.toLowerCase();	// Reformat the function names to lower case!!!!!
         result.type = 'func';
       }
-      else
+      else {
         result.type = 'cell';
+      }
       result.token = ref;		// NOTE: Keep the upper case for cell references!!!!!
       result.next = formulaString.substring(i);
     }
@@ -284,23 +307,25 @@ var evalFormula = function (instance, formula) {
         if (c2 == '=' || c2 == '<' || c2 == '>') {
           result = { "type": "relation", token: c+c2, next: formulaString.substring(2) };
         }
-	else
+        else {
           result = { "type": "relation", token: c, next: formulaString.substring(1) };
+        }
       }
     }
     else if (c == '"') {
       var str = ''
       var i;
       for (i = 1; i < formulaString.length && formulaString[i] != '"'; i++) {
-	c = formulaString[i];
+        c = formulaString[i];
         if (c == '\\') {
-	  i++;
-	  c = formulaString[i];
-	}
-	str = str + c;
+          i++;
+          c = formulaString[i];
+        }
+        str = str + c;
       }
-      if (i == formulaString.length || formulaString[i] != '"')
-	return { "type": 'error', error: 'Unbalanced string', next: null };
+      if (i == formulaString.length || formulaString[i] != '"') {
+        return { "type": 'error', error: 'Unbalanced string', next: null };
+      }
       result = { "type": "text", token: str, next: formulaString.substring(i+1) };
     }
     else { // Error or unknown token
@@ -952,137 +977,168 @@ var evalFormula = function (instance, formula) {
     var i, j;
     var found = 0;
 
-    for (i = tokens.length - 1; i >= 0; i--)
+    for (i = tokens.length - 1; i >= 0; i--) {
       if (tokens[i].type == 'paranthes' && tokens[i].token == '(') {
-        for (j = i; j < tokens.length; j++)
-	  if (tokens[j].type == 'paranthes' && tokens[j].token == ')') {
-	    var res;
-	    if (i > 0 && tokens[i-1].type == 'func') {
-	      i--;
-	      res = evaluateFunc(tokens.slice(i,j));		// Evaluate function
-	    }
-	    else
-	      res = evaluateTokens(tokens.slice(i+1,j));	// Evaluate formula within ()
-	    tokens.splice(i,j-i+1,res);
-	    found = 1;
-	    break;
-	  }
-	if (!found) {
-	  return { "type": 'error', error: 'Unbalanced paranthesis', next: null };
-	}
-	i = tokens.length;	// Restart search for paranthesis
-	found = 0;
-	continue;
+        for (j = i; j < tokens.length; j++) {
+          if (tokens[j].type == 'paranthes' && tokens[j].token == ')') {
+            var res;
+            if (i > 0 && tokens[i-1].type == 'func') {
+              i--;
+              res = evaluateFunc(tokens.slice(i,j));		// Evaluate function
+            }
+            else {
+              res = evaluateTokens(tokens.slice(i+1,j));	// Evaluate formula within ()
+            }
+            tokens.splice(i,j-i+1,res);
+            found = 1;
+            break;
+          }
+        }
+        if (!found) {
+          return { "type": 'error', error: 'Unbalanced paranthesis', next: null };
+        }
+
+        i = tokens.length;	// Restart search for paranthesis
+        found = 0;
+        continue;
       }
+    }
     for (i = 0; i < tokens.length; i++)
       if (tokens[i].type == 'cell') {
         var res = getCell(tokens[i].token);		// Replace reference with the value
-	tokens.splice(i,1,res);
+        tokens.splice(i,1,res);
       }
     for (i = 1; i < tokens.length - 1; i++)		// Evaluate * /
       if (tokens[i].type == 'operator' && (tokens[i].token == '*' || tokens[i].token == '/')) {
-	
-    if (tokens[i-1].type == 'error')
+        if (tokens[i-1].type == 'error') {
           return tokens[i-1];
-    if (tokens[i+1].type == 'error')
+        }
+        if (tokens[i+1].type == 'error') {
           return tokens[i+1];
-    var res = { "type": 'number', "token": 0.0, "next": null };
+        }
+        var res = { "type": 'number', "token": 0.0, "next": null };
 
-	fixBoolean(tokens, i-1);
-	fixBoolean(tokens, i+1);
-	fixText(tokens, i-1, i+1);
-	if (tokens[i-1].type != 'number' || tokens[i+1].type != 'number')
+        fixBoolean(tokens, i-1);
+        fixBoolean(tokens, i+1);
+        fixText(tokens, i-1, i+1);
+        if (tokens[i-1].type != 'number' || tokens[i+1].type != 'number') {
           return { "type": 'error', "error": 'Bad formula', "next": null };
-	if (tokens[i].token == '*')
-	  res.token = tokens[i-1].token * tokens[i+1].token;
-	else
-	  res.token = tokens[i-1].token / tokens[i+1].token;
-	tokens.splice(i-1,3,res);
-	i = i - 2;
-	continue;
+        }
+      	if (tokens[i].token == '*') {
+          res.token = tokens[i-1].token * tokens[i+1].token;
+        }
+        else {
+          res.token = tokens[i-1].token / tokens[i+1].token;
+        }
+
+        tokens.splice(i-1,3,res);
+        i = i - 2;
+        continue;
       }
     // Unary + and -
     if (tokens[0].type == 'operator' && (tokens[0].token == '-' || tokens[0].token == '+')) {
-	
-    if (tokens[1].type == 'error')
-          return tokens[1];
-    
-    var res = { "type": 'number', "token": 0.0, "next": null };
-
-        if (tokens.length > 1) {
-	  fixBoolean(tokens, 1);
-	  if (tokens[1].type == 'text')
-	    fixOneCol(tokens,1);
-	}
-	if (tokens.length > 1 && tokens[1].type != 'number')
-          return { "type": 'error', "error": 'Bad formula', "next": null };
-	if (tokens[0].token == '-')
-	  res.token = -tokens[1].token;
-	else
-	  res.token = tokens[1].token;
-	tokens.splice(0,2,res);
-    }
-    for (i = 1; i < tokens.length - 1; i++)	// almost lastly evaluate + -
-      if (tokens[i].type == 'operator' && (tokens[i].token == '-' || tokens[i].token == '+')) {
-	
-    if (tokens[i-1].type == 'error')
-          return tokens[i-1];
-    if (tokens[i+1].type == 'error')
-          return tokens[i+1];
-    
-    var res = { "type": 'number', "token": 0.0, "next": null };
-
-	fixBoolean(tokens, i-1);
-	fixBoolean(tokens, i+1);
-	fixText(tokens, i-1, i+1);
-	if (tokens[i-1].type != 'number' || tokens[i+1].type != 'number')
-          return { "type": 'error', "error": 'Bad formula', "next": null };
-	if (tokens[i].token == '+')
-	  res.token = tokens[i-1].token + tokens[i+1].token;
-	else
-	  res.token = tokens[i-1].token - tokens[i+1].token;
-	tokens.splice(i-1,3,res);
-	i = i - 2;
-	continue;
+      if (tokens[1].type == 'error') {
+        return tokens[1];
       }
-    for (i = 1; i < tokens.length - 1; i++)	// lastly evaluate relation = > < <> <= >=
-      if (tokens[i].type == 'relation') {
-	
-    if (tokens[i-1].type == 'error')
-          return tokens[i-1];
-    if (tokens[i+1].type == 'error')
-          return tokens[i+1];
     
-    var res = { "type": 'boolean', "token": 0, "next": null };
+      var res = { "type": 'number', "token": 0.0, "next": null };
 
-	fixBoolean(tokens,i-1);
-	fixBoolean(tokens,i+1);
-	fixText(tokens,i-1,i+1);
-	if (tokens[i-1].type != tokens[i+1].type || tokens[i].token == '==')
+      if (tokens.length > 1) {
+        fixBoolean(tokens, 1);
+        if (tokens[1].type == 'text') {
+          fixOneCol(tokens,1);
+        }
+      }
+    	if (tokens.length > 1 && tokens[1].type != 'number') {
+        return { "type": 'error', "error": 'Bad formula', "next": null };
+      }
+      if (tokens[0].token == '-') {
+        res.token = -tokens[1].token;
+      }
+      else {
+        res.token = tokens[1].token;
+      }
+
+      tokens.splice(0,2,res);
+    }
+    for (i = 1; i < tokens.length - 1; i++)	{ // almost lastly evaluate + -
+      if (tokens[i].type == 'operator' && (tokens[i].token == '-' || tokens[i].token == '+')) {
+        if (tokens[i-1].type == 'error') {
+          return tokens[i-1];
+        }
+        if (tokens[i+1].type == 'error') {
+          return tokens[i+1];
+        }
+        
+        var res = { "type": 'number', "token": 0.0, "next": null };
+
+        fixBoolean(tokens, i-1);
+        fixBoolean(tokens, i+1);
+        fixText(tokens, i-1, i+1);
+        if (tokens[i-1].type != 'number' || tokens[i+1].type != 'number') {
           return { "type": 'error', "error": 'Bad formula', "next": null };
+        }
+        if (tokens[i].token == '+') {
+          res.token = tokens[i-1].token + tokens[i+1].token;
+        }
+        else {
+          res.token = tokens[i-1].token - tokens[i+1].token;
+        }
+
+        tokens.splice(i-1,3,res);
+        i = i - 2;
+        continue;
+      }
+    }
+    for (i = 1; i < tokens.length - 1; i++)	{ // lastly evaluate relation = > < <> <= >=
+      if (tokens[i].type == 'relation') {
+        if (tokens[i-1].type == 'error') {
+          return tokens[i-1];
+        }
+        if (tokens[i+1].type == 'error') {
+          return tokens[i+1];
+        }
+        
+        var res = { "type": 'boolean', "token": 0, "next": null };
+
+        fixBoolean(tokens,i-1);
+        fixBoolean(tokens,i+1);
+        fixText(tokens,i-1,i+1);
+        if (tokens[i-1].type != tokens[i+1].type || tokens[i].token == '==') {
+          return { "type": 'error', "error": 'Bad formula', "next": null };
+        }
 
         var term1 = tokens[i-1].token;
         var term2 = tokens[i+1].token;
-	var relation = tokens[i].token;
+        var relation = tokens[i].token;
 
-	if (relation == '=')
-	  res.token = (term1 == term2);
-	else if (relation == '<>' || relation == '><')
-	  res.token = (term1 != term2);
-	else if (relation == '>=' || relation == '=>')
-	  res.token = (term1 >= term2);
-	else if (relation == '<=' || relation == '=<')
-	  res.token = (term1 <= term2);
-	else if (relation == '<')
-	  res.token = (term1 < term2);
-	else if (relation == '>')
-	  res.token = (term1 > term2);
-	tokens.splice(i-1,3,res);
-	i = i - 2;
-	continue;
+        if (relation == '=') {
+          res.token = (term1 == term2);
+        }
+        else if (relation == '<>' || relation == '><') {
+          res.token = (term1 != term2);
+        }
+        else if (relation == '>=' || relation == '=>') {
+          res.token = (term1 >= term2);
+        }
+        else if (relation == '<=' || relation == '=<') {
+          res.token = (term1 <= term2);
+        }
+        else if (relation == '<') {
+          res.token = (term1 < term2);
+        }
+        else if (relation == '>') {
+          res.token = (term1 > term2);
+        }
+
+        tokens.splice(i-1,3,res);
+        i = i - 2;
+        continue;
       }
-    if (tokens.length == 1)		// If we just have one value, say it's ok and continue
+    }
+    if (tokens.length == 1)	{ // If we just have one value, say it's ok and continue
       return tokens[0];
+    }
     return { "type": 'error', "error": 'Bad formula', "next": null };
   }
 
@@ -1096,7 +1152,7 @@ var evalFormula = function (instance, formula) {
     var tokens = [];
 
     theToken = nextToken(formula);
-    while (theToken.type != 'error' && theToken.next != '') {
+    while (theToken.type != 'error' && theToken.next != '' && theToken.next != null) {
       tokens.push(theToken);
       theToken = nextToken(theToken.next);
     }
@@ -1151,30 +1207,12 @@ Handsontable.cellTypes = {
 
 
 
-/**
-  * original NumericRender.
-  * We needs to make it somewhat more complicated so that there are three formats to
-  * choose from
-Handsontable.NumericRenderer = function (instance, td, row, col, prop, value, cellProperties) {
-  if (typeof value === 'number') {
-    if (typeof cellProperties.language !== 'undefined') {
-      numeral.language(cellProperties.language)
-    }
-    td.innerHTML = numeral(value).format(cellProperties.format || '0'); //docs: http://numeraljs.com/
-    td.className = 'htNumeric';
-  }
-  else {
-    Handsontable.TextRenderer(instance, td, row, col, prop, value, cellProperties);
-  }
-};
-*/
-
 //
 // rewrite old numericrenderer so that it takes account for more different formats
 //
 
 var numericRenderer = Handsontable.renderers.NumericRenderer;
-Handsontable.renderers.NumericRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+/*Handsontable.renderers.NumericRenderer = function (instance, td, row, col, prop, value, cellProperties) {
   var myformat;
   if (typeof value === 'number') {
     if (typeof cellProperties.language !== 'undefined') {
@@ -1192,88 +1230,109 @@ Handsontable.renderers.NumericRenderer = function (instance, td, row, col, prop,
   else {
     Handsontable.renderers.TextRenderer(instance, td, row, col, prop, value, cellProperties);
   } 
+};*/
+// XXX stefanc
+Handsontable.renderers.NumericRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+  var myformat;
+  
+  var valueToTest = (typeof value === "string") ? value.replace(",",".") : value;
+  if (Handsontable.helper.isNumeric(valueToTest)) {
+    if (typeof cellProperties.language !== 'undefined') {
+      numeral.language(cellProperties.language)
+    } 
+    
+    if(cellProperties.snteFormats[cellProperties.snteExplicitType]) {
+      myformat = cellProperties.snteFormats[cellProperties.snteExplicitType];
+    }
+    else {
+      myformat = cellProperties.snteFormats["numeric"];
+    }
+    console.log(myformat);
+    value = numeral(value).format(myformat || '0');
+  }
+  else {
+    console.log("helper says this is not numeric");
+  }
+  Handsontable.renderers.TextRenderer(instance, td, row, col, prop, value, cellProperties);
 };
-
-
+Handsontable.NumericCell.renderer = Handsontable.renderers.NumericRenderer;
 
 Handsontable.renderers.ExcelRenderer = function (instance, td, row, col, prop, value, cellProperties) {
     var c;
+    var newValue = value;
+
     if (typeof value === 'undefined' || value === null || value == '') {
+      cellProperties.snteFormula = void 0;
+      cellProperties.snteImplicitType = "text";
       Handsontable._TextCell.renderer.apply(this, arguments);
-      return;
+      return "";
     }
     
-    if (typeof value === 'number')
-        value = value.toString();
+    if (typeof value === 'number') {
+      value = value.toString();
+    }
     
     c = value[0];
     if (c == "'") {		// force value to a string, even things like numeric or formula
-      var newValue = value.substring(1);
-      $(td).css({
-        "text-align": 'left',
-	"background": 'none'
-      });
+      cellProperties.snteFormula = void 0;
+      cellProperties.snteImplicitType = "text";
+
+      newValue = value.substring(1);
+      
       Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
     }
     else if (c == "=") {  // Hmm, now we are cooked, boiled and fried. Trying to evaluate a formula
-      var newValue = null;
-      var theToken = evaluateFormula(instance,value.substring(1));
+      cellProperties.snteFormula = value.substring(1);
+
+      console.log("evaluateFormula");
+      var theToken = evaluateFormula(instance, {"row": row, "col": col}, value.substring(1));
 
       if (theToken.type == 'error') {
+        cellProperties.snteImplicitType = "error";
         newValue = theToken.error;
-        $(td).css({
-          "text-align": 'left',
-	  "background": '#FF8888'
-        });
-        Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
+        
+        Handsontable.renderers.HtmlRenderer(instance, td, row, col, prop, "<span class=\"snte-formula-error glyphicon glyphicon-exclamation-sign\" title=\""+newValue+"\"></span>", cellProperties);
+        //Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
       }
       else if (theToken.type == 'number') {
+        cellProperties.snteImplicitType = "numeric";
         newValue = theToken.token;
-        $(td).css({
-          "text-align": 'right',
-	  "background": 'none'
-        });
+        
         Handsontable.NumericCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
       }
       else if (theToken.type == 'text') {
+        cellProperties.snteImplicitType = "text";
         newValue = theToken.token;
-        $(td).css({
-          "text-align": 'left',
-	  "background": 'none'
-        });
+        
         Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
       }
       else if (theToken.type == 'boolean') {
+        cellProperties.snteImplicitType = "text";
         newValue = theToken.token ? "True" : "False";
-        $(td).css({
-          "text-align": 'left',
-	  "background": 'none'
-        });
+        
         Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
       }
       else {
+        cellProperties.snteImplicitType = "text";
         newValue = theToken.token;
-        $(td).css({
-          "text-align": 'left',
-	  "background": 'none'
-        });
+        
         Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
       }
     }
-    else if (c == '-' || c == '+' || c == '.' || (c >= '0' && c <= '9')) {	// Numeric constant
-      $(td).css({
-        "text-align": 'right',
-	"background": 'none'
-      });
+    else if (c == '-' || c == '+' || c == '.' || c == ',' || (c >= '0' && c <= '9')) {	// Numeric constant
+      cellProperties.snteFormula = void 0;
+      cellProperties.snteImplicitType = "numeric";
+      
       Handsontable.NumericCell.renderer.apply(this, arguments);
     }
     else {					// else probably a string
-      $(td).css({
-        "text-align": 'left',
-	"background": 'none'
-      });
+      cellProperties.snteFormula = void 0;
+      cellProperties.snteImplicitType = "text";
+      
       Handsontable._TextCell.renderer.apply(this, arguments);
     }
+
+    return newValue;
   };
 
 Handsontable.ExcelCell = {

@@ -280,6 +280,25 @@ button#snte-menu-toggle-comments.active {
   color: #000;
 }
 
+.snte-menu-cell-type-example {
+  color: #ccc;
+  font-size: 0.8em;
+  margin-right: 5px;
+  float: right;
+  display: inline-block;
+  margin-top: -2em;
+}
+
+.snte-formula-error {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  color: orange;
+  font-size: 17px;
+}
+
+
+
 .snte-search-match {
   background-color: #FCEDD9 !important;
   color: #583707 !important;

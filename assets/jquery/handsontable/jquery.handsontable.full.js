@@ -1277,6 +1277,11 @@ Handsontable.Core = function (rootElement, userSettings) {
     selection.refreshBorders(revertOriginal);
   };
 
+  /*// XXX stefanc
+  this.openEditor = function (initialValue) {
+    editorManager.openEditor(initialValue);
+  }*/
+
   /**
    * Populate cells at position with 2d array
    * @param {Number} row Start row

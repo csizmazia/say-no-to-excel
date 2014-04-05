@@ -6,6 +6,8 @@ var $snteWorkspace;
 var $snteWorkspaceContainer;
 var snteWorkspaceElements = {};
 var $snteWorkspaceFocusedElement;
+var snteWorkspaceErrorModalVisible = false;
+var snteLastCellError = {};
 
 var snteChromeSize = {"left": {"width": 180}, "top": {"height": 100}};
 var snteWorkspaceSize = {"width": 9999999999, "height": 9999999999};
@@ -21,8 +23,17 @@ var snteWYSIWYG = {
   "italic": {"default": false},
   "underline": {"default": false},
   "strikethrough": {"default": false},
-  "align": {"default": "left"}
+  "align": {"default": "default"}
 };
+
+var snteCellTypes =  {
+  "auto": {"title": "MSG-Auto"},
+  "text": {"title": "MSG-Auto"},
+  "numeric": {"title": "MSG-Auto", "format": "0,0.00"},
+  "percent": {"title": "MSG-Auto", "format": "0.00%"},
+  "currency": {"title": "MSG-Auto", "format": "$ 0,0.00"},
+  "date": {"title": "MSG-Auto"},
+}
 
 var snteFillColorNeedsBlackFont = [
   "rgba(0,0,0,0)",
@@ -103,10 +114,63 @@ var snteColorPalette = [
   "rgba(76,16,48,1)"
 ];
 
-var snteCellRenderer = function (instance, td, renderer_row, renderer_col, prop, value, cellProperties) {
-  //Handsontable.renderers.TextRenderer.apply(this, arguments);
-  Handsontable.renderers.ExcelRenderer.apply(this, arguments);
-  
+var snteCellRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+  /*if(row == 0 && col == 0) {
+    console.log("render cell "+row+" "+col);
+    console.log("implicit type = "+cellProperties.snteImplicitType);
+    console.log("explicit type = "+cellProperties.snteExplicitType);
+    console.log("value = "+value);
+    var err = new Error();
+    console.log(err.stack);
+  }*/
+
+  var newValue = Handsontable.renderers.ExcelRenderer.apply(this, arguments);
+
+  // error handling with modal
+  /*if(cellProperties.snteImplicitType === "error") {
+    if(!snteWorkspaceErrorModalVisible) {
+      console.log("open modal");
+      snteWorkspaceErrorModalVisible = true;
+      snteLastCellError = {"instance": instance, "cell": {"row": row, "col": col}, "formula": value};
+      console.log(snteLastCellError);
+      $("#snte-error-modal").find("div.modal-body").text(newValue);
+      $("#snte-error-modal").modal().on("shown.bs.modal", function (evt) {
+        if(snteWorkspaceErrorModalVisible) {
+          console.log("deselectCell");
+          snteLastCellError.instance.deselectCell();
+          console.log(snteLastCellError.instance.getSelected());
+        }
+      }).on("hide.bs.modal", function (evt) {
+        if(snteWorkspaceErrorModalVisible) { // somehow this event is fired more than once
+          console.log("hide modal");
+          snteWorkspaceErrorModalVisible = false;
+          console.log(snteLastCellError);
+          snteLastCellError.instance.selectCell(snteLastCellError.cell.row, snteLastCellError.cell.col);
+          snteLastCellError.instance.setDataAtCell(snteLastCellError.cell.row, snteLastCellError.cell.col, ""); // remove the error string from cell
+          snteLastCellError.instance.openEditor(snteLastCellError.formula);
+          console.log("reset snteLastCellError");
+          snteLastCellError = {};
+        }
+      });
+    }
+  }*/
+
+  if(cellProperties.snteExplicitType === "text") {
+    Handsontable.renderers.TextRenderer.apply(this, arguments);
+  }
+
+  if(cellProperties.snteExplicitType === "date") {
+    var formattedDate
+    if(value !== null && value !== "") {
+      formattedDate = date("m.d.Y", strtotime(value));
+    }
+    else {
+      formattedDate = "";
+    }
+    Handsontable.renderers.TextRenderer.apply(this, [ instance, td, row, col, prop, formattedDate, cellProperties ]);
+  }
+
+
   var textDecoration = "";
   if(cellProperties.snteWYSIWYG.underline) {
     textDecoration += " underline";
@@ -118,6 +182,21 @@ var snteCellRenderer = function (instance, td, renderer_row, renderer_col, prop,
     textDecoration = "none";
   }
 
+  var snteType = cellProperties.snteExplicitType !== "auto" ? cellProperties.snteExplicitType : cellProperties.snteImplicitType;
+
+  var textAlign;
+  if(cellProperties.snteWYSIWYG.align === "default") {
+    if(snteType === "numeric" || snteType === "currency" || snteType === "percent") {
+      textAlign = "right";
+    }
+    else {
+      textAlign = "left";
+    }
+  }
+  else {
+    textAlign = cellProperties.snteWYSIWYG.align;
+  }
+
   $(td).css({
     "font-family": cellProperties.snteWYSIWYG.fontFamily,
     "font-size": snteWYSIWYG.fontSize.valueToPixelMap[cellProperties.snteWYSIWYG.fontSize]+"px",
@@ -126,7 +205,7 @@ var snteCellRenderer = function (instance, td, renderer_row, renderer_col, prop,
     "font-weight": cellProperties.snteWYSIWYG.bold?"bold":"normal",
     "font-style": cellProperties.snteWYSIWYG.italic?"italic":"normal",
     "text-decoration": textDecoration,
-    "text-align": cellProperties.snteWYSIWYG.align
+    "text-align": textAlign
   });
 };
 
@@ -141,6 +220,16 @@ $(document).ready(function() {
 function snte_bootstrap() {
   $snteWorkspace = $("div#snte-workspace");
   $snteWorkspaceContainer = $("div#snte-workspace-container");
+
+  /*$(document).keyup(function (evt) {
+    console.log("document.keyup "+evt.which);
+    console.log(evt);
+    if(evt.which === 13) { // enter
+      if(snteWorkspaceErrorModalVisible) {
+        $("#snte-error-modal").modal("hide");
+      }
+    }
+  });*/
 
   snte_chome_setup_color_control("font");
   snte_chome_setup_color_control("fill");
@@ -314,6 +403,32 @@ function snte_bootstrap() {
 
     evt.preventDefault();
   });*/
+
+  $("div#snte-menu-cell-type ul.dropdown-menu li a").click(function(evt) {
+    $("div#snte-menu-cell-type button span.value").text($(this).attr("title"));
+    $("div#snte-menu-cell-type button").data("value", $(this).data("value"));
+
+    snte_table_apply_cell_type();
+
+    evt.preventDefault();
+  });
+}
+
+function snte_table_apply_cell_type() {
+  if($snteWorkspaceFocusedElement !== void 0) {
+    if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
+      var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+      var selectedCells = tableInstance.getSelected(); //[startRow, startCol, endRow, endCol]
+      for(var row = selectedCells[0]; row <= selectedCells[2]; row++) {
+        for(var col = selectedCells[1]; col <= selectedCells[3]; col++) {
+          var cellMeta = tableInstance.getCellMeta(row, col);
+          cellMeta.snteExplicitType = $("div#snte-menu-cell-type button").data("value");
+        }
+      }
+      console.log("snte_table_apply_cell_type -> render()");
+      tableInstance.render();
+    }
+  }
 }
 
 function snte_chrome_setup_search() {
@@ -403,6 +518,7 @@ function snte_search(needle) {
     else if($elem.hasClass("snte-element-table")) {
       var tableInstance = $elem.handsontable("getInstance");
       var queryResult = tableInstance.search.query(needle);
+      console.log("snte_search -> render()");
       tableInstance.render();
     }
   }
@@ -595,6 +711,7 @@ function snte_wysiwyg_update_table_cell_meta(field, value) {
       cellMeta.snteWYSIWYG[field] = value;
     }
   }
+  console.log("snte_wysiwyg_update_table_cell_meta -> render()");
   tableInstance.render();
 }
 
@@ -732,20 +849,21 @@ function snte_workspace_add_table() {
     scrollH: "none",
     outsideClickDeselects: false,
     useFormula: true,
-    search: true,
     search: {
-      searchResultClass: "snte-search-match"/*,
-      callback: function (instance, row, col, value, result) {
-        Handsontable.Search.DEFAULT_CALLBACK.apply(this, arguments);
-
-        if (result) {
-          snteSearchResultCounter++;
-        }
-      }*/
+      searchResultClass: "snte-search-match"
     },
     cells: function (row, col, prop) {
+      this.language = "de";
       this.renderer = snteCellRenderer;
       this.type = "excel";
+      this.snteFormats = {
+        "numeric": snteCellTypes.numeric.format,
+        "currency": snteCellTypes.currency.format,
+        "percent": snteCellTypes.percent.format,
+      };
+      if(!this.hasOwnProperty("snteExplicitType")) {
+        this.snteExplicitType = "auto";
+      }
       if(!this.hasOwnProperty("snteWYSIWYG")) {
         this.snteWYSIWYG = {
           "fontFamily": snteWYSIWYG.fontFamily.default,
@@ -761,11 +879,13 @@ function snte_workspace_add_table() {
       }
     },
     afterInit: function () {
+      console.log("selectCell(0,0)");
       this.selectCell(0, 0);
     },
     afterSelectionEnd: function (row_start, column_start, row_end, column_end) {
       snte_workspace_set_focus(this.rootElement);
       snte_chrome_set_font_controls("table_cell", $(this.getCell(row_start, column_start)));
+      snte_chrome_set_type_control({"row": row_start, "col": column_start});
     },
     beforeAutofill: function(start, end, data) {
       var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
@@ -789,6 +909,8 @@ function snte_workspace_add_table() {
           var cellMetaSource = tableInstance.getCellMeta(realR, realC);
           var cellMetaTarget = tableInstance.getCellMeta(current.row, current.col);
           cellMetaTarget.snteWYSIWYG = $.extend(true, {}, cellMetaSource.snteWYSIWYG);
+          cellMetaTarget.snteExplicitType = cellMetaSource.snteExplicitType;
+          cellMetaTarget.snteImplicitType = cellMetaSource.snteImplicitType;
 
           current.col++;
           if (end && c === clen - 1) {
@@ -969,6 +1091,19 @@ function snte_chrome_reset_font_controls() {
 
   snte_chrome_reset_color_control("font");
   snte_chrome_reset_color_control("fill");
+}
+
+function snte_chrome_set_type_control(cell) {
+  var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+  var cellMeta = tableInstance.getCellMeta(cell.row, cell.col);
+  if(cellMeta.snteExplicitType) {
+    $("div#snte-menu-cell-type button span.value").text(cellMeta.snteExplicitType);
+    $("div#snte-menu-cell-type button").data("value", cellMeta.snteExplicitType);
+  }
+  else {
+    $("div#snte-menu-cell-type button span.value").text(cellMeta.snteImplicitType);
+    $("div#snte-menu-cell-type button").data("value", cellMeta.snteImplicitType);
+  }
 }
 
 function snte_chrome_set_font_controls(element_type, $source) {

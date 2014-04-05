@@ -219,6 +219,10 @@ button#snte-menu-toggle-comments.active {
 }
 
 
+div#snte-menu-add-element .dropdown-menu span {
+  margin-right: 5px;
+}
+
 
 .snte-menu-colorselector {
   padding: 5px;

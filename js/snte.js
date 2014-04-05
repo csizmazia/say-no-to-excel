@@ -284,7 +284,7 @@ function snte_bootstrap() {
           async.readFileAsDataURL(file).then(function (url) {
             snte_workspace_add_image(url);
           }).fail(function () {
-            alert("upload error!");
+            alert("MSG-Upload-Error");
           });
         });
       }
@@ -303,7 +303,7 @@ function snte_bootstrap() {
           async.readFileAsDataURL(file).then(function (url) {
             snte_workspace_add_image(url);
           }).fail(function () {
-            alert("upload error!");
+            alert("MSG-Upload-Error");
           });
         });
       }
@@ -448,6 +448,8 @@ function snte_bootstrap() {
     evt.preventDefault();
   });
   $("div#snte-menu-font-family ul.dropdown-menu li a").click(function(evt) {
+    $("div#snte-menu-font-family ul.dropdown-menu li").removeClass("active");
+    $(this).closest("li").addClass("active");
     $("div#snte-menu-font-family button span.value").text($(this).text());
     $("div#snte-menu-font-family button").data("value", $(this).data("value"));
 
@@ -456,6 +458,8 @@ function snte_bootstrap() {
     evt.preventDefault();
   });
   $("div#snte-menu-font-size ul.dropdown-menu li a").click(function(evt) {
+    $("div#snte-menu-font-size ul.dropdown-menu li").removeClass("active");
+    $(this).closest("li").addClass("active");
     $("div#snte-menu-font-size button span.value").text($(this).text());
     $("div#snte-menu-font-size button").data("value", $(this).data("value"));
 
@@ -488,6 +492,8 @@ function snte_bootstrap() {
   });*/
 
   $("div#snte-menu-cell-type ul.dropdown-menu li a").click(function(evt) {
+    $("div#snte-menu-font-type ul.dropdown-menu li").removeClass("active");
+    $(this).closest("li").addClass("active");
     $("div#snte-menu-cell-type button span.value").text(snteCellTypes[$(this).data("value")].title);
     $("div#snte-menu-cell-type button").data("value", $(this).data("value"));
 
@@ -1328,12 +1334,11 @@ function snte_chrome_set_font_controls(element_type, $source) {
 function snte_chrome_set_type_control(cell) {
   var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
   var cellMeta = tableInstance.getCellMeta(cell.row, cell.col);
-  if(cellMeta.snteExplicitType) {
-    $("div#snte-menu-cell-type button span.value").text(snteCellTypes[cellMeta.snteExplicitType].title);
-    $("div#snte-menu-cell-type button").data("value", cellMeta.snteExplicitType);
-  }
-  else {
-    $("div#snte-menu-cell-type button span.value").text(snteCellTypes[cellMeta.snteImplicitType].title);
-    $("div#snte-menu-cell-type button").data("value", cellMeta.snteImplicitType);
-  }
+  var snteType = cellMeta.snteExplicitType ? cellMeta.snteExplicitType : cellMeta.snteImplicitType;
+
+  $("div#snte-menu-cell-type button span.value").text(snteCellTypes[snteType].title);
+  $("div#snte-menu-cell-type button").data("value", snteType);
+  $("div#snte-menu-cell-type ul.dropdown-menu li").removeClass("active");
+  $("div#snte-menu-cell-type ul.dropdown-menu li a[data-value='"+snteType+"']").closest("li").addClass("active");
+
 }

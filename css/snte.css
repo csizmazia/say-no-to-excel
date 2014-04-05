@@ -114,6 +114,10 @@ div.snte-element-text:hover, div.snte-element-text:focus {
   -moz-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
+div.snte-element-text:hover {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
 
 
 

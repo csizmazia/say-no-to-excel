@@ -293,11 +293,10 @@ function snte_bootstrap() {
       evt.preventDefault();
     });
 
-    $snteWorkspaceContainer.bind('dragover', function(evt) {
+    $("body").bind('dragover', function(evt) {
       evt.stopPropagation();
       evt.preventDefault();
     }).bind('drop', function(evt) {
-      console.log("hier");
       var dataTransfer = evt.originalEvent.dataTransfer;
       if (dataTransfer && dataTransfer.files) {
         $.each(dataTransfer.files, function (idx, file) {

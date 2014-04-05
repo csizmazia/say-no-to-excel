@@ -1,3 +1,48 @@
+var async = (function () {
+  /**
+   * read contents of file as representing URL
+   *
+   * @param {File} file
+   * @return {Promise} - then: sDataUrl
+   */
+  var readFileAsDataURL = function (file) {
+    return $.Deferred(function (deferred) {
+      $.extend(new FileReader(), {
+        onload: function (e) {
+          var sDataURL = e.target.result;
+          deferred.resolve(sDataURL);
+        },
+        onerror: function () {
+          deferred.reject(this);
+        }
+      }).readAsDataURL(file);
+    }).promise();
+  };
+
+  /**
+   * create `<image>` from url string
+   *
+   * @param {String} sUrl
+   * @return {Promise} - then: $image
+   */
+  var createImage = function (sUrl) {
+    return $.Deferred(function (deferred) {
+      $('<img>').one('load', function () {
+        deferred.resolve($(this));
+      }).one('error abort', function () {
+        deferred.reject($(this));
+      }).css({
+        display: 'none'
+      }).appendTo(document.body).attr('src', sUrl);
+    }).promise();
+  };
+
+  return {
+    readFileAsDataURL: readFileAsDataURL,
+    createImage: createImage
+  };
+})();
+
 /*
 var err = new Error();
 console.log(err.stack);
@@ -14,7 +59,9 @@ var $snteWorkspaceFocusedElement;
 var snteWorkspaceErrorModalVisible = false;
 var snteLastCellError = {};
 
-var snteChromeSize = {"left": {"width": 180}, "top": {"height": 100}};
+var snteImage = {"maxWidth": 500};
+
+var snteChromeSize = {"left": {"width": 180}, "top": {"height": 55}};
 var snteWorkspaceSize = {"width": 9999999999, "height": 9999999999};
 var snteDefaultElementSizes = {"comment": {"width": 275, "height": 150}};
 
@@ -217,15 +264,54 @@ function snte_bootstrap() {
   $snteWorkspace = $("div#snte-workspace");
   $snteWorkspaceContainer = $("div#snte-workspace-container");
 
-  /*$(document).keyup(function (evt) {
-    console.log("document.keyup "+evt.which);
-    console.log(evt);
-    if(evt.which === 13) { // enter
-      if(snteWorkspaceErrorModalVisible) {
-        $("#snte-error-modal").modal("hide");
+  if(!window.FileReader) {
+    $("div#snte-image-upload-dropzone").addClass("snte-hidden");
+  }
+  else {
+    $('div#snte-image-upload-dropzone').bind('dragover', function(evt) {
+      $(evt.target).addClass("dragover");
+
+      evt.stopPropagation();
+      evt.preventDefault();
+    }).bind('dragleave', function(evt) {
+      $(evt.target).removeClass("dragover");
+    }).bind('drop', function(evt) {
+      $(evt.target).removeClass("dragover");
+      var dataTransfer = evt.originalEvent.dataTransfer;
+      if (dataTransfer && dataTransfer.files) {
+        $.each(dataTransfer.files, function (idx, file) {
+          async.readFileAsDataURL(file).then(function (url) {
+            snte_workspace_add_image(url);
+          }).fail(function () {
+            alert("upload error!");
+          });
+        });
       }
-    }
-  });*/
+     
+      evt.stopPropagation();
+      evt.preventDefault();
+    });
+
+    $snteWorkspaceContainer.bind('dragover', function(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+    }).bind('drop', function(evt) {
+      console.log("hier");
+      var dataTransfer = evt.originalEvent.dataTransfer;
+      if (dataTransfer && dataTransfer.files) {
+        $.each(dataTransfer.files, function (idx, file) {
+          async.readFileAsDataURL(file).then(function (url) {
+            snte_workspace_add_image(url);
+          }).fail(function () {
+            alert("upload error!");
+          });
+        });
+      }
+     
+      evt.stopPropagation();
+      evt.preventDefault();
+    });
+  }
 
   snte_chome_setup_color_control("font");
   snte_chome_setup_color_control("fill");
@@ -725,7 +811,7 @@ function snte_workspace_add_item(type) {
         alert("TODO");
         break;
       case "image":
-        alert("TODO");
+        $("#snte-image-modal").modal();
         break;
     }
 }
@@ -980,6 +1066,32 @@ function snte_workspace_add_comment() {
 
   snte_chrome_show_comments();
   snte_workspace_show_comments();
+}
+
+function snte_workspace_add_image(url) {
+  var nextId = snte_generate_element_id();
+
+  var $newElement = $("<div>").addClass("snte-element snte-element-image").attr("id", "snte-element-"+nextId);
+
+  $newElementContainer = snte_workspace_create_element_container(false);
+
+  snte_workspace_make_draggable($newElementContainer);
+  snte_workspace_make_resizable($newElementContainer);
+
+  snteWorkspaceElements[nextId] = $newElement;
+  $newElement.appendTo($newElementContainer);
+  $newElementContainer.appendTo($snteWorkspace);
+  $newElement.focus();
+
+  async.createImage(url).then(function ($image) {
+    $image.css({
+      display: '',
+      width: Math.min(snteImage.maxWidth, $image.width())+"px"
+    });
+    $newElement.append($image);
+  }).fail(function () {
+    alert("upload error 2");
+  });
 }
 
 function snte_generate_element_id() {

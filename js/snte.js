@@ -898,20 +898,10 @@ function snte_workspace_make_resizable($elem) {
 
 function snte_workspace_create_element_container(withTitle) {
   var $newElementContainer = $("<div>").addClass("snte-element-container");
+
   if(withTitle) {
-    /*$titleControl = $("<div>MSG-Unnamed-Table</div>").addClass("snte-element-title").attr("title", "MSG-Click-to-edit");
-    $titleControl.editable(
-      function(value, settings) {
-        if(value == "") {
-          value = "MSG-Unnamed-Table";
-        }
-        return value;
-      }, {
-        onblur: "submit"
-      }
-    );
-    $newElementContainer.append($titleControl);*/
     $titleControl = $("<div>MSG-Unnamed-Table</div>").addClass("snte-element-title").attr("title", "MSG-Click-to-edit").attr("contenteditable", "true");
+    $titleControl.focus(snte_workspace_reset_focus);
     $newElementContainer.append($titleControl);
   }
 

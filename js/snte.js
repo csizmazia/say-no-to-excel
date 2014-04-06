@@ -899,7 +899,7 @@ function snte_workspace_make_resizable($elem) {
 function snte_workspace_create_element_container(withTitle) {
   var $newElementContainer = $("<div>").addClass("snte-element-container");
   if(withTitle) {
-    $titleControl = $("<div>MSG-Unnamed-Table</div>").addClass("snte-element-title").attr("title", "MSG-Click-to-edit");
+    /*$titleControl = $("<div>MSG-Unnamed-Table</div>").addClass("snte-element-title").attr("title", "MSG-Click-to-edit");
     $titleControl.editable(
       function(value, settings) {
         if(value == "") {
@@ -910,15 +910,16 @@ function snte_workspace_create_element_container(withTitle) {
         onblur: "submit"
       }
     );
+    $newElementContainer.append($titleControl);*/
+    $titleControl = $("<div>MSG-Unnamed-Table</div>").addClass("snte-element-title").attr("title", "MSG-Click-to-edit").attr("contenteditable", "true");
     $newElementContainer.append($titleControl);
   }
 
-  $deleteControl = $("<div>").addClass("snte-element-delete").append($("<span>").addClass("glyphicon glyphicon-remove"));
-  $controls = $("<div>").addClass("snte-element-controls").append($deleteControl);
-  $newElementContainer.append($controls);
-
+  $deleteControl = $("<div>").addClass("snte-element-delete").append($("<span>").addClass("glyphicon glyphicon-remove").attr("title", "MSG-Delete"));
   $deleteControl.click(snte_workspace_remove_element_confirm);
-  
+  $elementControls = $("<div>").addClass("snte-element-controls").append($deleteControl);
+  $newElementContainer.append($elementControls);
+
   return $newElementContainer;
 }
 
@@ -1014,6 +1015,19 @@ function snte_workspace_add_table() {
   });
   
   $newElementContainer = snte_workspace_create_element_container(true);
+
+  $addRowControl = $("<div>").addClass("snte-table-control snte-table-control-add-row").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", "MSG-Add-Row"));
+  $addRowControl.click(function() {
+    var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+    tableInstance.alter("insert_row");
+  });
+  $newElementContainer.append($addRowControl);
+  $addColumnControl = $("<div>").addClass("snte-table-control snte-table-control-add-column").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", "MSG-Add-Column"));
+  $addColumnControl.click(function() {
+    var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+    tableInstance.alter("insert_col");
+  });
+  $newElementContainer.append($addColumnControl);
 
   snte_workspace_make_draggable($newElementContainer);
 

@@ -5,8 +5,6 @@ html, body {
   min-width: 790px;
 }
 div#snte-page {
-  /*min-width: 100%;
-  min-height: 100%;*/
   margin: 0;
   padding: 0;
   position: relative; /*** Let's be nice to IE ***/
@@ -19,35 +17,32 @@ div#snte-chrome-top {
   height: 55px;
   border-bottom: 1px darkgray solid;
   background: lightgray;
-  padding: 10px;
 
-  z-index: 99999999;
+  z-index: 999; /* tooltips and dropdowns have */
   position: absolute;
   top: 0;
   left: 0;
 }
+div#snte-chrome-top>div.btn-toolbar>div.btn-group {
+  margin-top: 10px;
+}
+div#snte-logo {
+  display: table-cell;
+  float: left;
+  height: 100%;
+  margin: 0 20px 0 10px;
+  font-size: 50px;
+  line-height: 50px;
+  font-family: 'Gilda Display', serif;
+  color: #333;
+}
 div#snte-main {
   width: 100%;
   height: 100%;
-  /*min-width: 960px;*/
   display: table-cell; /*** For non-IE browsers ***/
   position: relative; /*** Let's be nice to IE ***/
 }
-/*div#snte-chrome-left {
-  width: 180px;
-  height: 100%;
-  min-height: 800px;
-  border-right: 1px darkgray solid;
-  background: lightgray;
-  float: left;
-  padding: 10px 0 0 10px;
-}*/
 div#snte-workspace-container {
-  /*margin-left: 180px;
-  min-width: 790px;
-  height: 100%;
-  min-height: 800px;
-  overflow: auto;*/
   width: 100%;
   height: 100%;
   display: table-cell; /*** For non-IE browsers ***/
@@ -55,26 +50,10 @@ div#snte-workspace-container {
   overflow: auto;
   margin-top: 55px;
 }
-
 div#snte-workspace {
   position: relative;
   width: 100%;
   height: 100%;
-}
-
-
-div#snte-menu-left h1 {
-  font-size: 10px;
-  font-weight: bolder;
-  text-transform: uppercase;
-  color: darkgray;
-  margin: 0 auto;
-  display: block;
-}
-div#snte-menu-left-empty {
-  font-size: 10px;
-  color: darkgray;
-  font-style: 
 }
 
 span#snte-menu-fill-color-indicator {
@@ -113,7 +92,7 @@ div.snte-element {
 }
 
 div.snte-element-table {
-  margin: 20px 0 0 20px;
+  margin: 20px;
 }
 div.snte-element-table table tr {
   background-color: #fff;
@@ -197,12 +176,24 @@ div.snte-element-container div.snte-element-controls:hover {
 }
 
 div.snte-element-container div.snte-element-title {
-  width: 50%;
+  width: 100%;
   height: 20px;
   position: absolute;
   top: 0;
-  left: 20px;
+  left: 0;
+  padding-left: 20px;
+  background: #fff;
+  border-radius: 5px 5px 0 0;
 }
+div.snte-element-container:hover div.snte-element-title {
+  background: #e4e4e4;
+}
+div.snte-element-container:hover div.snte-element-table {
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
 
 /*div.snte-element-container div.snte-element-controls div.snte-element-drag-handle {
   margin: 1px 0 0 1px;
@@ -224,6 +215,56 @@ div.snte-element-container div.snte-element-controls div.snte-element-delete {
 div.snte-element-container div.snte-element-controls div.snte-element-delete:hover {
   cursor: pointer;
 }
+
+div.snte-element-container div.snte-table-control {
+  display: none;
+  position: absolute;
+  background: #e4e4e4;
+}
+div.snte-element-container:hover div.snte-table-control {
+  display: block;
+}
+div.snte-element-container div.snte-table-control:hover {
+  cursor: pointer;
+}
+
+div.snte-element-container div.snte-table-control-add-row {
+  width: 50px;
+  height: 20px;
+  
+  bottom: 0;
+  left: 20px;
+
+  text-align: center;
+  vertical-align: middle;
+  color: #747474;
+  
+  border-radius: 0 0 5px 0;
+  border-left: 1px #ccc solid;
+  /*box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);*/
+}
+
+div.snte-element-container div.snte-table-control-add-column {
+  width: 20px;
+  height: 27px;
+  padding-top: 4px;
+  
+  top: 20px;
+  right: 0;
+
+  text-align: center;
+  vertical-align: middle;
+  color: #747474;
+  
+  border-radius: 0 0 5px 0;
+  border-top: 1px #ccc solid;
+  /*box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);*/
+}
+
 
 
 button#snte-menu-toggle-comments {

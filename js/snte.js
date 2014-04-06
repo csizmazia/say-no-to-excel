@@ -61,7 +61,7 @@ var snteLastCellError = {};
 
 var snteImage = {"maxWidth": 500};
 
-var snteChromeSize = {"left": {"width": 180}, "top": {"height": 55}};
+var snteChromeSize = {"left": {"width": 0}, "top": {"height": 55}};
 var snteWorkspaceSize = {"width": 9999999999, "height": 9999999999};
 var snteDefaultElementSizes = {"comment": {"width": 275, "height": 150}};
 

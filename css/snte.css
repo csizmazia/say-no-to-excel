@@ -1,12 +1,18 @@
-body {
+html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
+  min-width: 790px;
 }
 div#snte-page {
-  width: 100%;
-  height: 100%;
+  /*min-width: 100%;
+  min-height: 100%;*/
   margin: 0;
   padding: 0;
+  position: relative; /*** Let's be nice to IE ***/
+  width: 100%; /*** Content Width ***/
+  display: table; /*** For non-IE browsers ***/
+  height: 100%;
 }
 div#snte-chrome-top {
   width: 100%;
@@ -14,13 +20,20 @@ div#snte-chrome-top {
   border-bottom: 1px darkgray solid;
   background: lightgray;
   padding: 10px;
+
+  z-index: 99999999;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 div#snte-main {
   width: 100%;
   height: 100%;
-  min-width: 960px;
+  /*min-width: 960px;*/
+  display: table-cell; /*** For non-IE browsers ***/
+  position: relative; /*** Let's be nice to IE ***/
 }
-div#snte-chrome-left {
+/*div#snte-chrome-left {
   width: 180px;
   height: 100%;
   min-height: 800px;
@@ -28,17 +41,25 @@ div#snte-chrome-left {
   background: lightgray;
   float: left;
   padding: 10px 0 0 10px;
-}
+}*/
 div#snte-workspace-container {
-  margin-left: 180px;
+  /*margin-left: 180px;
   min-width: 790px;
   height: 100%;
   min-height: 800px;
+  overflow: auto;*/
+  width: 100%;
+  height: 100%;
+  display: table-cell; /*** For non-IE browsers ***/
+  position: relative; /*** Let's be nice to IE ***/
   overflow: auto;
+  margin-top: 55px;
 }
 
 div#snte-workspace {
   position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 
@@ -152,7 +173,7 @@ div.snte-element-container {
   padding: 0;
   display: inline-block;
   position: absolute;
-  top: 50px;
+  top: 100px;
   left: 50px;
 }
 div.snte-element-container div.snte-element-controls {

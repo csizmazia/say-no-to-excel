@@ -180,7 +180,9 @@ var evalFormula = function (instance, formula) {
     if (c == "=") {
       return evaluateFormula(instance, activeCell, val.substring(1));
     }
-    if (c == '-' || c == '+' || c == '.'|| c == ',' || (c >= '0' && c <= '9')) {	// Numeric constant
+    // xxx stefanc
+    //if (c == '-' || c == '+' || c == '.'|| c == ',' || (c >= '0' && c <= '9')) {  // Numeric constant
+    if (c == '-' || c == '+' || c == '.'|| c == ',' || Handsontable.helper.isNumeric(val)) {	// Numeric constant
       res.type = 'number';
       res.token = (val * 1.0);
       return res;
@@ -251,14 +253,14 @@ var evalFormula = function (instance, formula) {
     }
     // XXX stefanc
     // else if ((c >= '0' && c <= '9') || c == '.') {
-    else if ((c >= '0' && c <= '9') || c == '.' || c == ',') {
+    else if ((c >= '0' && c <= '9' && Handsontable.helper.isNumeric(c)) || c == '.' || c == ',') {
       var val = 0.0;
       var part = 0.0;
       var state = 0;
       var div = 1.0;
       // XXX stefanc
       // for (i = 0; i < formulaString.length && ((formulaString[i] >= '0' && formulaString[i] <= '9') || formulaString[i] == '.'); i++) {
-      for (i = 0; i < formulaString.length && ((formulaString[i] >= '0' && formulaString[i] <= '9') || formulaString[i] == '.' || formulaString[i] == ','); i++) {
+      for (i = 0; i < formulaString.length && ((formulaString[i] >= '0' && formulaString[i] <= '9' && Handsontable.helper.isNumeric(formulaString[i])) || formulaString[i] == '.' || formulaString[i] == ','); i++) {
         c = formulaString[i];
         // XXX stefanc
         // if (state == 0 && c == '.') {
@@ -270,7 +272,7 @@ var evalFormula = function (instance, formula) {
         }
         // XXX stefanc
         // else if (state == 0 && c == '.') {
-        else if (state == 1 && (c == '.' || c == ',')) {
+        else if (state == 0 && (c == '.' || c == ',')) {
           return { "type": 'error', error: 'Bad number', next: null };
         }
         else if (state == 1) {
@@ -278,6 +280,7 @@ var evalFormula = function (instance, formula) {
           part = part + (formulaString.charCodeAt(i) - "0".charCodeAt(0)) * div;
         }
       }
+
       result = { "type": "number", token: val + part, next: formulaString.substring(i) };
     }
     else if (c == '$' || (c >= 'A' && c <= 'Z')) {  // See if it is a cell reference
@@ -332,6 +335,7 @@ var evalFormula = function (instance, formula) {
       result.type = 'error';
       result.error = 'Bad token ' + c;
     }
+
     return result;
   };
 
@@ -929,10 +933,12 @@ var evalFormula = function (instance, formula) {
       tokens[col].token = 0.0;
     }
     else {
-      var c = tokens[col].token[0];
-      if (c == '-' || c == '+' || (c >= '0' && c <= '9')) {
+      var c = term[0];
+      // xxx stefanc
+      // if (c == '-' || c == '+' || (c >= '0' && c <= '9')) {
+      if (c == '-' || c == '+' || Handsontable.helper.isNumeric(term)) {
         tokens[col].type = 'number';
-        tokens[col].token = (1.0 * tokens[col].token);
+        tokens[col].token = (1.0 * term);
       }
     }
   };
@@ -1003,12 +1009,14 @@ var evalFormula = function (instance, formula) {
         continue;
       }
     }
-    for (i = 0; i < tokens.length; i++)
+    for (i = 0; i < tokens.length; i++) {
       if (tokens[i].type == 'cell') {
         var res = getCell(tokens[i].token);		// Replace reference with the value
         tokens.splice(i,1,res);
       }
-    for (i = 1; i < tokens.length - 1; i++)		// Evaluate * /
+    }
+
+    for (i = 1; i < tokens.length - 1; i++) {		// Evaluate * /
       if (tokens[i].type == 'operator' && (tokens[i].token == '*' || tokens[i].token == '/')) {
         if (tokens[i-1].type == 'error') {
           return tokens[i-1];
@@ -1035,6 +1043,8 @@ var evalFormula = function (instance, formula) {
         i = i - 2;
         continue;
       }
+    }
+
     // Unary + and -
     if (tokens[0].type == 'operator' && (tokens[0].token == '-' || tokens[0].token == '+')) {
       if (tokens[1].type == 'error') {
@@ -1061,6 +1071,7 @@ var evalFormula = function (instance, formula) {
 
       tokens.splice(0,2,res);
     }
+
     for (i = 1; i < tokens.length - 1; i++)	{ // almost lastly evaluate + -
       if (tokens[i].type == 'operator' && (tokens[i].token == '-' || tokens[i].token == '+')) {
         if (tokens[i-1].type == 'error') {
@@ -1241,18 +1252,29 @@ Handsontable.renderers.NumericRenderer = function (instance, td, row, col, prop,
       numeral.language(cellProperties.language)
     } 
     
-    if(cellProperties.snteFormats[cellProperties.snteExplicitType]) {
-      myformat = cellProperties.snteFormats[cellProperties.snteExplicitType];
+    if(cellProperties.snteExplicitType === 'numeric') {
+      myformat = cellProperties.snteFormats['numericExplicit'];
     }
     else {
-      myformat = cellProperties.snteFormats["numeric"];
+      myformat = cellProperties.snteFormats['numericImplicit'];
     }
-    value = numeral(value).format(myformat || '0');
+    console.log(myformat);
+    value = numeral(valueToTest).format(myformat || '0');
   }
   
   Handsontable.renderers.TextRenderer(instance, td, row, col, prop, value, cellProperties);
 };
 Handsontable.NumericCell.renderer = Handsontable.renderers.NumericRenderer;
+
+// XXX stefanc
+Handsontable.helper.isNumeric = function (n) {
+    var t = typeof n;
+    return t == 'number' ? !isNaN(n) && isFinite(n) :
+           t == 'string' ? !n.length ? false :
+           n.length == 1 ? /\d/.test(n) :
+           /^\s*[+-]?\s*(?:(?:\d+(?:[.,]\d+)?(?:e[+-]?\d+)?)|(?:0x[a-f\d]+))\s*$/i.test(n) :
+           t == 'object' ? !!n && typeof n.valueOf() == "number" && !(n instanceof Date) : false;
+};
 
 Handsontable.renderers.ExcelRenderer = function (instance, td, row, col, prop, value, cellProperties) {
     var c;
@@ -1315,7 +1337,7 @@ Handsontable.renderers.ExcelRenderer = function (instance, td, row, col, prop, v
         Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
       }
     }
-    else if (c == '-' || c == '+' || c == '.' || c == ',' || (c >= '0' && c <= '9')) {	// Numeric constant
+    else if (c == '-' || c == '+' || c == '.' || c == ',' || (c >= '0' && c <= '9' && Handsontable.helper.isNumeric(value))) {	// Numeric constant
       cellProperties.snteFormula = void 0;
       cellProperties.snteImplicitType = "numeric";
       

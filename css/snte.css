@@ -2,7 +2,6 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  min-width: 790px;
 }
 div#snte-page {
   margin: 0;
@@ -19,7 +18,7 @@ div#snte-chrome-top {
   background: lightgray;
 
   z-index: 999; /* tooltips and dropdowns have */
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
 }
@@ -45,24 +44,15 @@ div#snte-version {
   color: white;
   font-size: 10px;
 }
-div#snte-main {
+div#snte-workspace {
   width: 100%;
   height: 100%;
-  display: table-cell; /*** For non-IE browsers ***/
-  position: relative; /*** Let's be nice to IE ***/
-}
-div#snte-workspace-container {
-  width: 100%;
-  height: 100%;
-  display: table-cell; /*** For non-IE browsers ***/
+  display: table; /*** For non-IE browsers ***/
   position: relative; /*** Let's be nice to IE ***/
   overflow: auto;
-  margin-top: 55px;
-}
-div#snte-workspace {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  /*left: 0;
+  top: 55px;*/
+  /*margin-top: 55px;*/
 }
 
 span#snte-menu-fill-color-indicator {
@@ -105,6 +95,9 @@ div.snte-element-table {
 }
 div.snte-element-table table tr {
   background-color: #fff;
+}
+div.snte-element-table table tr td {
+  cursor: default;
 }
 
 div.snte-element-image {
@@ -394,11 +387,13 @@ div#snte-image-add-tab-upload, div#snte-image-add-tab-link {
 
 div#snte-image-upload-dropzone {
   width: 100%;
-  height: 500px;
+  height: 300px;
   border: 3px dashed #ccc;
   
+  
   text-align: center;
-  padding: 40% 0;
+  vertical-align: middle;
+  padding: 120px 0;
   color: #ccc;
   font-size: 30px;
   /*text-shadow: rgba(0, 0, 0, 0.1) 3px 3px 5px;*/
@@ -419,6 +414,13 @@ override handsontable
 }
 .handsontable th {
   vertical-align: middle;
+}
+div.htContextMenu {
+  z-index: 999;
+}
+
+div.htContextMenu table.htCore {
+  width: auto;
 }
 
 /*

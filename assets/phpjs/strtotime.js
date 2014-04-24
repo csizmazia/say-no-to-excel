@@ -120,7 +120,30 @@ function strtotime(text, now) {
       case '.':
         {
           // D.M.YY or H.MM.SS
-          if (match[5] >= 70) {
+          if(match[3] <= 12 && match[1] <= 31 && (match[5] < 100 || match[5] >= 999)) {
+            // xxx stefanc: this is probably a date D.M.YY
+            var fullYear = 1970;
+            today = new Date();
+            var thisYear = parseInt(today.getFullYear());
+            if(match[5] < 100) {
+              if(match[5] <= thisYear-2000+10) { // xxx stefanc this will only work until 2100. who cares :)
+                fullYear = parseInt(match[5])+2000;
+              }
+              else {
+                fullYear = parseInt(match[5])+1900;
+              }
+            }
+            else {
+              fullYear = match[5];
+            }
+            return new Date(fullYear, parseInt(match[3], 10) - 1, match[1],
+              match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
+          }
+          else {
+            return fail;
+          }
+          
+          /*if (match[5] >= 70) {
             // D.M.YY
             if (match[3] > 12 || match[1] > 31) {
               return fail;
@@ -128,7 +151,7 @@ function strtotime(text, now) {
 
             return new Date(match[5], parseInt(match[3], 10) - 1, match[1],
               match[6] || 0, match[7] || 0, match[8] || 0, match[9] || 0) / 1000;
-          }
+          }*/
           if (match[5] < 60 && !match[6]) {
             // H.MM.SS
             if (match[1] > 23 || match[3] > 59) {

@@ -53,7 +53,6 @@ String.prototype.capitalize = function() { return this.charAt(0).toUpperCase() +
 String.prototype.trim = function() { return String(this).replace(/^\s+|\s+$/g, ''); };
 
 var $snteWorkspace;
-var $snteWorkspaceContainer;
 var snteWorkspaceElements = {};
 var $snteWorkspaceFocusedElement;
 var snteWorkspaceErrorModalVisible = false;
@@ -82,9 +81,10 @@ var snteCellTypes =  {
   "auto": {"title": "MSG-Auto"},
   "text": {"title": "MSG-Text"},
   "numeric": {"title": "MSG-Number", "format": "0,0.00"},
+  "numericWithoutComma": {"title": "MSG-Number", "format": "0,0[.][0000000000]"},
   "percent": {"title": "MSG-Percent", "format": "0.00%"},
   "currency": {"title": "MSG-Currency", "format": "$ 0,0.00"},
-  "date": {"title": "MSG-Date"},
+  "date": {"title": "MSG-Date", "format": "d.m.Y"},
 }
 
 var snteFillColorNeedsBlackFont = [
@@ -198,14 +198,20 @@ var snteCellRenderer = function (instance, td, row, col, prop, value, cellProper
     }
   }*/
 
+  if(cellProperties.snteExplicitType === "auto" && value !== null && value !== "" && strtotime(value) !== false) {
+    cellProperties.snteImplicitType = "date";
+  }
+
+  var snteType = cellProperties.snteExplicitType !== "auto" ? cellProperties.snteExplicitType : cellProperties.snteImplicitType;
+
   if(cellProperties.snteExplicitType === "text") {
     Handsontable.renderers.TextRenderer.apply(this, arguments);
   }
 
-  if(cellProperties.snteExplicitType === "date") {
-    var formattedDate
+  if(snteType === "date") {
+    var formattedDate;
     if(value !== null && value !== "") {
-      formattedDate = date("m.d.Y", strtotime(value));
+      formattedDate = date(snteCellTypes.date.format, strtotime(value));
     }
     else {
       formattedDate = "";
@@ -225,11 +231,9 @@ var snteCellRenderer = function (instance, td, row, col, prop, value, cellProper
     textDecoration = "none";
   }
 
-  var snteType = cellProperties.snteExplicitType !== "auto" ? cellProperties.snteExplicitType : cellProperties.snteImplicitType;
-
   var textAlign;
   if(cellProperties.snteWYSIWYG.align === "default") {
-    if(snteType === "numeric" || snteType === "currency" || snteType === "percent") {
+    if(snteType === "numeric" || snteType === "currency" || snteType === "percent" || snteType === "date") {
       textAlign = "right";
     }
     else {
@@ -262,7 +266,6 @@ $(document).ready(function() {
 
 function snte_bootstrap() {
   $snteWorkspace = $("div#snte-workspace");
-  $snteWorkspaceContainer = $("div#snte-workspace-container");
 
   if(!window.FileReader) {
     $("div#snte-image-upload-dropzone").addClass("snte-hidden");
@@ -363,7 +366,7 @@ function snte_bootstrap() {
   }).click(function() { $(this).tooltip("hide"); });
 
   $("button#snte-menu-toggle-search").popover({
-    placement: "bottom",
+    placement: "auto bottom",
     html: true,
     title: function () {
      return $("div#snte-searchbox-title").html();
@@ -492,7 +495,7 @@ function snte_bootstrap() {
   });*/
 
   $("div#snte-menu-cell-type ul.dropdown-menu li a").click(function(evt) {
-    $("div#snte-menu-font-type ul.dropdown-menu li").removeClass("active");
+    $("div#snte-menu-cell-type ul.dropdown-menu li").removeClass("active");
     $(this).closest("li").addClass("active");
     $("div#snte-menu-cell-type button span.value").text(snteCellTypes[$(this).data("value")].title);
     $("div#snte-menu-cell-type button").data("value", $(this).data("value"));
@@ -848,7 +851,9 @@ function snte_workspace_reset_focus() {
   if($snteWorkspaceFocusedElement !== void 0 && jQuery.contains(document, $snteWorkspaceFocusedElement[0])) {
     $snteWorkspaceFocusedElement.removeClass("snte-highlighted");
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text")) {
-      
+      if($snteWorkspaceFocusedElement.text().trim() === "") {
+        snte_workspace_remove_element($snteWorkspaceFocusedElement);
+      }
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
       $snteWorkspaceFocusedElement.handsontable("getInstance").deselectCell();
@@ -897,7 +902,7 @@ function snte_workspace_make_resizable($elem) {
 }
 
 function snte_workspace_create_element_container(withTitle) {
-  var $newElementContainer = $("<div>").addClass("snte-element-container");
+  var $newElementContainer = $("<div>").addClass("snte-element-container").css("z-index", 998);
 
   if(withTitle) {
     $titleControl = $("<div>MSG-Unnamed-Table</div>").addClass("snte-element-title").attr("title", "MSG-Click-to-edit").attr("contenteditable", "true");
@@ -937,7 +942,8 @@ function snte_workspace_add_table() {
       this.renderer = snteCellRenderer;
       this.type = "excel";
       this.snteFormats = {
-        "numeric": snteCellTypes.numeric.format,
+        "numericExplicit": snteCellTypes.numeric.format,
+        "numericImplicit": snteCellTypes.numericWithoutComma.format,
         "currency": snteCellTypes.currency.format,
         "percent": snteCellTypes.percent.format,
       };
@@ -1039,12 +1045,12 @@ function snte_workspace_add_text() {
     snte_workspace_set_focus($(this));
     evt.preventDefault();
   });
-  $newElement.blur(function(evt) {
+  /*$newElement.blur(function(evt) {
     if($(this).text().trim() === "") {
       snte_workspace_remove_element($(this));
     }
     evt.preventDefault;
-  });
+  });*/
   $newElement.click(function(evt) {
     snte_chrome_set_font_controls("text", $(evt.target));
     evt.preventDefault();

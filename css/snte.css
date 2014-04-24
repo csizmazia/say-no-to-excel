@@ -36,6 +36,15 @@ div#snte-logo {
   font-family: 'Gilda Display', serif;
   color: #333;
 }
+div#snte-version {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: darkred;
+  color: white;
+  font-size: 10px;
+}
 div#snte-main {
   width: 100%;
   height: 100%;

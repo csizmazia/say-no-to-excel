@@ -100,8 +100,10 @@ div.snte-element-image {
 
 div.snte-element-text {
   margin: 0 0 0 20px;
-  min-width: 200px;
-  min-height: 200px;
+  /*min-width: 200px;
+  min-height: 200px;*/
+  min-width: 20px;
+  min-height: 30px;
   border-radius: 5px;
   box-shadow: none;
   -moz-box-shadow: none;

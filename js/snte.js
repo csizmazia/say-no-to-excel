@@ -1117,7 +1117,7 @@ function snte_workspace_add_table() {
 function snte_workspace_add_text() {
   var nextId = snte_generate_element_id();
 
-  var $newElement = $("<div>").addClass("snte-element snte-element-text").attr("id", "snte-element-"+nextId).attr("contenteditable", "true");
+  var $newElement = $("<div>").addClass("snte-element snte-element-text").attr("id", "snte-element-"+nextId).attr("contenteditable", "true").css("width", "200px").css("height", "200px");
   
   $newElementContainer = snte_workspace_create_element_container(false);
 
@@ -1128,12 +1128,14 @@ function snte_workspace_add_text() {
     snte_workspace_set_focus($(this));
     evt.preventDefault();
   });
-  /*$newElement.blur(function(evt) {
-    if($(this).text().trim() === "") {
+  $newElement.blur(function(evt) {
+    $(this).css("width", "auto");
+    $(this).css("height", "auto");
+    /*if($(this).text().trim() === "") {
       snte_workspace_remove_element($(this));
-    }
+    }*/
     evt.preventDefault;
-  });*/
+  });
   $newElement.click(function(evt) {
     snte_chrome_set_font_controls("text", $(evt.target));
     evt.preventDefault();

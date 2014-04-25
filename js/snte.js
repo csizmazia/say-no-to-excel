@@ -51,6 +51,16 @@ console.log(err.stack);
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 String.prototype.capitalize = function() { return this.charAt(0).toUpperCase() + this.slice(1); };
 String.prototype.trim = function() { return String(this).replace(/^\s+|\s+$/g, ''); };
+Object.size = function(obj) {
+  var size = 0;
+  for (var key in obj) {
+    console.log(key);
+    if (obj.hasOwnProperty(key)) {
+      size++;
+    }
+  }
+  return size;
+};
 
 var $snteWorkspace;
 var snteWorkspaceElements = {};
@@ -365,6 +375,16 @@ function snte_bootstrap() {
   $("div#snte-menu-add-element ul.dropdown-menu li a").click(function(evt) {
     snte_workspace_add_item($(this).data("item"));
     
+    evt.preventDefault();
+  });
+  $("div#snte-menu-add-element button").popover({
+    placement: "auto bottom",
+    title: "MSG-Start-Here",
+    content: "MSG-Start-Here-By-Adding-The-First-Element-To-Your-Workspace",
+    container: "body"
+  }).popover("show").click(function(evt) {
+    $(this).popover("hide");
+
     evt.preventDefault();
   });
 
@@ -846,14 +866,20 @@ function snte_workspace_add_item(type) {
 }
 
 function snte_workspace_remove_element($elem) {
+  snte_workspace_reset_focus();
+
   // delete is slow: http://stackoverflow.com/questions/208105/how-to-remove-a-property-from-a-javascript-object
-  delete snteWorkspaceElements[$elem.attr("id")];
+  delete snteWorkspaceElements[$elem.attr("id").replace("snte-element-", "")];
   $elem.closest("div.snte-element-container").remove();
+
+  if(Object.size(snteWorkspaceElements) === 0) {
+    $("div#snte-menu-add-element button").popover("show");
+  }
 }
 
 function snte_workspace_remove_element_confirm(evt) {
   if(confirm("MSG-Sure?")) {
-    snte_workspace_remove_element($(evt.target));
+    snte_workspace_remove_element($(evt.target).closest("div.snte-element-container").find("div.snte-element"));
   }
 }
 
@@ -867,6 +893,7 @@ function snte_workspace_reset_focus() {
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
       $snteWorkspaceFocusedElement.handsontable("getInstance").deselectCell();
+      $("div#snte-menu-cell-type button").addClass("disabled");
     }
   }
   $snteWorkspaceFocusedElement = void 0;
@@ -885,7 +912,7 @@ function snte_workspace_set_focus($elem) {
     $("div#snte-menu-cell-type button").removeClass("disabled");
   }
   else {
-    $("div#snte-menu-cell-type button").addClass("disabled"); 
+    $("div#snte-menu-cell-type button").addClass("disabled");
   }
 }
 

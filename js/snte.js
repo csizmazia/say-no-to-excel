@@ -264,9 +264,7 @@ $(document).ready(function() {
   snte_bootstrap();
 });
 
-function snte_bootstrap() {
-  $snteWorkspace = $("div#snte-workspace");
-
+function snte_chrome_setup_image_control() {
   if(!window.FileReader) {
     $("div#snte-image-upload-dropzone").addClass("snte-hidden");
   }
@@ -315,6 +313,18 @@ function snte_bootstrap() {
       evt.preventDefault();
     });
   }
+
+  $("button#snte-image-upload-ok").click(function (evt) {
+    if($("#snte-image-add-tab-link-header").hasClass("active") && $("input#snte-image-link").val().trim() != "") {
+      snte_workspace_add_image($("input#snte-image-link").val());
+    }
+  });
+}
+
+function snte_bootstrap() {
+  $snteWorkspace = $("div#snte-workspace");
+
+  snte_chrome_setup_image_control();
 
   snte_chome_setup_color_control("font");
   snte_chome_setup_color_control("fill");
@@ -881,7 +891,7 @@ function snte_workspace_set_focus($elem) {
 
 function snte_workspace_make_draggable($elem) {
   $elem.draggable({
-    handle: $("div.snte-element-controls", $elem),
+    handle: $("div.snte-element-draghandle", $elem),
     containment: [snteChromeSize.left.width, snteChromeSize.top.height, snteWorkspaceSize.width, snteWorkspaceSize.height],
     cursor: "move",
     opacity: "0.5",
@@ -902,20 +912,61 @@ function snte_workspace_make_resizable($elem) {
 }
 
 function snte_workspace_create_element_container(withTitle) {
-  var $newElementContainer = $("<div>").addClass("snte-element-container").css("z-index", 998);
+  var $newElementContainer = $("<div>").addClass("snte-element-container");
 
   if(withTitle) {
-    $titleControl = $("<div>MSG-Unnamed-Table</div>").addClass("snte-element-title").attr("title", "MSG-Click-to-edit").attr("contenteditable", "true");
-    $titleControl.focus(snte_workspace_reset_focus);
+    //$titleField = $("<div>MSG-Unnamed-Table</div>").addClass("snte-element-title-input").attr("title", "MSG-Click-to-edit").attr("contenteditable", "true");
+    $titleField = $("<input>").attr("type", "text").attr("placeholder", "MSG-Unnamed-Table").addClass("snte-element-title-input").attr("title", "MSG-Table-Title");
+    //$titleField.focus(snte_workspace_reset_focus);
+    $titleControl = $("<div>").addClass("snte-element-title snte-element-draghandle");
+    $titleControl.append($titleField);
     $newElementContainer.append($titleControl);
   }
 
   $deleteControl = $("<div>").addClass("snte-element-delete").append($("<span>").addClass("glyphicon glyphicon-remove").attr("title", "MSG-Delete"));
   $deleteControl.click(snte_workspace_remove_element_confirm);
-  $elementControls = $("<div>").addClass("snte-element-controls").append($deleteControl);
+  $elementControls = $("<div>").addClass("snte-element-controls snte-element-draghandle").append($deleteControl);
   $newElementContainer.append($elementControls);
 
   return $newElementContainer;
+}
+
+function snte_workspace_bring_to_front($elementContainer) {
+  var snteWorkspaceElementsArray = [];
+  for(var elementId in snteWorkspaceElements) {
+    snteWorkspaceElementsArray.push(snteWorkspaceElements[elementId]);
+  }
+  
+  if (snteWorkspaceElementsArray.length > 0) {
+    var snteWorkspaceElementsArraySorted = snteWorkspaceElementsArray.sort(function(a, b) {
+      return (parseInt($(a).closest("div.snte-element-container").css("zIndex"), 10) || 0) - (parseInt($(b).closest("div.snte-element-container").css("zIndex"), 10) || 0);
+    });
+
+    $(snteWorkspaceElementsArraySorted).each(function(ii) {
+      $(this).closest("div.snte-element-container").css("zIndex", ii);
+    });
+  }
+
+  $elementContainer.css("zIndex", snteWorkspaceElementsArray.length);
+}
+
+function snte_workspace_send_to_back($elementContainer) {
+  var snteWorkspaceElementsArray = [];
+  for(var elementId in snteWorkspaceElements) {
+    snteWorkspaceElementsArray.push(snteWorkspaceElements[elementId]);
+  }
+  
+  if (snteWorkspaceElementsArray.length > 0) {
+    var snteWorkspaceElementsArraySorted = snteWorkspaceElementsArray.sort(function(a, b) {
+      return (parseInt($(a).closest("div.snte-element-container").css("zIndex"), 10) || 0) - (parseInt($(b).closest("div.snte-element-container").css("zIndex"), 10) || 0);
+    });
+
+    $(snteWorkspaceElementsArraySorted).each(function(ii) {
+      $(this).closest("div.snte-element-container").css("zIndex", ii+1);
+    });
+  }
+  
+  $elementContainer.css("zIndex", 0);
 }
 
 function snte_workspace_add_table() {
@@ -1007,6 +1058,9 @@ function snte_workspace_add_table() {
           r = -1;
         }
       }
+    },
+    afterRender: function(isForced) {
+      $("span.snte-formula-error").tooltip();
     }
   });
   
@@ -1026,6 +1080,7 @@ function snte_workspace_add_table() {
   $newElementContainer.append($addColumnControl);
 
   snte_workspace_make_draggable($newElementContainer);
+  snte_workspace_bring_to_front($newElementContainer);
 
   snteWorkspaceElements[nextId] = $newElement;
   $newElement.appendTo($newElementContainer);
@@ -1040,6 +1095,7 @@ function snte_workspace_add_text() {
   $newElementContainer = snte_workspace_create_element_container(false);
 
   snte_workspace_make_draggable($newElementContainer);
+  snte_workspace_bring_to_front($newElementContainer);
 
   $newElement.focus(function(evt) {
     snte_workspace_set_focus($(this));
@@ -1073,6 +1129,7 @@ function snte_workspace_add_comment() {
   
   snte_workspace_make_draggable($newElementContainer);
   snte_workspace_make_resizable($newElementContainer);
+  snte_workspace_bring_to_front($newElementContainer);
 
   $newElement.focus(function(evt) {
     snte_workspace_set_focus($(this));
@@ -1101,11 +1158,7 @@ function snte_workspace_add_image(url) {
 
   snte_workspace_make_draggable($newElementContainer);
   //snte_workspace_make_resizable($newElementContainer);
-
-  snteWorkspaceElements[nextId] = $newElement;
-  $newElement.appendTo($newElementContainer);
-  $newElementContainer.appendTo($snteWorkspace);
-  $newElement.focus();
+  snte_workspace_bring_to_front($newElementContainer);
 
   async.createImage(url).then(function ($image) {
     $image.css({
@@ -1113,6 +1166,10 @@ function snte_workspace_add_image(url) {
       width: Math.min(snteImage.maxWidth, $image.width())+"px"
     });
     $newElement.append($image);
+    snteWorkspaceElements[nextId] = $newElement;
+    $newElement.appendTo($newElementContainer);
+    $newElementContainer.appendTo($snteWorkspace);
+    $newElement.focus();
   }).fail(function () {
     alert("MSG-Error-Not-An-Image-File");
   });

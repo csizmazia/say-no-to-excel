@@ -1309,7 +1309,7 @@ Handsontable.renderers.ExcelRenderer = function (instance, td, row, col, prop, v
         cellProperties.snteImplicitType = "error";
         newValue = theToken.error;
         
-        Handsontable.renderers.HtmlRenderer(instance, td, row, col, prop, "<span class=\"snte-formula-error glyphicon glyphicon-exclamation-sign\" title=\""+newValue+"\"></span>", cellProperties);
+        Handsontable.renderers.HtmlRenderer(instance, td, row, col, prop, "<span class=\"snte-formula-error glyphicon glyphicon-exclamation-sign\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\""+newValue+"\"></span>", cellProperties);
         //Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
       }
       else if (theToken.type == 'number') {

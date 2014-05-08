@@ -252,12 +252,16 @@ var snteCellRenderer = function (instance, td, row, col, prop, value, cellProper
     "font-family": cellProperties.snteWYSIWYG.fontFamily,
     "font-size": snteWYSIWYG.fontSize.valueToPixelMap[cellProperties.snteWYSIWYG.fontSize]+"px",
     "color": cellProperties.snteWYSIWYG.fontColor,
-    "background": cellProperties.snteWYSIWYG.fillColor,
+    "background-color": cellProperties.snteWYSIWYG.fillColor,
     "font-weight": cellProperties.snteWYSIWYG.bold?"bold":"normal",
     "font-style": cellProperties.snteWYSIWYG.italic?"italic":"normal",
     "text-decoration": textDecoration,
     "text-align": textAlign
   });
+
+  if(cellProperties.snteFormula !== void 0) {
+    $(td).addClass("snte-formula")
+  }
 };
 
 var snteSearchResultCounter = 0;

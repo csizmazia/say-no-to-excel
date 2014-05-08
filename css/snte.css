@@ -91,6 +91,11 @@ div.snte-element-table table tr {
 div.snte-element-table table tr td {
   cursor: default;
 }
+div.snte-element-table table tr td.snte-formula {
+  background-image: url('../img/formula-indicator-8x8.png');
+  background-position: 3px 3px;
+  background-repeat: no-repeat;
+}
 
 div.snte-element-image {
   margin: 0 0 0 20px;

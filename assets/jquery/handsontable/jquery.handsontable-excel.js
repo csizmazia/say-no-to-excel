@@ -1292,8 +1292,8 @@ Handsontable.renderers.ExcelRenderer = function (instance, td, row, col, prop, v
     }
     
     c = value[0];
+    cellProperties.snteFormula = void 0;
     if (c == "'") {		// force value to a string, even things like numeric or formula
-      cellProperties.snteFormula = void 0;
       cellProperties.snteImplicitType = "text";
 
       newValue = value.substring(1);

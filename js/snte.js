@@ -43,18 +43,12 @@ var async = (function () {
   };
 })();
 
-/*
-var err = new Error();
-console.log(err.stack);
-*/
-
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 String.prototype.capitalize = function() { return this.charAt(0).toUpperCase() + this.slice(1); };
 String.prototype.trim = function() { return String(this).replace(/^\s+|\s+$/g, ''); };
 Object.size = function(obj) {
   var size = 0;
   for (var key in obj) {
-    console.log(key);
     if (obj.hasOwnProperty(key)) {
       size++;
     }
@@ -512,17 +506,31 @@ function snte_bootstrap() {
 
     evt.preventDefault();
   });
-  /*$("button#snte-menu-font-color").click(function(evt) {
-    $("div#snte-menu-font-color-picker").colorpicker("show");
+
+  $("button#snte-menu-ordered-list").click(function(evt) {
+    if($snteWorkspaceFocusedElement !== void 0) {
+      if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
+        snte_chrome_toggle_button($(this));
+        $("button#snte-menu-unordered-list").removeClass("active");
+        snte_wysiwyg_exec_command("insertorderedlist", null);
+        $snteWorkspaceFocusedElement.focus();
+      }
+    }
 
     evt.preventDefault();
   });
-
-  $("button#snte-menu-fill-color").click(function(evt) {
-    $("div#snte-menu-fill-color-picker").colorpicker("show");
+  $("button#snte-menu-unordered-list").click(function(evt) {
+    if($snteWorkspaceFocusedElement !== void 0) {
+      if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
+        snte_chrome_toggle_button($(this));
+        $("button#snte-menu-ordered-list").removeClass("active");
+        snte_wysiwyg_exec_command("insertunorderedlist", null);
+        $snteWorkspaceFocusedElement.focus();
+      }
+    }
 
     evt.preventDefault();
-  });*/
+  });
 
   $("div#snte-menu-cell-type ul.dropdown-menu li a").click(function(evt) {
     $("div#snte-menu-cell-type ul.dropdown-menu li").removeClass("active");
@@ -886,9 +894,13 @@ function snte_workspace_remove_element_confirm(evt) {
 function snte_workspace_reset_focus() {
   if($snteWorkspaceFocusedElement !== void 0 && jQuery.contains(document, $snteWorkspaceFocusedElement[0])) {
     $snteWorkspaceFocusedElement.removeClass("snte-highlighted");
-    if($snteWorkspaceFocusedElement.hasClass("snte-element-text")) {
-      if($snteWorkspaceFocusedElement.text().trim() === "") {
-        snte_workspace_remove_element($snteWorkspaceFocusedElement);
+    if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
+      $("button#snte-menu-unordered-list").removeClass("active");
+      $("button#snte-menu-ordered-list").removeClass("active");
+      if($snteWorkspaceFocusedElement.hasClass("snte-element-text")) {
+        if($snteWorkspaceFocusedElement.text().trim() === "") {
+          snte_workspace_remove_element($snteWorkspaceFocusedElement);
+        }
       }
     }
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
@@ -910,9 +922,13 @@ function snte_workspace_set_focus($elem) {
 
   if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
     $("div#snte-menu-cell-type button").removeClass("disabled");
+    $("button#snte-menu-ordered-list").addClass("disabled");
+    $("button#snte-menu-unordered-list").addClass("disabled");
   }
   else {
     $("div#snte-menu-cell-type button").addClass("disabled");
+    $("button#snte-menu-ordered-list").removeClass("disabled");
+    $("button#snte-menu-unordered-list").removeClass("disabled");
   }
 }
 
@@ -1162,6 +1178,7 @@ function snte_workspace_add_comment() {
 
   $newElement.focus(function(evt) {
     snte_workspace_set_focus($(this));
+    evt.preventDefault();
   });
   $newElement.click(function(evt) {
     snte_chrome_set_font_controls("text", $(evt.target));
@@ -1305,7 +1322,7 @@ function snte_chrome_reset_font_controls() {
 
 function snte_chrome_set_font_controls(element_type, $source) {
   if(element_type === "text") {
-    var valuesToSet = {"family": true, "size": true, "color": true, "fill": true, "bold": true, "italic": true, "underline": true, "strikethrough": true};
+    var valuesToSet = {"family": true, "size": true, "color": true, "fill": true, "bold": true, "italic": true, "underline": true, "strikethrough": true, "list": true};
 
     $("button#snte-menu-font-bold").removeClass("active");
     $("button#snte-menu-font-italic").removeClass("active");
@@ -1314,6 +1331,9 @@ function snte_chrome_set_font_controls(element_type, $source) {
     $("button#snte-menu-font-align-left").removeClass("active");
     $("button#snte-menu-font-align-center").removeClass("active");
     $("button#snte-menu-font-align-right").removeClass("active");
+
+    $("button#snte-menu-ordered-list").removeClass("active");
+    $("button#snte-menu-unordered-list").removeClass("active");
 
     var $currentElement = $source;
     while(!$currentElement.hasClass("snte-element")) {
@@ -1360,6 +1380,18 @@ function snte_chrome_set_font_controls(element_type, $source) {
           $("div#snte-menu-font-size button span.value").text(snteWYSIWYG.fontSize.valueToPixelMap[$currentElement.attr("size")]);
           $("div#snte-menu-font-size button").data("value", $currentElement.attr("size"));
           valuesToSet.size = false;
+        }
+      }
+      if($currentElement.is("ul")) {
+        if(valuesToSet.list) {
+          $("button#snte-menu-unordered-list").addClass("active");
+          valuesToSet.list = false;
+        }
+      }
+      if($currentElement.is("ol")) {
+        if(valuesToSet.list) {
+          $("button#snte-menu-ordered-list").addClass("active");
+          valuesToSet.list = false;
         }
       }
       $currentElement = $currentElement.parent();

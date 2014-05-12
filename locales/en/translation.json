@@ -1,0 +1,80 @@
+{
+  "app": {
+    "name": "snte"
+  },
+  "chrome": {
+    "new-worksheet": "New empty workspace",
+    "open-worksheet": "Open workspace",
+    "save-worksheet": "Save workspace",
+    "undo": "Undo",
+    "redo": "Redo",
+    "copy": "Copy",
+    "paste": "Paste",
+    "font-family": "Font family",
+    "font-size": "Font size",
+    "font-color": "Text color",
+    "fill-color": "Fill color",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strikethrough": "Strikethrough",
+    "text-align-left": "Text align: left",
+    "text-align-center": "Text align: center",
+    "text-align-right": "Text align: right",
+    "unordered-list": "Unordered list",
+    "ordered-list": "Ordered list",
+    "cell-format": "Cell format",
+    "cell-format-auto": "Auto",
+    "cell-format-text": "Text",
+    "cell-format-number": "Number",
+    "cell-format-percent": "Percent",
+    "cell-format-currency": "Currency",
+    "cell-format-date": "Date",
+    "cell-format-example-text": "xyz",
+    "cell-format-example-number": "1,000.2",
+    "cell-format-example-percent": "77.12%",
+    "cell-format-example-currency": "$1,000.2",
+    "cell-format-example-date": "12/04/2014",
+    "date-format": "m/d/Y",
+    "new-element": "New element",
+    "new-element-table": "Table",
+    "new-element-text": "Text",
+    "new-element-comment": "Comment",
+    "new-element-chart": "Chart",
+    "new-element-image": "Image",
+    "hide-comments": "Hide comments",
+    "show-comments": "Show comments",
+    "toggle-comments": "Comments on/off",
+    "delete-element-confirm": "Really delete this element?",
+    "delete-element": "Delete element",
+    "font-color-default": "Default (black)",
+    "fill-color-default": "Default (none)"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Type to search...",
+    "next-result": "Next result",
+    "previous-result": "Previous result",
+    "clear": "Clear search",
+    "wait": "searching..."
+  },
+  "image-upload": {
+    "header": "Add image",
+    "tab-header-upload": "Upload",
+    "tab-header-link": "Link",
+    "dropzone": "Drop image here to upload",
+    "url": "Link to image...",
+    "button": "OK",
+    "upload-error": "There was an error while uploading the image.",
+    "filetype-error": "This is not a valid image-file."
+  },
+  "help": {
+    "start-here-title": "Start here!",
+    "start-here-message": "Start here by adding<br />the first Element<br />to your Workspace."
+  },
+  "table": {
+    "unnamed": "Unnamed Table",
+    "add-row": "Add row",
+    "add-column": "Add column"
+  }
+}

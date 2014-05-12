@@ -35,6 +35,7 @@
     "cell-format-example-percent": "77,12%",
     "cell-format-example-currency": "€1.000,2",
     "cell-format-example-date": "05.04.2014",
+    "date-format": "d.m.Y",
     "new-element": "Neues Element",
     "new-element-table": "Tabelle",
     "new-element-text": "Textfeld",
@@ -43,6 +44,7 @@
     "new-element-image": "Bild",
     "hide-comments": "Kommentare ausblenden",
     "show-comments": "Kommentare einblenden",
+    "toggle-comments": "Kommentare ein/ausblenden",
     "delete-element-confirm": "Soll dieses Element wirklich gelöscht werden?",
     "delete-element": "Element löschen",
     "font-color-default": "Standard (Schwarz)",
@@ -54,7 +56,9 @@
     "next-result": "zum nächsten Treffer springen",
     "previous-result": "zum vorherigen Treffer springen",
     "clear": "Suchfeld leeren",
-    "wait": "sucht..."
+    "wait": "sucht...",
+    "resultcount": "__count__ Ergebnis",
+    "resultcount_plural": "__count__ Ergebnisse"
   },
   "image-upload": {
     "header": "Bild hinzufügen",
@@ -72,7 +76,6 @@
   },
   "table": {
     "unnamed": "Unbenannte Tabelle",
-    "title": "Titel dieser Tabelle",
     "add-row": "Zeile hinzufügen",
     "add-column": "Spalte hinzufügen"
   }

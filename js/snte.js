@@ -165,36 +165,7 @@ var snteColorPalette = [
 var snteCellRenderer = function (instance, td, row, col, prop, value, cellProperties) {
   var newValue = Handsontable.renderers.ExcelRenderer.apply(this, arguments);
 
-  // error handling with modal
-  /*if(cellProperties.snteImplicitType === "error") {
-    if(!snteWorkspaceErrorModalVisible) {
-      console.log("open modal");
-      snteWorkspaceErrorModalVisible = true;
-      snteLastCellError = {"instance": instance, "cell": {"row": row, "col": col}, "formula": value};
-      console.log(snteLastCellError);
-      $("#snte-error-modal").find("div.modal-body").text(newValue);
-      $("#snte-error-modal").modal().on("shown.bs.modal", function (evt) {
-        if(snteWorkspaceErrorModalVisible) {
-          console.log("deselectCell");
-          snteLastCellError.instance.deselectCell();
-          console.log(snteLastCellError.instance.getSelected());
-        }
-      }).on("hide.bs.modal", function (evt) {
-        if(snteWorkspaceErrorModalVisible) { // somehow this event is fired more than once
-          console.log("hide modal");
-          snteWorkspaceErrorModalVisible = false;
-          console.log(snteLastCellError);
-          snteLastCellError.instance.selectCell(snteLastCellError.cell.row, snteLastCellError.cell.col);
-          snteLastCellError.instance.setDataAtCell(snteLastCellError.cell.row, snteLastCellError.cell.col, ""); // remove the error string from cell
-          snteLastCellError.instance.openEditor(snteLastCellError.formula);
-          console.log("reset snteLastCellError");
-          snteLastCellError = {};
-        }
-      });
-    }
-  }*/
-
-  if(cellProperties.snteExplicitType === "auto" && value !== null && value !== "" && strtotime(value) !== false) {
+  if(cellProperties.snteExplicitType === "auto" && value !== null && value !== "" && !Handsontable.helper.isNumeric(value) && strtotime(value) !== false) {
     cellProperties.snteImplicitType = "date";
   }
 
@@ -277,7 +248,7 @@ function snte_bootstrap() {
       "numericWithoutComma": {"title": t("chrome.cell-format-number"), "format": "0,0[.][0000000000]"},
       "percent": {"title": t("chrome.cell-format-percent"), "format": "0.00%"},
       "currency": {"title": t("chrome.cell-format-currency"), "format": "$ 0,0.00"},
-      "date": {"title": t("chrome.cell-format-date"), "format": "d.m.Y"}
+      "date": {"title": t("chrome.cell-format-date"), "format": t("chrome.date-format")}
     };
 
     snte_chrome_setup();
@@ -660,7 +631,7 @@ function snte_search(needle) {
       $("div.popover-content input.snte-menu-search-input").closest("div").addClass("has-error");
     }
 
-    $("div.popover div.snte-searchbox-resultcount").text(snteSearchResultCounter+" results");
+    $("div.popover div.snte-searchbox-resultcount").text($.t("search.resultcount", { count: snteSearchResultCounter }));
   }
   else {
     snte_reset_search();
@@ -959,7 +930,7 @@ function snte_workspace_create_element_container(withTitle) {
   var $newElementContainer = $("<div>").addClass("snte-element-container");
 
   if(withTitle) {
-    $titleField = $("<input>").attr("type", "text").attr("placeholder", $.t("table.unnamed")).addClass("snte-element-title-input").attr("title", $.t("table.title"));
+    $titleField = $("<input>").attr("type", "text").attr("placeholder", $.t("table.unnamed")).addClass("snte-element-title-input");
     $titleControl = $("<div>").addClass("snte-element-title snte-element-draghandle");
     $titleControl.append($titleField);
     $newElementContainer.append($titleControl);
@@ -1031,7 +1002,7 @@ function snte_workspace_add_table() {
       searchResultClass: "snte-search-match"
     },
     cells: function (row, col, prop) {
-      this.language = "de";
+      this.language = i18n.lng();
       this.renderer = snteCellRenderer;
       this.type = "excel";
       this.snteFormats = {
@@ -1242,10 +1213,10 @@ function snte_workspace_hide_comments() {
 }
 
 function snte_chrome_show_comments() {
-  $("button#snte-menu-toggle-comments").addClass("active").attr("title", $.t("chrome.hide-comments"));
+  //$("button#snte-menu-toggle-comments").addClass("active").attr("title", $.t("chrome.hide-comments"));
 }
 function snte_chrome_hide_comments() {
-  $("button#snte-menu-toggle-comments").removeClass("active").attr("title", $.t("chrome.show-comments"));
+  //$("button#snte-menu-toggle-comments").removeClass("active").attr("title", $.t("chrome.show-comments"));
 }
 
 function snte_chome_setup_color_control(type) {

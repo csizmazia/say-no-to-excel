@@ -43,7 +43,7 @@ var async = (function () {
   };
 })();
 
-String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
+String.prototype.contains = function(it) { return this.indexOf(it) !== -1; };
 String.prototype.capitalize = function() { return this.charAt(0).toUpperCase() + this.slice(1); };
 String.prototype.trim = function() { return String(this).replace(/^\s+|\s+$/g, ''); };
 Object.size = function(obj) {
@@ -81,15 +81,7 @@ var snteWYSIWYG = {
   "align": {"default": "default"}
 };
 
-var snteCellTypes =  {
-  "auto": {"title": "MSG-Auto"},
-  "text": {"title": "MSG-Text"},
-  "numeric": {"title": "MSG-Number", "format": "0,0.00"},
-  "numericWithoutComma": {"title": "MSG-Number", "format": "0,0[.][0000000000]"},
-  "percent": {"title": "MSG-Percent", "format": "0.00%"},
-  "currency": {"title": "MSG-Currency", "format": "$ 0,0.00"},
-  "date": {"title": "MSG-Date", "format": "d.m.Y"},
-}
+var snteCellTypes;
 
 var snteFillColorNeedsBlackFont = [
   "rgba(0,0,0,0)",
@@ -272,90 +264,37 @@ $(document).ready(function() {
   snte_bootstrap();
 });
 
-function snte_chrome_setup_image_control() {
-  if(!window.FileReader) {
-    $("div#snte-image-upload-dropzone").addClass("snte-hidden");
-  }
-  else {
-    $('div#snte-image-upload-dropzone').bind('dragover', function(evt) {
-      $(evt.target).addClass("dragover");
-
-      evt.stopPropagation();
-      evt.preventDefault();
-    }).bind('dragleave', function(evt) {
-      $(evt.target).removeClass("dragover");
-    }).bind('drop', function(evt) {
-      $(evt.target).removeClass("dragover");
-      $("#snte-image-modal").modal("hide");
-      var dataTransfer = evt.originalEvent.dataTransfer;
-      if (dataTransfer && dataTransfer.files) {
-        $.each(dataTransfer.files, function (idx, file) {
-          async.readFileAsDataURL(file).then(function (url) {
-            snte_workspace_add_image(url);
-          }).fail(function () {
-            alert("MSG-Upload-Error");
-          });
-        });
-      }
-     
-      evt.stopPropagation();
-      evt.preventDefault();
-    });
-
-    $("body").bind('dragover', function(evt) {
-      evt.stopPropagation();
-      evt.preventDefault();
-    }).bind('drop', function(evt) {
-      var dataTransfer = evt.originalEvent.dataTransfer;
-      if (dataTransfer && dataTransfer.files) {
-        $.each(dataTransfer.files, function (idx, file) {
-          async.readFileAsDataURL(file).then(function (url) {
-            snte_workspace_add_image(url);
-          }).fail(function () {
-            alert("MSG-Upload-Error");
-          });
-        });
-      }
-     
-      evt.stopPropagation();
-      evt.preventDefault();
-    });
-  }
-
-  $("button#snte-image-upload-ok").click(function (evt) {
-    if($("#snte-image-add-tab-link-header").hasClass("active") && $("input#snte-image-link").val().trim() != "") {
-      snte_workspace_add_image($("input#snte-image-link").val());
-    }
-  });
-}
-
 function snte_bootstrap() {
   $snteWorkspace = $("div#snte-workspace");
 
+  i18n.init({ detectLngQS: 'lang', cookieName: 'lang', fallbackLng: 'en', debug: true }, function(t) {
+    $("body").i18n();
+
+    snteCellTypes =  {
+      "auto": {"title": t("chrome.cell-format-auto")},
+      "text": {"title": t("chrome.cell-format-text")},
+      "numeric": {"title": t("chrome.cell-format-number"), "format": "0,0.00"},
+      "numericWithoutComma": {"title": t("chrome.cell-format-number"), "format": "0,0[.][0000000000]"},
+      "percent": {"title": t("chrome.cell-format-percent"), "format": "0.00%"},
+      "currency": {"title": t("chrome.cell-format-currency"), "format": "$ 0,0.00"},
+      "date": {"title": t("chrome.cell-format-date"), "format": "d.m.Y"}
+    };
+
+    snte_chrome_setup();
+  });
+}
+
+function snte_chrome_setup() {
   snte_chrome_setup_image_control();
 
   snte_chome_setup_color_control("font");
   snte_chome_setup_color_control("fill");
-
-  /*$("button#snte-menu-font-color").colorpicker({
-    format: "rgb",
-    color: "#000"
-  }).on('changeColor', function(evt){
-    var hexColor = e.color.toHex();
-    $("span#snte-menu-font-color-picker-indicator").css("background-color", hexColor);
-    $("button#snte-menu-font-color").data("value", hexColor);
-    snte_wysiwyg_apply_font_color();
-  });
-  $("button#snte-menu-fill-color").colorpicker({
-    format: "rgb",
-    color: "#fff"
-    
-  }).on('changeColor', function(evt){
-    var hexColor = e.color.toHex();
-    $("span#snte-menu-fill-color-picker-indicator").css("background-color", hexColor);
-    $("button#snte-menu-fill-color").data("value", hexColor);
-    snte_wysiwyg_apply_fill_color();
-  });*/
+  $(".snte-color-btn").tooltip({
+    container: "body",
+    placement: "bottom",
+    trigger: "hover",
+    animation: false
+  }).click(function() { $(this).tooltip("hide"); });
 
   $("button#snte-menu-undo").click(function(evt) {
     snte_wysiwyg_exec_command("undo", null);
@@ -377,9 +316,10 @@ function snte_bootstrap() {
   });
   $("div#snte-menu-add-element button").popover({
     placement: "auto bottom",
-    title: "MSG-Start-Here",
-    content: "MSG-Start-Here-By-Adding-The-First-Element-To-Your-Workspace",
-    container: "body"
+    title: $.t("help.start-here-title"),
+    content: $.t("help.start-here-message"),
+    container: "body",
+    html: true
   }).popover("show").click(function(evt) {
     $(this).popover("hide");
 
@@ -548,6 +488,63 @@ function snte_bootstrap() {
   });
 }
 
+function snte_chrome_setup_image_control() {
+  if(!window.FileReader) {
+    $("div#snte-image-upload-dropzone").addClass("snte-hidden");
+  }
+  else {
+    $('div#snte-image-upload-dropzone').bind('dragover', function(evt) {
+      $(evt.target).addClass("dragover");
+
+      evt.stopPropagation();
+      evt.preventDefault();
+    }).bind('dragleave', function(evt) {
+      $(evt.target).removeClass("dragover");
+    }).bind('drop', function(evt) {
+      $(evt.target).removeClass("dragover");
+      $("#snte-image-modal").modal("hide");
+      var dataTransfer = evt.originalEvent.dataTransfer;
+      if (dataTransfer && dataTransfer.files) {
+        $.each(dataTransfer.files, function (idx, file) {
+          async.readFileAsDataURL(file).then(function (url) {
+            snte_workspace_add_image(url);
+          }).fail(function () {
+            alert(t("image-upload.upload-error"));
+          });
+        });
+      }
+     
+      evt.stopPropagation();
+      evt.preventDefault();
+    });
+
+    $("body").bind('dragover', function(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+    }).bind('drop', function(evt) {
+      var dataTransfer = evt.originalEvent.dataTransfer;
+      if (dataTransfer && dataTransfer.files) {
+        $.each(dataTransfer.files, function (idx, file) {
+          async.readFileAsDataURL(file).then(function (url) {
+            snte_workspace_add_image(url);
+          }).fail(function () {
+            alert(t("image-upload.upload-error"));
+          });
+        });
+      }
+     
+      evt.stopPropagation();
+      evt.preventDefault();
+    });
+  }
+
+  $("button#snte-image-upload-ok").click(function (evt) {
+    if($("#snte-image-add-tab-link-header").hasClass("active") && $("input#snte-image-link").val().trim() !== "") {
+      snte_workspace_add_image($("input#snte-image-link").val());
+    }
+  });
+}
+
 function snte_table_apply_cell_type() {
   if($snteWorkspaceFocusedElement !== void 0) {
     if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
@@ -602,7 +599,7 @@ function snte_chrome_setup_search() {
     }
     else {
       $(this).closest("div").removeClass("has-success has-error");
-      $("div.popover div.snte-searchbox-resultcount").html("<img src=\"img/loading-icon-16x16.gif\" alt=\"MSG-wait\" title=\"MSG-wait\" />");
+      $("div.popover div.snte-searchbox-resultcount").html("<img src=\"img/loading-icon-16x16.gif\" alt=\""+$.t("search.wait")+"\" title=\""+$.t("search.wait")+"\" />");
 
       clearTimeout(snteSearchTypeTimeout);
       snteSearchTypeTimeout = setTimeout(function() { snte_search($("div.popover-content input.snte-menu-search-input").val()); }, 200);
@@ -890,7 +887,7 @@ function snte_workspace_remove_element($elem) {
 }
 
 function snte_workspace_remove_element_confirm(evt) {
-  if(confirm("MSG-Sure?")) {
+  if(confirm($.t("chrome.delete-element-confirm"))) {
     snte_workspace_remove_element($(evt.target).closest("div.snte-element-container").find("div.snte-element"));
   }
 }
@@ -962,15 +959,13 @@ function snte_workspace_create_element_container(withTitle) {
   var $newElementContainer = $("<div>").addClass("snte-element-container");
 
   if(withTitle) {
-    //$titleField = $("<div>MSG-Unnamed-Table</div>").addClass("snte-element-title-input").attr("title", "MSG-Click-to-edit").attr("contenteditable", "true");
-    $titleField = $("<input>").attr("type", "text").attr("placeholder", "MSG-Unnamed-Table").addClass("snte-element-title-input").attr("title", "MSG-Table-Title");
-    //$titleField.focus(snte_workspace_reset_focus);
+    $titleField = $("<input>").attr("type", "text").attr("placeholder", $.t("table.unnamed")).addClass("snte-element-title-input").attr("title", $.t("table.title"));
     $titleControl = $("<div>").addClass("snte-element-title snte-element-draghandle");
     $titleControl.append($titleField);
     $newElementContainer.append($titleControl);
   }
 
-  $deleteControl = $("<div>").addClass("snte-element-delete").append($("<span>").addClass("glyphicon glyphicon-remove").attr("title", "MSG-Delete"));
+  $deleteControl = $("<div>").addClass("snte-element-delete").append($("<span>").addClass("glyphicon glyphicon-remove").attr("title", $.t("chrome.delete-element")));
   $deleteControl.click(snte_workspace_remove_element_confirm);
   $elementControls = $("<div>").addClass("snte-element-controls snte-element-draghandle").append($deleteControl);
   $newElementContainer.append($elementControls);
@@ -1113,13 +1108,13 @@ function snte_workspace_add_table() {
   
   $newElementContainer = snte_workspace_create_element_container(true);
 
-  $addRowControl = $("<div>").addClass("snte-table-control snte-table-control-add-row").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", "MSG-Add-Row"));
+  $addRowControl = $("<div>").addClass("snte-table-control snte-table-control-add-row").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", $.t("table.add-row")));
   $addRowControl.click(function() {
     var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
     tableInstance.alter("insert_row");
   });
   $newElementContainer.append($addRowControl);
-  $addColumnControl = $("<div>").addClass("snte-table-control snte-table-control-add-column").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", "MSG-Add-Column"));
+  $addColumnControl = $("<div>").addClass("snte-table-control snte-table-control-add-column").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", $.t("table.add-column")));
   $addColumnControl.click(function() {
     var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
     tableInstance.alter("insert_col");
@@ -1221,7 +1216,7 @@ function snte_workspace_add_image(url) {
     $newElementContainer.appendTo($snteWorkspace);
     $newElement.focus();
   }).fail(function () {
-    alert("MSG-Error-Not-An-Image-File");
+    alert($.t("image-upload.filetype-error"));
   });
 }
 
@@ -1247,16 +1242,16 @@ function snte_workspace_hide_comments() {
 }
 
 function snte_chrome_show_comments() {
-  $("button#snte-menu-toggle-comments").addClass("active").attr("title", "MSG-Show-Comments-On");
+  $("button#snte-menu-toggle-comments").addClass("active").attr("title", $.t("chrome.hide-comments"));
 }
 function snte_chrome_hide_comments() {
-  $("button#snte-menu-toggle-comments").removeClass("active").attr("title", "MSG-Show-Comments-Off");
+  $("button#snte-menu-toggle-comments").removeClass("active").attr("title", $.t("chrome.show-comments"));
 }
 
 function snte_chome_setup_color_control(type) {
   var $list = $("div#snte-menu-"+type+"-color-container ul.snte-menu-colorselector");
 
-  var $a = $("<a>").attr("href", "#").attr("title", "MSG-none").attr("data-value", snteWYSIWYG[type+"Color"].default).addClass("snte-color-btn default selected").css({"border": "1px solid black", "background-color": snteWYSIWYG[type+"Color"].default});
+  var $a = $("<a>").attr("href", "#").attr("title", $.t("chrome."+type+"-color-default")).attr("data-value", snteWYSIWYG[type+"Color"].default).addClass("snte-color-btn default selected").css({"border": "1px solid black", "background-color": snteWYSIWYG[type+"Color"].default});
   if($.inArray(snteWYSIWYG[type+"Color"].default, snteFillColorNeedsBlackFont) >= 0) {
     $a.addClass("needs-black-font");
   }
@@ -1264,7 +1259,8 @@ function snte_chome_setup_color_control(type) {
   $list.append($li);
 
   for(var ii = 0; ii < snteColorPalette.length; ii++) {
-    var $a = $("<a>").attr("href", "#").attr("title", "MSG-todo").attr("data-value", snteColorPalette[ii]).addClass("snte-color-btn").css("background-color", snteColorPalette[ii]);
+    var color = new Color(snteColorPalette[ii]);
+    var $a = $("<a>").attr("href", "#").attr("title", color.toHex()).attr("data-value", snteColorPalette[ii]).addClass("snte-color-btn").css("background-color", snteColorPalette[ii]);
     if($.inArray(snteColorPalette[ii], snteFillColorNeedsBlackFont) >= 0) {
       $a.addClass("needs-black-font");
     }

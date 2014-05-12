@@ -1,0 +1,79 @@
+{
+  "app": {
+    "name": "snte"
+  },
+  "chrome": {
+    "new-worksheet": "Neue leere Arbeitsfläche",
+    "open-worksheet": "Arbeitsfläche öffnen",
+    "save-worksheet": "Arbeitsfläche speichern",
+    "undo": "Letzte Änderung rückgängig machen",
+    "redo": "Letzte Änderung wiederherstellen",
+    "copy": "Auswahl kopieren",
+    "paste": "Einfügen",
+    "font-family": "Schriftart",
+    "font-size": "Schriftgröße",
+    "font-color": "Schriftfarbe",
+    "fill-color": "Füllfarbe",
+    "bold": "Fett",
+    "italic": "Kursiv",
+    "underline": "Unterstrichen",
+    "strikethrough": "Durchgestrichen",
+    "text-align-left": "Text linksbündig ausrichten",
+    "text-align-center": "Text zentriert ausrichten",
+    "text-align-right": "Text rechtsbündig ausrichten",
+    "unordered-list": "Ungeordnete Liste",
+    "ordered-list": "Geordnete Liste",
+    "cell-format": "Zellformat",
+    "cell-format-auto": "Automatisch",
+    "cell-format-text": "Text",
+    "cell-format-number": "Zahl",
+    "cell-format-percent": "Prozent",
+    "cell-format-currency": "Währung",
+    "cell-format-date": "Datum",
+    "cell-format-example-text": "xyz",
+    "cell-format-example-number": "1.000,2",
+    "cell-format-example-percent": "77,12%",
+    "cell-format-example-currency": "€1.000,2",
+    "cell-format-example-date": "05.04.2014",
+    "new-element": "Neues Element",
+    "new-element-table": "Tabelle",
+    "new-element-text": "Textfeld",
+    "new-element-comment": "Kommentar",
+    "new-element-chart": "Diagramm",
+    "new-element-image": "Bild",
+    "hide-comments": "Kommentare ausblenden",
+    "show-comments": "Kommentare einblenden",
+    "delete-element-confirm": "Soll dieses Element wirklich gelöscht werden?",
+    "delete-element": "Element löschen",
+    "font-color-default": "Standard (Schwarz)",
+    "fill-color-default": "Standard (keine)"
+  },
+  "search": {
+    "title": "Suchen",
+    "placeholder": "Suchbegriff eintippen...",
+    "next-result": "zum nächsten Treffer springen",
+    "previous-result": "zum vorherigen Treffer springen",
+    "clear": "Suchfeld leeren",
+    "wait": "sucht..."
+  },
+  "image-upload": {
+    "header": "Bild hinzufügen",
+    "tab-header-upload": "Hochladen",
+    "tab-header-link": "Bild aus dem Web verlinken",
+    "dropzone": "Bild hierher ziehen",
+    "url": "Link zum Bild...",
+    "button": "OK",
+    "upload-error": "Das Bild konnte nicht hochgeladen werden.",
+    "filetype-error": "Das ist keine Bilddatei."
+  },
+  "help": {
+    "start-here-title": "Beginne hier!",
+    "start-here-message": "Beginne, indem du hiermit<br />das erste Element<br />auf der Arbeitsfläche erstellst."
+  },
+  "table": {
+    "unnamed": "Unbenannte Tabelle",
+    "title": "Titel dieser Tabelle",
+    "add-row": "Zeile hinzufügen",
+    "add-column": "Spalte hinzufügen"
+  }
+}

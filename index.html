@@ -8,6 +8,7 @@
     <script src="assets/jquery/jquery-2.1.0.js"></script>
     <script src="assets/jquery/jquery-ui-1.10.4.custom.js"></script>
     <script src="assets/bootstrap3/js/bootstrap.js"></script>
+    <script src="assets/i18next/i18next-1.7.3.js"></script>
     <!--<script src="assets/bootstrap2/js/bootstrap-editable.js"></script>-->
     <!--<script src="assets/bootstrap3/js/bootstrap-colorpicker.js"></script>-->
     <script src="assets/jquery/handsontable/jquery.handsontable.full.js"></script>
@@ -39,11 +40,11 @@
   </head>
   <body>
     <!-- Error Message Modal 
-    <div class="modal fade" id="snte-error-modal" tabindex="-1" role="dialog" aria-labelledby="MSG-Error-Box" aria-hidden="true">
+    <div class="modal fade" id="snte-error-modal" tabindex="-1" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
             <h4 class="modal-title" id="myModalLabel">Modal title</h4>
           </div>
           <div class="modal-body">
@@ -56,37 +57,33 @@
     </div>-->
 
     <!-- Image Upload Modal -->
-    <div class="modal fade" id="snte-image-modal" tabindex="-1" role="dialog" aria-labelledby="MSG-Image-Upload-Box" aria-hidden="true">
+    <div class="modal fade" id="snte-image-modal" tabindex="-1" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">MSG-Add-Image</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title" data-i18n="image-upload.header"></h4>
           </div>
           <div class="modal-body">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
-              <li class="active" id="snte-image-add-tab-upload-header"><a href="#snte-image-add-tab-upload" data-toggle="tab">MSG-Upload</a></li>
-              <li id="snte-image-add-tab-link-header"><a href="#snte-image-add-tab-link" data-toggle="tab">MSG-Online</a></li>
+              <li class="active" id="snte-image-add-tab-upload-header"><a href="#snte-image-add-tab-upload" data-toggle="tab" data-i18n="image-upload.tab-header-upload"></a></li>
+              <li id="snte-image-add-tab-link-header"><a href="#snte-image-add-tab-link" data-toggle="tab" data-i18n="image-upload.tab-header-link"></a></li>
             </ul>
 
             <!-- Tab panes -->
             <div class="tab-content">
               <div class="tab-pane active" id="snte-image-add-tab-upload">
-                <div id="snte-image-upload-dropzone">
-                  MSG-Drop-Imagefile-Here
-                </div>
-                <div id="snte-image-upload-choosezone">
-
-                </div>
+                <div id="snte-image-upload-dropzone" data-i18n="image-upload.dropzone"></div>
+                <div id="snte-image-upload-choosezone"></div>
               </div>
               <div class="tab-pane" id="snte-image-add-tab-link">
-                <input type="text" class="form-control" placeholder="MSG-Add-URL" id="snte-image-link" />
+                <input type="text" class="form-control" placeholder="" id="snte-image-link" data-i18n="[placeholder]image-upload.url" />
               </div>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal" id="snte-image-upload-ok">OK</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="snte-image-upload-ok" data-i18n="image-upload.button"></button>
           </div>
         </div>
       </div>
@@ -96,57 +93,43 @@
     <div id="snte-chrome-top" class="menu-area">
       <!-- Searchbox -->
       <div id="snte-searchbox" class="snte-hidden">
-        <div id="snte-searchbox-title">
-          MSG-Search
+        <div id="snte-searchbox-title" data-i18n="[prepend]search.title">
           <div class="snte-searchbox-resultcount"></div>
         </div>
         <div id="snte-searchbox-content">
           <div class="row" role="toolbar" style="width: 350px;">
               <div class="col-md-7">
-                <input type="text" class="form-control snte-menu-search-input" placeholder="MSG-Type-To-Search" />
+                <input type="text" class="form-control snte-menu-search-input" placeholder="" data-i18n="[placeholder]search.placeholder" />
               </div>
               <div class="btn-group">
-                <button type="button" class="btn btn-default snte-menu-search-next" title="MSG-Next"><span class="glyphicon glyphicon-chevron-down"></span></button>
-                <button type="button" class="btn btn-default snte-menu-search-prev" title="MSG-Prev"><span class="glyphicon glyphicon-chevron-up"></span></button>
-                <button type="button" class="btn btn-default snte-menu-search-clear" title="MSG-Clear"><span class="glyphicon glyphicon-remove"></span></button>
+                <button type="button" class="btn btn-default snte-menu-search-next" title="" data-i18n="[title]search.next-result"><span class="glyphicon glyphicon-chevron-down"></span></button>
+                <button type="button" class="btn btn-default snte-menu-search-prev" title="" data-i18n="[title]search.previous-result"><span class="glyphicon glyphicon-chevron-up"></span></button>
+                <button type="button" class="btn btn-default snte-menu-search-clear" title="" data-i18n="[title]search.clear"><span class="glyphicon glyphicon-remove"></span></button>
               </div>
           </div>
         </div>
       </div>
       <!-- End Searchbox -->
 
-      <!-- "Start Here" Help -->
-      <!--<div id="snte-starthere" class="snte-hidden">
-        <div id="snte-starthere-title">
-          MSG-Start-Here
-        </div>
-        <div id="snte-starthere-content">
-          <div class="row">
-              MSG-Start-Here-By-Adding-The-First-Element-To-Your-Workspace
-          </div>
-        </div>
-      </div>-->
-      <!-- End "Start Here" Help -->
-
       <div id="snte-menubar-top" class="btn-toolbar" role="toolbar">
           <div id="snte-logo" title="say no to excel!">snte</div>
           <div id="snte-version">v0.1-alpha</div>
+          <!--<div class="btn-group">
+            <button type="button" class="btn btn-default" id="snte-menu-new-worksheet" title="" data-i18n="[title]chrome.new-worksheet"><span class="glyphicon glyphicon-file"></span></button>
+            <button type="button" class="btn btn-default" id="snte-menu-open-worksheet" title="" data-i18n="[title]chrome.open-worksheet"><span class="glyphicon glyphicon-folder-open"></span></button>
+            <button type="button" class="btn btn-default" id="snte-menu-save-worksheet" title="" data-i18n="[title]chrome.save-worksheet"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+          </div>-->
           <div class="btn-group">
-            <button type="button" class="btn btn-default" title="MSG-New-Worksheet" id="snte-menu-new-worksheet"><span class="glyphicon glyphicon-file"></span></button>
-            <button type="button" class="btn btn-default" title="MSG-Open-Worksheet" id="snte-menu-open-worksheet"><span class="glyphicon glyphicon-folder-open"></span></button>
-            <button type="button" class="btn btn-default" title="MSG-Save-Worksheet" id="snte-menu-save-worksheet"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+            <button type="button" class="btn btn-default" id="snte-menu-undo" title="" data-i18n="[title]chrome.undo"><span class="glyphicon glyphicon-arrow-left"></span></button>
+            <button type="button" class="btn btn-default" id="snte-menu-redo" title="" data-i18n="[title]chrome.redo"><span class="glyphicon glyphicon-share-alt"></span></button>
           </div>
           <div class="btn-group">
-            <button type="button" class="btn btn-default" title="MSG-Undo" id="snte-menu-undo"><span class="glyphicon glyphicon-arrow-left"></span></button>
-            <button type="button" class="btn btn-default" title="MSG-Redo" id="snte-menu-redo"><span class="glyphicon glyphicon-share-alt"></span></button>
-          </div>
-          <div class="btn-group">
-            <button type="button" class="btn btn-default" title="MSG-Copy" id="snte-menu-copy">C</button>
-            <button type="button" class="btn btn-default" title="MSG-Paste" id="snte-menu-paste">P</button>
+            <button type="button" class="btn btn-default" id="snte-menu-copy" title="" data-i18n="[title]chrome.copy">C</button>
+            <button type="button" class="btn btn-default" id="snte-menu-paste" title="" data-i18n="[title]chrome.paste">P</button>
           </div>
           <div class="btn-group">
             <div class="btn-group" id="snte-menu-font-family">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="Arial" title="MSG-Fontfamily" style="min-width:160px; text-align: left;">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="Arial" style="min-width:160px; text-align: left;" title="" data-i18n="[title]chrome.font-family">
                 <span class="value">Arial</span>
                 <span class="caret"></span>
               </button>
@@ -160,7 +143,7 @@
               </ul>
             </div>
             <div class="btn-group" id="snte-menu-font-size">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="2" title="MSG-Fontsize" style="min-width:55px; text-align: left;">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="2" style="min-width:55px; text-align: left;" title="" data-i18n="[title]chrome.font-size">
                 <span class="value">13</span>
                 <span class="caret"></span>
               </button>
@@ -175,7 +158,7 @@
               </ul>
             </div>
             <div class="btn-group" id="snte-menu-font-color-container">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="rgba(0,0,0,1)" title="MSG-Fontcolor" id="snte-menu-font-color">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="rgba(0,0,0,1)" id="snte-menu-font-color" title="" data-i18n="[title]chrome.font-color">
                 A
                 <span id="snte-menu-font-color-indicator"></span>
                 <span class="caret"></span>
@@ -183,7 +166,7 @@
               <ul class="dropdown-menu dropdown-caret snte-menu-colorselector"></ul>
             </div>
             <div class="btn-group" id="snte-menu-fill-color-container">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="rgba(0,0,0,0)" title="MSG-Fillcolor" id="snte-menu-fill-color">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="rgba(0,0,0,0)" id="snte-menu-fill-color" title="" data-i18n="[title]chrome.fill-color">
                 F
                 <span id="snte-menu-fill-color-indicator"></span>
                 <span class="caret"></span>
@@ -191,52 +174,51 @@
               <ul class="dropdown-menu dropdown-caret snte-menu-colorselector"></ul>
             </div>
             <div class="btn-group">
-              <button type="button" class="btn btn-default" title="MSG-Bold" id="snte-menu-font-bold">B</button>
-              <button type="button" class="btn btn-default" title="MSG-Italic" id="snte-menu-font-italic">I</button>
-              <button type="button" class="btn btn-default" title="MSG-Underline" id="snte-menu-font-underline">U</button>
-              <button type="button" class="btn btn-default" title="MSG-Strikethrough" id="snte-menu-font-strikethrough">S</button>
+              <button type="button" class="btn btn-default" id="snte-menu-font-bold" title="" data-i18n="[title]chrome.bold">B</button>
+              <button type="button" class="btn btn-default" id="snte-menu-font-italic" title="" data-i18n="[title]chrome.italic">I</button>
+              <button type="button" class="btn btn-default" id="snte-menu-font-underline" title="" data-i18n="[title]chrome.underline">U</button>
+              <button type="button" class="btn btn-default" id="snte-menu-font-strikethrough" title="" data-i18n="[title]chrome.strikethrough">S</button>
             </div>
           </div>
           <div class="btn-group">
-            <button type="button" class="btn btn-default active" title="MSG-Textalign-Left" id="snte-menu-font-align-left"><span class="glyphicon glyphicon-align-left"></span></button>
-            <button type="button" class="btn btn-default" title="MSG-Textalign-Center" id="snte-menu-font-align-center"><span class="glyphicon glyphicon-align-center"></span></button>
-            <button type="button" class="btn btn-default" title="MSG-Textalign-Right" id="snte-menu-font-align-right"><span class="glyphicon glyphicon-align-right"></span></button>
+            <button type="button" class="btn btn-default active" id="snte-menu-font-align-left" title="" data-i18n="[title]chrome.text-align-left"><span class="glyphicon glyphicon-align-left"></span></button>
+            <button type="button" class="btn btn-default" id="snte-menu-font-align-center" title="" data-i18n="[title]chrome.text-align-center"><span class="glyphicon glyphicon-align-center"></span></button>
+            <button type="button" class="btn btn-default" id="snte-menu-font-align-right" title="" data-i18n="[title]chrome.text-align-right"><span class="glyphicon glyphicon-align-right"></span></button>
           </div>
           <div class="btn-group">
-            <button type="button" class="btn btn-default disabled" title="MSG-Unordered-List" id="snte-menu-unordered-list">UL<!--<span class="glyphicon glyphicon-list"></span>--></button>
-            <button type="button" class="btn btn-default disabled" title="MSG-Ordered-List" id="snte-menu-ordered-list">OL<!--<span class="glyphicon glyphicon-list"></span>--></button>
+            <button type="button" class="btn btn-default disabled" id="snte-menu-unordered-list" title="" data-i18n="[title]chrome.unordered-list">UL<!--<span class="glyphicon glyphicon-list"></span>--></button>
+            <button type="button" class="btn btn-default disabled" id="snte-menu-ordered-list" title="" data-i18n="[title]chrome.ordered-list">OL<!--<span class="glyphicon glyphicon-list"></span>--></button>
           </div>
           <div class="btn-group" id="snte-menu-cell-type">
-            <button type="button" class="btn btn-default dropdown-toggle disabled" data-toggle="dropdown" data-value="auto" title="MSG-Cellformat" style="min-width:150px; text-align: left;">
-              <span class="value">MSG-Auto</span>
+            <button type="button" class="btn btn-default dropdown-toggle disabled" data-toggle="dropdown" data-value="auto" style="min-width:150px; text-align: left;" title="" data-i18n="[title]chrome.cell-format">
+              <span class="value" data-i18n="chrome.cell-format-auto"></span>
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-caret" style="min-width: 200px;">
-              <li class="active"><a href="#" data-value="auto" title="MSG-Auto">MSG-Auto</a></li>
+              <li class="active"><a href="#" data-value="auto" title="" data-i18n="[title]chrome.cell-format-auto;chrome.cell-format-auto"></a></li>
               <li role="presentation" class="divider" style="clear: both;"></li>
-              <li><a href="#" data-value="text" title="MSG-Text">MSG-Text</a><span class="snte-menu-cell-type-example">xyz</span></li>
+              <li><a href="#" data-value="text" title="" data-i18n="[title]chrome.cell-format-text;chrome.cell-format-text"></a><span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-text"></span></li>
               <li role="presentation" class="divider" style="clear: both;"></li>
-              <li><a href="#" data-value="numeric" title="MSG-Number">MSG-Number</a><span class="snte-menu-cell-type-example">1.000,2</span></li>
-              <li><a href="#" data-value="percent" title="MSG-Percent">MSG-Percent</a><span class="snte-menu-cell-type-example">77,12%</span></li>
-              <li><a href="#" data-value="currency" title="MSG-Currency">MSG-Currency</a><span class="snte-menu-cell-type-example">€1.000,2</span></li>
+              <li><a href="#" data-value="numeric" title="" data-i18n="[title]chrome.cell-format-number;chrome.cell-format-number"></a><span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-number"></span></li>
+              <li><a href="#" data-value="percent" title="" data-i18n="[title]chrome.cell-format-percent;chrome.cell-format-percent"></a><span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-percent"></span></li>
+              <li><a href="#" data-value="currency" title="" data-i18n="[title]chrome.cell-format-currency;chrome.cell-format-currency"></a><span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-currency"></span></li>
               <li role="presentation" class="divider" style="clear: both;"></li>
-              <li><a href="#" data-value="date" title="MSG-Date">MSG-Date</a><span class="snte-menu-cell-type-example">05.04.2014</span></li>
-              <!--<li><a href="#" data-value="time" title="MSG-Time">MSG-Time</a><span class="snte-menu-cell-type-example">12:30:00</span></li>-->
+              <li><a href="#" data-value="date" title="" data-i18n="[title]chrome.cell-format-date;chrome.cell-format-date"></a><span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-date"></span></li>
             </ul>
           </div>
 
           <div class="btn-group" id="snte-menu-add-element">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" title="MSG-New-Element">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" title="" data-i18n="[title]chrome.new-element">
               <span class="glyphicon glyphicon-plus"></span>
-              MSG-Add-New-Element
+              <span data-i18n="chrome.new-element"></span>
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-              <li><a href="#" data-item="table"><span class="glyphicon glyphicon-th-large"></span>MSG-Table</a></li>
-              <li><a href="#" data-item="text"><span class="glyphicon glyphicon-font"></span>MSG-Text</a></li>
-              <li><a href="#" data-item="comment"><span class="glyphicon glyphicon-comment"></span>MSG-Comment</a></li>
-              <li><a href="#" data-item="chart"><span class="glyphicon glyphicon-signal"></span>MSG-Chart</a></li>
-              <li><a href="#" data-item="image"><span class="glyphicon glyphicon-picture"></span>MSG-Image</a></li>
+              <li><a href="#" data-item="table" data-i18n="[append]chrome.new-element-table"><span class="glyphicon glyphicon-th-large"></span></a></li>
+              <li><a href="#" data-item="text" data-i18n="[append]chrome.new-element-text"><span class="glyphicon glyphicon-font"></span></a></li>
+              <li><a href="#" data-item="comment" data-i18n="[append]chrome.new-element-comment"><span class="glyphicon glyphicon-comment"></span></a></li>
+              <li><a href="#" data-item="chart" data-i18n="[append]chrome.new-element-chart"><span class="glyphicon glyphicon-signal"></span></a></li>
+              <li><a href="#" data-item="image" data-i18n="[append]chrome.new-element-image"><span class="glyphicon glyphicon-picture"></span></a></li>
             </ul>
           </div>
 
@@ -247,7 +229,7 @@
           </div>
 
           <div class="btn-group">
-            <button type="button" class="btn btn-default active" title="MSG-Show-Comments-On" id="snte-menu-toggle-comments">
+            <button type="button" class="btn btn-default active" id="snte-menu-toggle-comments" title="" data-i18n="[title]chrome.hide-comments">
               <span class="glyphicon glyphicon-comment"></span>
             </button>
           </div>

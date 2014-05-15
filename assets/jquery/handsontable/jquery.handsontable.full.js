@@ -9622,6 +9622,8 @@ if (typeof Handsontable !== 'undefined') {
 
       for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
         for (var colIndex = 0; colIndex < colCount; colIndex++) {
+          var cellProperties = instance.getCellMeta(rowIndex, colIndex);
+          
           // XXX stefanc
           //var cellData = instance.getDataAtCell(rowIndex, colIndex);
           var cellData = cellProperties.snteRendered;
@@ -9629,7 +9631,7 @@ if (typeof Handsontable !== 'undefined') {
           if (cellData === void 0 || cellData === null) {
             cellData = "";
           }
-          var cellProperties = instance.getCellMeta(rowIndex, colIndex);
+          
           var cellCallback = cellProperties.search.callback || callback;
           var cellQueryMethod = cellProperties.search.queryMethod || queryMethod;
           var testResult = cellQueryMethod(queryStr, cellData);

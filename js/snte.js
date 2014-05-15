@@ -1003,6 +1003,9 @@ function snte_workspace_add_table() {
     scrollH: "none",
     outsideClickDeselects: false,
     useFormula: true,
+    // http://handsontable.com/demo/buttons.html
+    rowHeaders: true,
+    colHeaders: true,
     search: {
       searchResultClass: "snte-search-match"
     },
@@ -1085,13 +1088,17 @@ function snte_workspace_add_table() {
   $newElementContainer = snte_workspace_create_element_container(true);
 
   $addRowControl = $("<div>").addClass("snte-table-control snte-table-control-add-row").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", $.t("table.add-row")));
-  $addRowControl.click(function() {
+  $addRowControl.click(function(evt) {
+    var workspaceElement = $(evt.target).closest("div.snte-element-container").find("div.snte-element");
+    snte_workspace_set_focus(workspaceElement);
     var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
     tableInstance.alter("insert_row");
   });
   $newElementContainer.append($addRowControl);
   $addColumnControl = $("<div>").addClass("snte-table-control snte-table-control-add-column").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", $.t("table.add-column")));
-  $addColumnControl.click(function() {
+  $addColumnControl.click(function(evt) {
+    var workspaceElement = $(evt.target).closest("div.snte-element-container").find("div.snte-element");
+    snte_workspace_set_focus(workspaceElement);
     var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
     tableInstance.alter("insert_col");
   });

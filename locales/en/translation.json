@@ -75,6 +75,19 @@
   "table": {
     "unnamed": "Unnamed Table",
     "add-row": "Add row",
-    "add-column": "Add column"
+    "add-column": "Add column",
+    "context-menu": {
+        "insert-row-above": "Insert row above",
+        "insert-row-below": "Insert row below",
+        "insert-column-left": "Insert column on the left",
+        "insert-column-right": "Insert column on the right",
+        "remove-row": "Delete this row",
+        "remove-column": "Delete this column",
+        "hide-row-headers": "Hide row headers",
+        "hide-column-headers": "Hide column headers",
+        "show-row-headers": "Show row headers",
+        "show-column-headers": "Show column headers",
+        "table-options": "Table"
+    }
   }
 }

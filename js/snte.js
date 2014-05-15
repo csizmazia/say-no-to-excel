@@ -239,7 +239,7 @@ $(document).ready(function() {
 function snte_bootstrap() {
   $snteWorkspace = $("div#snte-workspace");
 
-  i18n.init({ detectLngQS: 'lang', cookieName: 'lang', fallbackLng: 'en', debug: true }, function(t) {
+  i18n.init({ detectLngQS: 'lang', cookieName: 'lang', fallbackLng: 'en', debug: false }, function(t) {
     $("body").i18n();
 
     snteCellTypes =  {
@@ -288,8 +288,8 @@ function snte_chrome_setup() {
   });
   $("div#snte-menu-add-element button").popover({
     placement: "auto bottom",
-    title: $.t("help.start-here-title"),
-    content: $.t("help.start-here-message"),
+    title: i18n.t("help.start-here-title"),
+    content: i18n.t("help.start-here-message"),
     container: "body",
     html: true
   }).popover("show").click(function(evt) {
@@ -571,7 +571,7 @@ function snte_chrome_setup_search() {
     }
     else {
       $(this).closest("div").removeClass("has-success has-error");
-      $("div.popover div.snte-searchbox-resultcount").html("<img src=\"img/loading-icon-16x16.gif\" alt=\""+$.t("search.wait")+"\" title=\""+$.t("search.wait")+"\" />");
+      $("div.popover div.snte-searchbox-resultcount").html("<img src=\"img/loading-icon-16x16.gif\" alt=\""+i18n.t("search.wait")+"\" title=\""+i18n.t("search.wait")+"\" />");
 
       clearTimeout(snteSearchTypeTimeout);
       snteSearchTypeTimeout = setTimeout(function() { snte_search($("div.popover-content input.snte-menu-search-input").val()); }, 200);
@@ -632,7 +632,7 @@ function snte_search(needle) {
       $("div.popover-content input.snte-menu-search-input").closest("div").addClass("has-error");
     }
 
-    $("div.popover div.snte-searchbox-resultcount").text($.t("search.resultcount", { count: snteSearchResultCounter }));
+    $("div.popover div.snte-searchbox-resultcount").text(i18n.t("search.resultcount", { count: snteSearchResultCounter }));
   }
   else {
     snte_reset_search();
@@ -857,7 +857,7 @@ function snte_workspace_remove_element($elem) {
 }
 
 function snte_workspace_remove_element_confirm(evt) {
-  if(confirm($.t("chrome.delete-element-confirm"))) {
+  if(confirm(i18n.t("chrome.delete-element-confirm"))) {
     snte_workspace_remove_element_useraction($(evt.target).closest("div.snte-element-container").find("div.snte-element"));
   }
 }
@@ -934,13 +934,13 @@ function snte_workspace_create_element_container(withTitle) {
   var $newElementContainer = $("<div>").addClass("snte-element-container");
 
   if(withTitle) {
-    $titleField = $("<input>").attr("type", "text").attr("placeholder", $.t("table.unnamed")).addClass("snte-element-title-input");
+    $titleField = $("<input>").attr("type", "text").attr("placeholder", i18n.t("table.unnamed")).addClass("snte-element-title-input");
     $titleControl = $("<div>").addClass("snte-element-title snte-element-draghandle");
     $titleControl.append($titleField);
     $newElementContainer.append($titleControl);
   }
 
-  $deleteControl = $("<div>").addClass("snte-element-delete").append($("<span>").addClass("glyphicon glyphicon-remove").attr("title", $.t("chrome.delete-element")));
+  $deleteControl = $("<div>").addClass("snte-element-delete").append($("<span>").addClass("glyphicon glyphicon-remove").attr("title", i18n.t("chrome.delete-element")));
   $deleteControl.click(snte_workspace_remove_element_confirm);
   $elementControls = $("<div>").addClass("snte-element-controls snte-element-draghandle").append($deleteControl);
   $newElementContainer.append($elementControls);
@@ -1082,12 +1082,70 @@ function snte_workspace_add_table() {
     },
     afterRender: function(isForced) {
       $("span.snte-formula-error").tooltip();
+    },
+    contextMenu: {
+      items: {
+        "row_above": {name: i18n.t("table.context-menu.insert-row-above")},
+        "row_below": {name: i18n.t("table.context-menu.insert-row-below")},
+        "hsep1": "---------",
+        "col_left": {name: i18n.t("table.context-menu.insert-column-left")},
+        "col_right": {name: i18n.t("table.context-menu.insert-column-right")},
+        "hsep2": "---------",
+        "remove_row": {
+          name: i18n.t("table.context-menu.remove-row"),
+          disabled: function () {
+            return this.countRows() === 1;
+          }
+        },
+        "remove_col": {
+          name: i18n.t("table.context-menu.remove-column"),
+          disabled: function () {
+            return this.countCols() === 1;
+        }},
+        "hsep3": "---------",
+        "toggle_row_headers": {
+          name: i18n.t("table.context-menu.hide-row-headers"),
+          callback: function (key, options) {
+            var tableSettings = $snteWorkspaceFocusedElement.handsontable("getSettings");
+            var rowHeadersVisible = !tableSettings.rowHeaders;
+            $snteWorkspaceFocusedElement.handsontable("updateSettings", { rowHeaders: rowHeadersVisible });
+            this.contextMenu.options.items.toggle_row_headers.name = rowHeadersVisible ? i18n.t("table.context-menu.hide-row-headers") : i18n.t("table.context-menu.show-row-headers");
+        }},
+        "toggle_column_headers": {
+          name: i18n.t("table.context-menu.hide-column-headers"),
+          callback: function (key, options) {
+            var tableSettings = $snteWorkspaceFocusedElement.handsontable("getSettings");
+            var colHeadersVisible = !tableSettings.colHeaders;
+            $snteWorkspaceFocusedElement.handsontable("updateSettings", { colHeaders: colHeadersVisible });
+            this.contextMenu.options.items.toggle_column_headers.name = colHeadersVisible ? i18n.t("table.context-menu.hide-column-headers") : i18n.t("table.context-menu.show-column-headers");
+        }}
+        /*"fold1": {
+          name: i18n.t("table.context-menu.table-options"),
+          items: {
+            "toggle_row_headers": {
+              name: i18n.t("table.context-menu.hide-row-headers"),
+              callback: function (key, options) {
+                console.log(this.data("bla"));
+                var tableSettings = $snteWorkspaceFocusedElement.handsontable("getSettings");
+                var rowHeadersVisible = tableSettings.rowHeaders;
+                $snteWorkspaceFocusedElement.handsontable("updateSettings", { rowHeaders: !rowHeadersVisible });
+            }},
+            "toggle_column_headers": {
+              name: i18n.t("table.context-menu.hide-column-headers"),
+              callback: function (key, options) {
+                var tableSettings = $snteWorkspaceFocusedElement.handsontable("getSettings");
+                var colHeadersVisible = tableSettings.colHeaders;
+                $snteWorkspaceFocusedElement.handsontable("updateSettings", { colHeaders: !colHeadersVisible });
+            }}
+          }
+        }*/
+      }
     }
   });
   
   $newElementContainer = snte_workspace_create_element_container(true);
 
-  $addRowControl = $("<div>").addClass("snte-table-control snte-table-control-add-row").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", $.t("table.add-row")));
+  $addRowControl = $("<div>").addClass("snte-table-control snte-table-control-add-row").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", i18n.t("table.add-row")));
   $addRowControl.click(function(evt) {
     var workspaceElement = $(evt.target).closest("div.snte-element-container").find("div.snte-element");
     snte_workspace_set_focus(workspaceElement);
@@ -1095,7 +1153,7 @@ function snte_workspace_add_table() {
     tableInstance.alter("insert_row");
   });
   $newElementContainer.append($addRowControl);
-  $addColumnControl = $("<div>").addClass("snte-table-control snte-table-control-add-column").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", $.t("table.add-column")));
+  $addColumnControl = $("<div>").addClass("snte-table-control snte-table-control-add-column").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", i18n.t("table.add-column")));
   $addColumnControl.click(function(evt) {
     var workspaceElement = $(evt.target).closest("div.snte-element-container").find("div.snte-element");
     snte_workspace_set_focus(workspaceElement);
@@ -1199,7 +1257,7 @@ function snte_workspace_add_image(url) {
     $newElementContainer.appendTo($snteWorkspace);
     $newElement.focus();
   }).fail(function () {
-    alert($.t("image-upload.filetype-error"));
+    alert(i18n.t("image-upload.filetype-error"));
   });
 }
 
@@ -1225,16 +1283,16 @@ function snte_workspace_hide_comments() {
 }
 
 function snte_chrome_show_comments() {
-  //$("button#snte-menu-toggle-comments").addClass("active").attr("title", $.t("chrome.hide-comments"));
+  //$("button#snte-menu-toggle-comments").addClass("active").attr("title", i18n.t("chrome.hide-comments"));
 }
 function snte_chrome_hide_comments() {
-  //$("button#snte-menu-toggle-comments").removeClass("active").attr("title", $.t("chrome.show-comments"));
+  //$("button#snte-menu-toggle-comments").removeClass("active").attr("title", i18n.t("chrome.show-comments"));
 }
 
 function snte_chome_setup_color_control(type) {
   var $list = $("div#snte-menu-"+type+"-color-container ul.snte-menu-colorselector");
 
-  var $a = $("<a>").attr("href", "#").attr("title", $.t("chrome."+type+"-color-default")).attr("data-value", snteWYSIWYG[type+"Color"].default).addClass("snte-color-btn default selected").css({"border": "1px solid black", "background-color": snteWYSIWYG[type+"Color"].default});
+  var $a = $("<a>").attr("href", "#").attr("title", i18n.t("chrome."+type+"-color-default")).attr("data-value", snteWYSIWYG[type+"Color"].default).addClass("snte-color-btn default selected").css({"border": "1px solid black", "background-color": snteWYSIWYG[type+"Color"].default});
   if($.inArray(snteWYSIWYG[type+"Color"].default, snteFillColorNeedsBlackFont) >= 0) {
     $a.addClass("needs-black-font");
   }

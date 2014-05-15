@@ -190,7 +190,7 @@ div.snte-element-container:hover div.snte-element-title {
   background: #e4e4e4;
 }
 div.snte-element-container input.snte-element-title-input {
-  width: 50%;
+  width: 100%;
   border: none;
   background: none;
 }
@@ -429,6 +429,9 @@ div.htContextMenu {
 
 div.htContextMenu table.htCore {
   width: auto;
+}
+div.htContextMenu table tbody tr td {
+  padding: 4px !important;
 }
 
 /*

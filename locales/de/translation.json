@@ -77,6 +77,19 @@
   "table": {
     "unnamed": "Unbenannte Tabelle",
     "add-row": "Zeile hinzufügen",
-    "add-column": "Spalte hinzufügen"
+    "add-column": "Spalte hinzufügen",
+    "context-menu": {
+        "insert-row-above": "Zeile oberhalb hinzufügen",
+        "insert-row-below": "Zeile unterhalb hinzufügen",
+        "insert-column-left": "Spalte links hinzufügen",
+        "insert-column-right": "Spalte rechts hinzufügen",
+        "remove-row": "Diese Zeile entfernen",
+        "remove-column": "Diese Spalte entfernen",
+        "hide-row-headers": "Zeilenbeschriftung ausblenden",
+        "hide-column-headers": "Spaltenbeschriftung ausblenden",
+        "show-row-headers": "Zeilenbeschriftung einblenden",
+        "show-column-headers": "Spaltenbeschriftung einblenden",
+        "table-options": "Tabelle"
+    }
   }
 }

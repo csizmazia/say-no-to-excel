@@ -9622,7 +9622,10 @@ if (typeof Handsontable !== 'undefined') {
 
       for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
         for (var colIndex = 0; colIndex < colCount; colIndex++) {
-          var cellData = instance.getDataAtCell(rowIndex, colIndex);
+          // XXX stefanc
+          //var cellData = instance.getDataAtCell(rowIndex, colIndex);
+          var cellData = cellProperties.snteRendered;
+          // XXX stefanc end
           if (cellData === void 0 || cellData === null) {
             cellData = "";
           }
@@ -9630,6 +9633,13 @@ if (typeof Handsontable !== 'undefined') {
           var cellCallback = cellProperties.search.callback || callback;
           var cellQueryMethod = cellProperties.search.queryMethod || queryMethod;
           var testResult = cellQueryMethod(queryStr, cellData);
+
+          // XXX stefanc
+          /*if(cellProperties.snteFormula !== void 0 || (cellProperties.snteRendered !== void 0 && cellProperties.snteRendered != cellData)) {
+            var renderedCellData = cellProperties.snteRendered;
+            testResult = testResult || cellQueryMethod(queryStr, renderedCellData);
+          }*/
+          // XXX stefanc end
 
           if (testResult) {
             var singleResult = {

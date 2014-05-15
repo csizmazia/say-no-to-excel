@@ -1258,7 +1258,7 @@ Handsontable.renderers.NumericRenderer = function (instance, td, row, col, prop,
     else {
       myformat = cellProperties.snteFormats['numericImplicit'];
     }
-    console.log(myformat);
+
     value = numeral(valueToTest).format(myformat || '0');
   }
   
@@ -1349,6 +1349,8 @@ Handsontable.renderers.ExcelRenderer = function (instance, td, row, col, prop, v
       
       Handsontable._TextCell.renderer.apply(this, arguments);
     }
+
+    cellProperties.snteRendered = ""+newValue;
 
     return newValue;
   };

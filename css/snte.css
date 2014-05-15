@@ -88,7 +88,7 @@ div.snte-element-table {
 div.snte-element-table table tr {
   background-color: #fff;
 }
-div.snte-element-table table tr td {
+div.snte-element-table table tr td, div.snte-element-table table tr th {
   cursor: default;
 }
 div.snte-element-table table tr td.snte-formula {

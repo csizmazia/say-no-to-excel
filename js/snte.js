@@ -183,6 +183,7 @@ var snteCellRenderer = function (instance, td, row, col, prop, value, cellProper
     else {
       formattedDate = "";
     }
+    cellProperties.snteRendered = formattedDate;
     Handsontable.renderers.TextRenderer.apply(this, [ instance, td, row, col, prop, formattedDate, cellProperties ]);
   }
 
@@ -846,8 +847,6 @@ function snte_workspace_add_item(type) {
 }
 
 function snte_workspace_remove_element($elem) {
-  snte_workspace_reset_focus();
-
   // delete is slow: http://stackoverflow.com/questions/208105/how-to-remove-a-property-from-a-javascript-object
   delete snteWorkspaceElements[$elem.attr("id").replace("snte-element-", "")];
   $elem.closest("div.snte-element-container").remove();
@@ -859,8 +858,13 @@ function snte_workspace_remove_element($elem) {
 
 function snte_workspace_remove_element_confirm(evt) {
   if(confirm($.t("chrome.delete-element-confirm"))) {
-    snte_workspace_remove_element($(evt.target).closest("div.snte-element-container").find("div.snte-element"));
+    snte_workspace_remove_element_useraction($(evt.target).closest("div.snte-element-container").find("div.snte-element"));
   }
+}
+
+function snte_workspace_remove_element_useraction($elem) {
+  snte_workspace_reset_focus();
+  snte_workspace_remove_element($elem);
 }
 
 function snte_workspace_reset_focus() {
@@ -993,6 +997,7 @@ function snte_workspace_add_table() {
     colHeaders: true,
     rowHeaders: true,
     manualColumnResize: true,
+    manualColumnMove: true,
     contextMenu: true,
     scrollV: "none",
     scrollH: "none",
@@ -1009,7 +1014,7 @@ function snte_workspace_add_table() {
         "numericExplicit": snteCellTypes.numeric.format,
         "numericImplicit": snteCellTypes.numericWithoutComma.format,
         "currency": snteCellTypes.currency.format,
-        "percent": snteCellTypes.percent.format,
+        "percent": snteCellTypes.percent.format
       };
       if(!this.hasOwnProperty("snteExplicitType")) {
         this.snteExplicitType = "auto";
@@ -1024,7 +1029,7 @@ function snte_workspace_add_table() {
           "italic": snteWYSIWYG.italic.default,
           "underline": snteWYSIWYG.underline.default,
           "strikethrough": snteWYSIWYG.strikethrough.default,
-          "align": snteWYSIWYG.align.default,
+          "align": snteWYSIWYG.align.default
         };
       }
     },

@@ -433,6 +433,9 @@ div.htContextMenu table.htCore {
 div.htContextMenu table tbody tr td {
   padding: 4px !important;
 }
+div.htContextMenu table tbody tr td.htSeparator {
+  padding: 0 !important;
+}
 
 /*
 override bootstrap

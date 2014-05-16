@@ -14,11 +14,12 @@
 
  */
 
+var Token = Formula = {};
 
-;(function ( $ ) {
+;(function ( $, window ) {
 
 
-var Token = function (t,c) {
+Token = function (t,c) {
   var _d = { "type": null, t: t, c: c };
 };
 
@@ -86,6 +87,198 @@ Token.number = function () {
   return self._d = { "type": 'number', token: null, next: self._d.c };
 }
 
+Formula = function (formula) {
+  this.formula = formula;
+
+  return this;
+};
+
+Formula.prototype.tokenize = function () {
+  var nextToken = function (formulaString) {  // split the textstring into tokens one at a time
+    var result = { "type": 'empty', "token": null, "next": null};
+    var i;
+    var c;
+    var l;
+
+    if (formulaString == null || formulaString == '') {
+      return result;
+    }
+    while (formulaString.length > 0 && formulaString[0] == ' ') {
+      formulaString = formulaString.substring(1);
+    }
+    if (formulaString == null || formulaString == '') {
+      return result;
+    }
+    
+    l = formulaString.length;
+    c = formulaString[0].toUpperCase();
+    if (c == '-' || c == '+' || c == '*' || c == '/') {
+      result = { "type": "operator", token: c, next: formulaString.substring(1) };
+    }
+    else if (c == '(' || c == ')') {
+      result = { "type": "paranthes", token: c, next: formulaString.substring(1) };
+    }
+    else if (c == ':') {
+      result = { "type": "range", token: c, next: formulaString.substring(1) };
+    }
+    // XXX stefanc
+    //else if (c == ';' || c == ',' ) {
+    else if (c == ';' ) {
+      result = { "type": "param", token: c, next: formulaString.substring(1) };
+    }
+    // XXX stefanc
+    // else if ((c >= '0' && c <= '9') || c == '.') {
+    else if ((c >= '0' && c <= '9' && Handsontable.helper.isNumeric(c)) || c == '.' || c == ',') {
+      var val = 0.0;
+      var part = 0.0;
+      var state = 0;
+      var div = 1.0;
+      // XXX stefanc
+      // for (i = 0; i < formulaString.length && ((formulaString[i] >= '0' && formulaString[i] <= '9') || formulaString[i] == '.'); i++) {
+      for (i = 0; i < formulaString.length && ((formulaString[i] >= '0' && formulaString[i] <= '9' && Handsontable.helper.isNumeric(formulaString[i])) || formulaString[i] == '.' || formulaString[i] == ','); i++) {
+        c = formulaString[i];
+        // XXX stefanc
+        // if (state == 0 && c == '.') {
+        if (state == 0 && (c == '.' || c == ','))  {
+          state = 1;
+        }
+        else if (state == 0) {
+          val = val * 10 + formulaString.charCodeAt(i) - "0".charCodeAt(0);
+        }
+        // XXX stefanc
+        // else if (state == 0 && c == '.') {
+        else if (state == 0 && (c == '.' || c == ',')) {
+          return { "type": 'error', error: i18n.t("table.formula.error.bad-number"), next: null };
+        }
+        else if (state == 1) {
+          div /= 10.0;
+          part = part + (formulaString.charCodeAt(i) - "0".charCodeAt(0)) * div;
+        }
+      }
+
+      result = { "type": "number", token: val + part, next: formulaString.substring(i) };
+    }
+    else if (c == '$' || (c >= 'A' && c <= 'Z')) {  // See if it is a cell reference
+      var ref = '';
+      for (i = 0; i < formulaString.length && (formulaString[i] == '$' || (formulaString[i] >= '0' && formulaString[i] <= '9') || (formulaString[i].toUpperCase() >= 'A' && formulaString[i].toUpperCase() <= 'Z')); i++) {
+        c = formulaString[i].toUpperCase();
+        ref = ref + c;
+      }
+      if (i < formulaString.length && formulaString[i] == '(') {
+        ref = ref.toLowerCase();  // Reformat the function names to lower case!!!!!
+        result.type = 'func';
+      }
+      else {
+        result.type = 'cell';
+      }
+      result.token = ref;   // NOTE: Keep the upper case for cell references!!!!!
+      result.next = formulaString.substring(i);
+    }
+    else if (c == '=' || c == '<' || c == '>') {  // See if it is a relation that produces a boolean
+      var c2 = null;
+
+      if (l == 1) {
+        result = { "type": "relation", token: c, next: formulaString.substring(1) };
+      }
+      else {
+        c2 = formulaString[1];
+        if (c2 == '=' || c2 == '<' || c2 == '>') {
+          result = { "type": "relation", token: c+c2, next: formulaString.substring(2) };
+        }
+        else {
+          result = { "type": "relation", token: c, next: formulaString.substring(1) };
+        }
+      }
+    }
+    else if (c == '"') {
+      var str = ''
+      var i;
+      for (i = 1; i < formulaString.length && formulaString[i] != '"'; i++) {
+        c = formulaString[i];
+        if (c == '\\') {
+          i++;
+          c = formulaString[i];
+        }
+        str = str + c;
+      }
+      if (i == formulaString.length || formulaString[i] != '"') {
+        return { "type": 'error', error: i18n.t("table.formula.error.unbalanced-string"), next: null };
+      }
+      result = { "type": "text", token: str, next: formulaString.substring(i+1) };
+    }
+    else { // Error or unknown token
+      result.type = 'error';
+      result.error = i18n.t("table.formula.error.bad-token") +": " + c;
+    }
+
+    return result;
+  };
+
+  var theToken = {};
+  var tokens = [];
+
+  theToken = nextToken(this.formula);
+  while (theToken.type != 'error' && theToken.next != '' && theToken.next != null) {
+    tokens.push(theToken);
+    theToken = nextToken(theToken.next);
+  }
+  if (theToken.type == 'error') {
+    tokens = [];
+  }
+  tokens.push(theToken);
+
+  return tokens;
+};
+
+Formula.prototype.cellReferenceToCoordinates = function (cellRef) {
+  var row = 0;
+  var col = 0;
+  var radix = "Z".charCodeAt(0) - "A".charCodeAt(0) + 1;
+  var moff = "A".charCodeAt(0);
+
+  var res = { "type": "coord", "colAbsolute": false, "rowAbsolute": false };
+  var referenceError = { "type": 'error', error: i18n.t("table.formula.error.bad-reference"), next: null };
+  var state = 0;
+  var dollars = 0;
+
+  for (ii = 0; ii < cellRef.length; ii++) {
+    var c = cellRef[ii];
+    if (c == '$') {
+      dollars++;
+      if(state == 0) {
+        res.colAbsolute = true;
+      }
+      else if(state == 1) {
+        res.rowAbsolute = true;
+      }
+      continue;
+    }
+    if (state < 2 && c >= 'A' && c <= 'Z') {
+      state = 1;
+      col +=  (c.charCodeAt(0) - moff + 1) * Math.pow(26, ii-dollars);
+    }
+    else if (state >= 1 && state <= 2 && c >= '0' && c <= '9') {
+      state = 2;
+      row = row * 10 + c.charCodeAt(0) - "0".charCodeAt(0);
+    }
+    else {
+      return referenceError;
+    }
+  }
+  if(state < 2 || row-1 < 0 || col-1 < 0) {
+    return referenceError;
+  }
+    
+  res.row = row-1;
+  res.col = col-1;
+  return res;
+};
+
+Formula.prototype.coordinatesToCellReference = function (cellCoordinates) {
+  return { "type": "cell", "token": (cellCoordinates.colAbsolute?"$":"")+Handsontable.helper.spreadsheetColumnLabel(cellCoordinates.col)+(cellCoordinates.rowAbsolute?"$":"")+(cellCoordinates.row+1), "next": null };
+};
+
+
 
 
   //
@@ -93,7 +286,7 @@ Token.number = function () {
   // and make an array of tokens
   // Take the array of tokens and evaluate it
   // Return the result of that evaluation
-  var evaluateFormula = function (instance, activeCell, formula) {
+  var evaluateFormula = function (instance, activeCells, formula) {
 
 /*
 var evalFormula = function (instance, formula) {
@@ -112,38 +305,56 @@ var evalFormula = function (instance, formula) {
   // A1 gives the row=0 (from the '1') and col=0 (from the 'A')
   //
   var getRC = function (cellRef) {
-    var i;
+
     var row = 0;
     var col = 0;
     var radix = "Z".charCodeAt(0) - "A".charCodeAt(0) + 1;
     var moff = "A".charCodeAt(0);
-//    var res = {};
-    var referenceError = { "type": 'error', error: 'Bad reference', next: null };
-    var circularError = { "type": 'error', error: 'Circular reference', next: null };
-    var state = 0;
 
-    for (i = 0; i < cellRef.length; i++) {
-      var c = cellRef[i];
-      if (c == '$')
+    var res = { "type": "coord", "colAbsolute": false, "rowAbsolute": false };
+    var referenceError = { "type": 'error', error: i18n.t("table.formula.error.bad-reference"), next: null };
+    var circularError = { "type": 'error', error: i18n.t("table.formula.error.circular-reference"), next: null };
+    var state = 0;
+    var dollars = 0;
+
+    for (ii = 0; ii < cellRef.length; ii++) {
+      var c = cellRef[ii];
+      if (c == '$') {
+        dollars++;
+        if(state == 0) {
+          res.colAbsolute = true;
+        }
+        else if(state == 1) {
+          res.rowAbsolute = true;
+        }
         continue;
+      }
       if (state < 2 && c >= 'A' && c <= 'Z') {
         state = 1;
-        col = col * radix + c.charCodeAt(0) - moff;
+        //col = col * radix + c.charCodeAt(0) - moff;
+        col +=  (c.charCodeAt(0) - moff + 1) * Math.pow(26, ii-dollars);
       }
       else if (state >= 1 && state <= 2 && c >= '0' && c <= '9') {
         state = 2;
         row = row * 10 + c.charCodeAt(0) - "0".charCodeAt(0);
       }
-      else
+      else {
         return referenceError;
+      }
     }
-    if (state < 2 || row < 1 || col < 0)
-      return referenceError;
 
-    if(row-1 === activeCell.row && col === activeCell.col) {
-      return circularError;
+    if(state < 2 || row-1 < 0 || col-1 < 0 || row-1 > instance.countRows()-1 || col-1 > instance.countCols()-1) {
+      return referenceError;
     }
-    return { "type": 'coord', row: row-1, col: col };
+    for(var ii = 0; ii < activeCells.length; ii++) {
+      if(row-1 === activeCells[ii].row && col-1 === activeCells[ii].col) {
+        return circularError;
+      }
+    }
+    
+    res.row = row-1;
+    res.col = col-1;
+    return res;
   };
 
 
@@ -156,14 +367,13 @@ var evalFormula = function (instance, formula) {
   var getData = function (row, col) {
     var c;
     var val;
-    var res = { "type": '', token: null, next: null };
+    var res = { "type": "", token: null, next: null };
 
     try {
-//      val = container.handsontable('getData')[row][col];
       val = instance.getData()[row][col];
     }
     catch(err) {
-      return { "type": 'error', error: 'Bad reference', next: null };
+      return { "type": 'error', error: i18n.t("table.formula.error.bad-reference"), next: null };
     }
     if (val == null || val == '')
       return res;
@@ -178,7 +388,8 @@ var evalFormula = function (instance, formula) {
       return res;
     }
     if (c == "=") {
-      return evaluateFormula(instance, activeCell, val.substring(1));
+      activeCells.push({"row": row, "col": col})
+      return evaluateFormula(instance, activeCells, val.substring(1));
     }
     // xxx stefanc
     //if (c == '-' || c == '+' || c == '.'|| c == ',' || (c >= '0' && c <= '9')) {  // Numeric constant
@@ -204,7 +415,7 @@ var evalFormula = function (instance, formula) {
     var coord = getRC(cellRef);
 
     if (coord.type == 'error') {
-      thiserr = coord.error != null && coord.error != '' ? coord.error : 'Bad reference';
+      thiserr = coord.error != null && coord.error != '' ? coord.error : i18n.t("table.formula.error.bad-reference");
       return { "type": 'error', error: thiserr, next: null };
     }
     return getData(coord.row, coord.col);
@@ -273,7 +484,7 @@ var evalFormula = function (instance, formula) {
         // XXX stefanc
         // else if (state == 0 && c == '.') {
         else if (state == 0 && (c == '.' || c == ',')) {
-          return { "type": 'error', error: 'Bad number', next: null };
+          return { "type": 'error', error: i18n.t("table.formula.error.bad-number"), next: null };
         }
         else if (state == 1) {
           div /= 10.0;
@@ -327,13 +538,13 @@ var evalFormula = function (instance, formula) {
         str = str + c;
       }
       if (i == formulaString.length || formulaString[i] != '"') {
-        return { "type": 'error', error: 'Unbalanced string', next: null };
+        return { "type": 'error', error: i18n.t("table.formula.error.unbalanced-string"), next: null };
       }
       result = { "type": "text", token: str, next: formulaString.substring(i+1) };
     }
     else { // Error or unknown token
       result.type = 'error';
-      result.error = 'Bad token ' + c;
+      result.error = i18n.t("table.formula.error.bad-token") + ": " + c;
     }
 
     return result;
@@ -402,7 +613,7 @@ var evalFormula = function (instance, formula) {
 	var r, c;
 
 	if (i == 0 || i == tokens.length - 1) {	// Range error
-	  return { "type": 'error', error: 'Bad range', next: null };
+	  return { "type": 'error', error: i18n.t("table.formula.error.bad-range"), next: null };
 	}
 	topleft = getRC(tokens[i-1].token);
 	bottomright = getRC(tokens[i+1].token);
@@ -443,7 +654,7 @@ var evalFormula = function (instance, formula) {
 	var r, c;
 
 	if (i == 0 || i == tokens.length - 1) {	// Range error
-	  return { "type": 'error', error: 'Bad range', next: null };
+	  return { "type": 'error', error: i18n.t("table.formula.error.bad-range"), next: null };
 	}
 	topleft = getRC(tokens[i-1].token);
 	bottomright = getRC(tokens[i+1].token);
@@ -491,7 +702,7 @@ var evalFormula = function (instance, formula) {
 	var r, c;
 
 	if (i == 0 || i == tokens.length - 1) {	// Range error
-	  return { "type": 'error', error: 'Bad range', next: null };
+	  return { "type": 'error', error: i18n.t("table.formula.error.bad-range"), next: null };
 	}
 	topleft = getRC(tokens[i-1].token);
 	bottomright = getRC(tokens[i+1].token);
@@ -544,7 +755,7 @@ var evalFormula = function (instance, formula) {
 	var r, c;
 
 	if (i == 0 || i == tokens.length - 1) {	// Range error
-	  return { "type": 'error', error: 'Bad range', next: null };
+	  return { "type": 'error', error: i18n.t("table.formula.error.bad-range"), next: null };
 	}
 	topleft = getRC(tokens[i-1].token);
 	bottomright = getRC(tokens[i+1].token);
@@ -591,7 +802,7 @@ var evalFormula = function (instance, formula) {
 	var r, c;
 
 	if (i == 0 || i == tokens.length - 1) {	// Range error
-	  return { "type": 'error', error: 'Bad range', next: null };
+	  return { "type": 'error', error: i18n.t("table.formula.error.bad-range"), next: null };
 	}
 	topleft = getRC(tokens[i-1].token);
 	bottomright = getRC(tokens[i+1].token);
@@ -638,7 +849,7 @@ var evalFormula = function (instance, formula) {
 	var r, c;
 
 	if (i == 0 || i == tokens.length - 1) {	// Range error
-	  return { "type": 'error', error: 'Bad range', next: null };
+	  return { "type": 'error', error: i18n.t("table.formula.error.bad-range"), next: null };
 	}
 	topleft = getRC(tokens[i-1].token);
 	bottomright = getRC(tokens[i+1].token);
@@ -683,7 +894,7 @@ var evalFormula = function (instance, formula) {
 	var r, c;
 
 	if (i == 0 || i == tokens.length - 1) {	// Range error
-	  return { "type": 'error', error: 'Bad range', next: null };
+	  return { "type": 'error', error: i18n.t("table.formula.error.bad-range"), next: null };
 	}
 	topleft = getRC(tokens[i-1].token);
 	bottomright = getRC(tokens[i+1].token);
@@ -728,7 +939,7 @@ var evalFormula = function (instance, formula) {
 	var r, c;
 
 	if (i == 0 || i == tokens.length - 1) {	// Range error
-	  return { "type": 'error', error: 'Bad range', next: null };
+	  return { "type": 'error', error: i18n.t("table.formula.error.bad-range"), next: null };
 	}
 	topleft = getRC(tokens[i-1].token);
 	bottomright = getRC(tokens[i+1].token);
@@ -773,7 +984,7 @@ var evalFormula = function (instance, formula) {
 	var r, c;
 
 	if (i == 0 || i == tokens.length - 1) {	// Range error
-	  return { "type": 'error', error: 'Bad range', next: null };
+	  return { "type": 'error', error: i18n.t("table.formula.error.bad-range"), next: null };
 	}
 	topleft = getRC(tokens[i-1].token);
 	bottomright = getRC(tokens[i+1].token);
@@ -811,10 +1022,10 @@ var evalFormula = function (instance, formula) {
 
     tokens = fixParams(tokens);			// evaluate all parameters
     if (tokens.length < 2)
-      return { "type": 'error', error: 'To few parameters for IF', next: null };
+      return { "type": 'error', error: i18n.t("table.formula.error.if-too-few-parameters"), next: null };
     res = tokens[0];
     if (!(res.type == 'boolean' || res.type == 'number')) {
-      return { "type": 'error', error: 'First parameter for IF must be boolean', next: null };
+      return { "type": 'error', error: i18n.t("table.formula.error.if-bad-first-parameter"), next: null };
     }
     if (!!res.token)
       return tokens[1];
@@ -843,7 +1054,7 @@ var evalFormula = function (instance, formula) {
 	var tempstr = null;
 
 	if (i == 0 || i == tokens.length - 1) {	// Range error
-	  return { "type": 'error', error: 'Bad range', next: null };
+	  return { "type": 'error', error: i18n.t("table.formula.error.bad-range"), next: null };
 	}
 	topleft = getRC(tokens[i-1].token);
 	bottomright = getRC(tokens[i+1].token);
@@ -901,7 +1112,7 @@ var evalFormula = function (instance, formula) {
     for (i = 0; i < funcs.length; i++)
       if (funcs[i].func == tokens[0].token)
         return funcs[i].cb(tokens.slice(2, tokens.length));
-    return { "type": 'error', error: 'No such function ' + tokens[0].token, next: null };
+    return { "type": 'error', error: i18n.t("table.formula.error.no-such-function") + ": " + tokens[0].token, next: null };
   };
 
 
@@ -1001,7 +1212,7 @@ var evalFormula = function (instance, formula) {
           }
         }
         if (!found) {
-          return { "type": 'error', error: 'Unbalanced paranthesis', next: null };
+          return { "type": 'error', error: i18n.t("table.formula.error.unbalanced-paranthesis"), next: null };
         }
 
         i = tokens.length;	// Restart search for paranthesis
@@ -1030,7 +1241,7 @@ var evalFormula = function (instance, formula) {
         fixBoolean(tokens, i+1);
         fixText(tokens, i-1, i+1);
         if (tokens[i-1].type != 'number' || tokens[i+1].type != 'number') {
-          return { "type": 'error', "error": 'Bad formula', "next": null };
+          return { "type": 'error', "error": i18n.t("table.formula.error.bad-formula"), "next": null };
         }
       	if (tokens[i].token == '*') {
           res.token = tokens[i-1].token * tokens[i+1].token;
@@ -1060,7 +1271,7 @@ var evalFormula = function (instance, formula) {
         }
       }
     	if (tokens.length > 1 && tokens[1].type != 'number') {
-        return { "type": 'error', "error": 'Bad formula', "next": null };
+        return { "type": 'error', "error": i18n.t("table.formula.error.bad-formula"), "next": null };
       }
       if (tokens[0].token == '-') {
         res.token = -tokens[1].token;
@@ -1087,7 +1298,7 @@ var evalFormula = function (instance, formula) {
         fixBoolean(tokens, i+1);
         fixText(tokens, i-1, i+1);
         if (tokens[i-1].type != 'number' || tokens[i+1].type != 'number') {
-          return { "type": 'error', "error": 'Bad formula', "next": null };
+          return { "type": 'error', "error": i18n.t("table.formula.error.bad-formula"), "next": null };
         }
         if (tokens[i].token == '+') {
           res.token = tokens[i-1].token + tokens[i+1].token;
@@ -1116,7 +1327,7 @@ var evalFormula = function (instance, formula) {
         fixBoolean(tokens,i+1);
         fixText(tokens,i-1,i+1);
         if (tokens[i-1].type != tokens[i+1].type || tokens[i].token == '==') {
-          return { "type": 'error', "error": 'Bad formula', "next": null };
+          return { "type": 'error', "error": i18n.t("table.formula.error.bad-formula"), "next": null };
         }
 
         var term1 = tokens[i-1].token;
@@ -1150,7 +1361,7 @@ var evalFormula = function (instance, formula) {
     if (tokens.length == 1)	{ // If we just have one value, say it's ok and continue
       return tokens[0];
     }
-    return { "type": 'error', "error": 'Bad formula', "next": null };
+    return { "type": 'error', "error": i18n.t("table.formula.error.bad-formula"), "next": null };
   }
 
 
@@ -1167,8 +1378,9 @@ var evalFormula = function (instance, formula) {
       tokens.push(theToken);
       theToken = nextToken(theToken.next);
     }
-    if (theToken.type == 'error')
+    if (theToken.type == 'error') {
       return theToken;
+    }
     tokens.push(theToken);
     return evaluateTokens(tokens);
   };
@@ -1303,7 +1515,7 @@ Handsontable.renderers.ExcelRenderer = function (instance, td, row, col, prop, v
     else if (c == "=") {  // Hmm, now we are cooked, boiled and fried. Trying to evaluate a formula
       cellProperties.snteFormula = value.substring(1);
 
-      var theToken = evaluateFormula(instance, {"row": row, "col": col}, value.substring(1));
+      var theToken = evaluateFormula(instance, [{"row": row, "col": col}], value.substring(1));
 
       if (theToken.type == 'error') {
         cellProperties.snteImplicitType = "error";
@@ -1326,7 +1538,7 @@ Handsontable.renderers.ExcelRenderer = function (instance, td, row, col, prop, v
       }
       else if (theToken.type == 'boolean') {
         cellProperties.snteImplicitType = "text";
-        newValue = theToken.token ? "True" : "False";
+        newValue = theToken.token ? i18n.t("datatypes.boolean.true") : i18n.t("datatypes.boolean.false");
         
         Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
       }

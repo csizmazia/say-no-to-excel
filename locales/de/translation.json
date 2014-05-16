@@ -90,6 +90,27 @@
         "show-row-headers": "Zeilenbeschriftung einblenden",
         "show-column-headers": "Spaltenbeschriftung einblenden",
         "table-options": "Tabelle"
+    },
+    "formula": {
+        "error": {
+            "bad-number": "Eine Zahl wurde nicht richtig erkannt",
+            "unbalanced-string": "Eine Zeichenkette wurde nicht richtig erkannt",
+            "bad-token": "Ein Formelbaustein wurde nicht richtig erkannt",
+            "bad-reference": "Ungültige Referenz",
+            "circular-reference": "Zirkuläre Referenz gefunden",
+            "bad-range": "Ungültiger Zellbereich",
+            "if-too-few-parameters": "Zu wenige Parameter für IF",
+            "if-bad-first-parameter": "Der erste Parameter für IF muss Boolean sein",
+            "no-such-function": "Unbekannte Funktion",
+            "unbalanced-paranthesis": "Unvollständige Klammersetzung",
+            "bad-formula": "Ungültige Formel"
+        }
+    }
+  },
+  "datatypes": {
+    "boolean": {
+        "true": "Wahr",
+        "false": "Falsch"
     }
   }
 }

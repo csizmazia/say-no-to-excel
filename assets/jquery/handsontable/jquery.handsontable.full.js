@@ -936,6 +936,7 @@ Handsontable.Core = function (rootElement, userSettings) {
       if (start) {
 
         _data = SheetClip.parse(datamap.getText(priv.selStart.coords(), priv.selEnd.coords()));
+
         instance.PluginHooks.run('beforeAutofill', start, end, _data);
 
         grid.populateFromArray(start, _data, end, 'autofill');
@@ -9623,7 +9624,7 @@ if (typeof Handsontable !== 'undefined') {
       for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
         for (var colIndex = 0; colIndex < colCount; colIndex++) {
           var cellProperties = instance.getCellMeta(rowIndex, colIndex);
-          
+
           // XXX stefanc
           //var cellData = instance.getDataAtCell(rowIndex, colIndex);
           var cellData = cellProperties.snteRendered;

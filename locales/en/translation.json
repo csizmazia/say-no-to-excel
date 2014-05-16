@@ -88,6 +88,27 @@
         "show-row-headers": "Show row headers",
         "show-column-headers": "Show column headers",
         "table-options": "Table"
+    },
+    "formula": {
+        "error": {
+            "bad-number": "Bad number",
+            "unbalanced-string": "Unbalanced string",
+            "bad-token": "Bad token",
+            "bad-reference": "Bad reference",
+            "circular-reference": "Circular reference",
+            "bad-range": "Bad range",
+            "if-too-few-parameters": "To few parameters for IF",
+            "if-bad-first-parameter": "First parameter for IF must be boolean",
+            "no-such-function": "No such function",
+            "unbalanced-paranthesis": "Unbalanced Paranthesis",
+            "bad-formula": "Bad formula"
+        }
+    }
+  },
+  "datatypes": {
+    "boolean": {
+        "true": "True",
+        "false": "False"
     }
   }
 }

@@ -1045,17 +1045,10 @@ function snte_workspace_add_table() {
       snte_chrome_set_type_control({"row": row_start, "col": column_start});
     },
     beforeAutofill: function(start, end, data) {
-      console.log("inside beforeAutoFill");
-      console.log(start);
-      console.log(end);
-      console.log(data);
-
       var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
       var selectedCells = tableInstance.getSelected(); //[startRow, startCol, endRow, endCol]
 
       var snteAutofill = function(source, target) {
-        console.log("source: "+source.row+" "+source.col);
-        console.log("target: "+target.row+" "+target.col);
         var cellMetaSource = tableInstance.getCellMeta(source.row, source.col);
         var cellMetaTarget = tableInstance.getCellMeta(target.row, target.col);
         cellMetaTarget.snteWYSIWYG = $.extend(true, {}, cellMetaSource.snteWYSIWYG);
@@ -1066,14 +1059,11 @@ function snte_workspace_add_table() {
         * FORMULA AUTOFILL
         */
         if(cellMetaSource.snteFormula !== void 0) {
-          var formulaSource = cellMetaSource.snteFormula;
-          console.log(formulaSource);
-          var formula = new Formula(formulaSource);
+          var formula = new Formula(cellMetaSource.snteFormula);
           var tokens = formula.tokenize();
 
           var formulaTarget = "";
           for(var ii=0; ii<tokens.length; ii++) {
-            console.log(tokens[ii]);
             if(tokens[ii].type === "cell") {
               var cellCoordinates = formula.cellReferenceToCoordinates(tokens[ii].token);
               var newCellCoordinates = {"rowAbsolute": cellCoordinates.rowAbsolute, "colAbsolute": cellCoordinates.colAbsolute};
@@ -1089,15 +1079,14 @@ function snte_workspace_add_table() {
               else {
                 newCellCoordinates.col = Math.max(0, Math.min(tableInstance.countCols()-1, cellCoordinates.col+(target.col-source.col)));
               }
-              console.log(cellCoordinates);
-              console.log(newCellCoordinates);
+              
               formulaTarget += formula.coordinatesToCellReference(newCellCoordinates).token;
             }
             else {
               formulaTarget += tokens[ii].token;
             }
           }
-          console.log(formulaTarget);
+          
           cellMetaTarget.snteFormula = cellMetaTarget.snteOverrideFormula = formulaTarget;
           cellMetaTarget.snteOverrideFromFormula = true;
         }
@@ -1109,15 +1098,14 @@ function snte_workspace_add_table() {
       var r, rlen, c, clen;
       var current = {};
 
-      var direction;
+      //var direction;
       if(selectedCells[0] < start.row) {
-        direction = "down";
+        //direction = "down";
         rlen = data.length;
         current.row = start.row;
         current.col = start.col;
         realC = selectedCells[1];
         for (r = 0, realR = selectedCells[0]; r < rlen; r++, realR++) {
-          console.log("ROW LOOP "+r);
           if ((end && current.row > end.row)) {
             break;
           }          
@@ -1131,13 +1119,12 @@ function snte_workspace_add_table() {
         }
       }
       if(selectedCells[0] > end.row) {
-        direction = "up";
+        //direction = "up";
         rlen = data.length;
         current.row = end.row;
         current.col = end.col;
         realC = selectedCells[3];
         for (r = rlen-1, realR = selectedCells[2]; r >= 0; r--, realR--) {
-          console.log("ROW LOOP "+r);
           if ((start && current.row < start.row)) {
             break;
           }          
@@ -1151,14 +1138,13 @@ function snte_workspace_add_table() {
         }
       }
       if(selectedCells[1] < start.col) {
-        direction = "right";
+        //direction = "right";
         rlen = data.length;
         current.row = start.row;
         current.col = start.col;
         realR = selectedCells[0];
         clen = data[0] ? data[0].length : 0;
         for (c = 0, realC = selectedCells[1]; c < clen; c++, realC++) {
-          console.log("COL LOOP "+c);
           if ((end && current.col > end.col)) {
             break;
           }
@@ -1172,14 +1158,13 @@ function snte_workspace_add_table() {
         }
       }
       if(selectedCells[1] > end.col) {
-        direction = "left";
+        //direction = "left";
         rlen = data.length;
         current.row = end.row;
         current.col = end.col;
         realR = selectedCells[2];
         clen = data[0] ? data[0].length : 0;
         for (c = clen-1, realC = selectedCells[3]; c >= 0; c--, realC--) {
-          console.log("COL LOOP "+c);
           if ((start && current.col < start.col)) {
             break;
           }
@@ -1192,54 +1177,18 @@ function snte_workspace_add_table() {
           }
         }
       }
-      console.log(direction);
-
-      /*
-      rlen = data.length;
-      current.row = start.row;
-      current.col = start.col;
-      for (r = 0, realR = selectedCells[0]; r < rlen; r++, realR++) {
-        console.log("ROW LOOP "+r);
-        if ((end && current.row > end.row)) {
-          break;
-        }
-        current.col = start.col;
-        clen = data[r] ? data[r].length : 0;
-        for (c = 0, realC = selectedCells[1]; c < clen; c++, realC++) {
-          console.log("COL LOOP "+c);
-          if ((end && current.col > end.col)) {
-            break;
-          }
-
-          stuff({"row": realR, "col": realC}, {"row": current.row, "col": current.col});
-
-          current.col++;
-          if (end && c === clen - 1) {
-            c = -1;
-          }
-        }
-        current.row++;
-        if (end && r === rlen - 1) {
-          r = -1;
-        }
-      }
-      */
     },
     afterRender: function(isForced) {
       console.log("afterRender");
       $("span.snte-formula-error").tooltip();
     },
-    afterChange: function(changes, source) {
-      console.log("afterChange");
-      console.log(source);
-      console.log(changes);
-
+    beforeChange: function(changes, source) {
       if(source === "autofill") {
         var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
         for(var ii = 0; ii < changes.length; ii++) {
           var cellMeta = tableInstance.getCellMeta(changes[ii][0], changes[ii][1]);
           if(cellMeta.snteOverrideFromFormula) {
-            tableInstance.setDataAtCell(changes[ii][0], changes[ii][1], "="+cellMeta.snteOverrideFormula);
+            changes[ii][3] = "="+cellMeta.snteOverrideFormula;
             cellMeta.snteOverrideFromFormula = false;
             cellMeta.snteOverrideFormula = void 0;
           }

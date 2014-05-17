@@ -2654,23 +2654,27 @@ Handsontable.TableView = function (instance) {
     hideBorderOnMouseDownOver: function () {
       return that.settings.fragmentSelection;
     },
+    // XXX stefanc
     onCellMouseDown: function (event, coords, TD) {
-      instance.listen();
-
-      isMouseDown = true;
-      var coordsObj = {row: coords[0], col: coords[1]};
-      if (event.button === 2 && instance.selection.inInSelection(coordsObj)) { //right mouse button
-        //do nothing
-      }
-      else if (event.shiftKey) {
-        instance.selection.setRangeEnd(coordsObj);
-      }
-      else {
-        instance.selection.setRangeStart(coordsObj);
-      }
-
       instance.PluginHooks.run('afterOnCellMouseDown', event, coords, TD);
+
+      if(!event.isImmediatePropagationStopped()) {
+        instance.listen();
+
+        isMouseDown = true;
+        var coordsObj = {row: coords[0], col: coords[1]};
+        if (event.button === 2 && instance.selection.inInSelection(coordsObj)) { //right mouse button
+          //do nothing
+        }
+        else if (event.shiftKey) {
+          instance.selection.setRangeEnd(coordsObj);
+        }
+        else {
+          instance.selection.setRangeStart(coordsObj);
+        }
+      }
     },
+    // XXX stefanc end
     /*onCellMouseOut: function (/*event, coords, TD* /) {
      if (isMouseDown && that.settings.fragmentSelection === 'single') {
      clearTextSelection(); //otherwise text selection blinks during multiple cells selection

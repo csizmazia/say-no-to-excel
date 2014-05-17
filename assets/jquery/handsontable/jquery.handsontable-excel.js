@@ -1489,87 +1489,114 @@ Handsontable.helper.isNumeric = function (n) {
 };
 
 Handsontable.renderers.ExcelRenderer = function (instance, td, row, col, prop, value, cellProperties) {
-    var c;
-    var newValue = value;
+  var c;
+  var newValue = value;
 
-    if (typeof value === 'undefined' || value === null || value == '') {
-      cellProperties.snteFormula = void 0;
-      cellProperties.snteImplicitType = "text";
-      Handsontable._TextCell.renderer.apply(this, arguments);
-      return "";
-    }
-    
-    if (typeof value === 'number') {
-      value = value.toString();
-    }
-    
-    c = value[0];
+  if (typeof value === 'undefined' || value === null || value == '') {
     cellProperties.snteFormula = void 0;
-    if (c == "'") {		// force value to a string, even things like numeric or formula
-      cellProperties.snteImplicitType = "text";
+    cellProperties.snteImplicitType = "text";
+    Handsontable._TextCell.renderer.apply(this, arguments);
+    return "";
+  }
+  
+  if (typeof value === 'number') {
+    value = value.toString();
+  }
+  
+  c = value[0];
+  cellProperties.snteFormula = void 0;
+  if (c == "'") {		// force value to a string, even things like numeric or formula
+    cellProperties.snteImplicitType = "text";
 
-      newValue = value.substring(1);
+    newValue = value.substring(1);
+    
+    Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
+  }
+  else if (c == "=") {  // Hmm, now we are cooked, boiled and fried. Trying to evaluate a formula
+    cellProperties.snteFormula = value.substring(1);
+
+    var theToken = evaluateFormula(instance, [{"row": row, "col": col}], value.substring(1));
+
+    if (theToken.type == 'error') {
+      cellProperties.snteImplicitType = "error";
+      newValue = theToken.error;
+      
+      Handsontable.renderers.HtmlRenderer(instance, td, row, col, prop, "<span class=\"snte-formula-error glyphicon glyphicon-exclamation-sign\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\""+newValue+"\"></span>", cellProperties);
+      //Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
+    }
+    else if (theToken.type == 'number') {
+      cellProperties.snteImplicitType = "numeric";
+      newValue = theToken.token;
+      
+      Handsontable.NumericCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
+    }
+    else if (theToken.type == 'text') {
+      cellProperties.snteImplicitType = "text";
+      newValue = theToken.token;
       
       Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
     }
-    else if (c == "=") {  // Hmm, now we are cooked, boiled and fried. Trying to evaluate a formula
-      cellProperties.snteFormula = value.substring(1);
-
-      var theToken = evaluateFormula(instance, [{"row": row, "col": col}], value.substring(1));
-
-      if (theToken.type == 'error') {
-        cellProperties.snteImplicitType = "error";
-        newValue = theToken.error;
-        
-        Handsontable.renderers.HtmlRenderer(instance, td, row, col, prop, "<span class=\"snte-formula-error glyphicon glyphicon-exclamation-sign\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\""+newValue+"\"></span>", cellProperties);
-        //Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
-      }
-      else if (theToken.type == 'number') {
-        cellProperties.snteImplicitType = "numeric";
-        newValue = theToken.token;
-        
-        Handsontable.NumericCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
-      }
-      else if (theToken.type == 'text') {
-        cellProperties.snteImplicitType = "text";
-        newValue = theToken.token;
-        
-        Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
-      }
-      else if (theToken.type == 'boolean') {
-        cellProperties.snteImplicitType = "text";
-        newValue = theToken.token ? i18n.t("datatypes.boolean.true") : i18n.t("datatypes.boolean.false");
-        
-        Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
-      }
-      else {
-        cellProperties.snteImplicitType = "text";
-        newValue = theToken.token;
-        
-        Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
-      }
-    }
-    else if (c == '-' || c == '+' || c == '.' || c == ',' || (c >= '0' && c <= '9' && Handsontable.helper.isNumeric(value))) {	// Numeric constant
-      cellProperties.snteFormula = void 0;
-      cellProperties.snteImplicitType = "numeric";
-      
-      Handsontable.NumericCell.renderer.apply(this, arguments);
-    }
-    else {					// else probably a string
-      cellProperties.snteFormula = void 0;
+    else if (theToken.type == 'boolean') {
       cellProperties.snteImplicitType = "text";
+      newValue = theToken.token ? i18n.t("datatypes.boolean.true") : i18n.t("datatypes.boolean.false");
       
-      Handsontable._TextCell.renderer.apply(this, arguments);
+      Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
     }
+    else {
+      cellProperties.snteImplicitType = "text";
+      newValue = theToken.token;
+      
+      Handsontable._TextCell.renderer.apply(this, [ instance, td, row, col, prop, newValue, cellProperties ]);
+    }
+  }
+  else if (c == '-' || c == '+' || c == '.' || c == ',' || (c >= '0' && c <= '9' && Handsontable.helper.isNumeric(value))) {	// Numeric constant
+    cellProperties.snteFormula = void 0;
+    cellProperties.snteImplicitType = "numeric";
+    
+    Handsontable.NumericCell.renderer.apply(this, arguments);
+  }
+  else {					// else probably a string
+    cellProperties.snteFormula = void 0;
+    cellProperties.snteImplicitType = "text";
+    
+    Handsontable._TextCell.renderer.apply(this, arguments);
+  }
 
-    cellProperties.snteRendered = ""+newValue;
+  cellProperties.snteRendered = ""+newValue;
 
-    return newValue;
-  };
+  return newValue;
+};
+
+var ExcelEditor = Handsontable.editors.TextEditor.prototype.extend();
+
+ExcelEditor.prototype.beginEditing = function () {
+  //Call the original beginEditing method
+  Handsontable.editors.TextEditor.prototype.beginEditing.apply(this, arguments);
+
+  var onBeginEditing = this.instance.getSettings().onBeginEditing;
+  if (onBeginEditing) {
+    onBeginEditing();
+  }
+};
+ExcelEditor.prototype.finishEditing = function () {
+  //Call the original finishEditing method
+  Handsontable.editors.TextEditor.prototype.finishEditing.apply(this, arguments);
+
+  var onFinishEditing = this.instance.getSettings().onFinishEditing;
+  if (onFinishEditing) {
+    onFinishEditing();
+  }
+};
+ExcelEditor.prototype.putCellReference = function (cellReference) {
+  this.TEXTAREA.value += cellReference;
+};
+
+Handsontable.editors.ExcelEditor = ExcelEditor;
+Handsontable.editors.registerEditor('excel', ExcelEditor);
 
 Handsontable.ExcelCell = {
   renderer: Handsontable.renderers.ExcelRenderer,
-  editor: Handsontable.editors.TextEditor,
+  editor: Handsontable.editors.ExcelEditor,
   dataType: 'excel'
 };
 

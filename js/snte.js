@@ -61,6 +61,8 @@ var snteWorkspaceElements = {};
 var $snteWorkspaceFocusedElement;
 var snteWorkspaceErrorModalVisible = false;
 var snteLastCellError = {};
+var snteCellEditorOpened = false;
+var snteTableCounter = 0;
 
 var snteImage = {"maxWidth": 500};
 
@@ -934,7 +936,7 @@ function snte_workspace_create_element_container(withTitle) {
   var $newElementContainer = $("<div>").addClass("snte-element-container");
 
   if(withTitle) {
-    $titleField = $("<input>").attr("type", "text").attr("placeholder", i18n.t("table.unnamed")).addClass("snte-element-title-input");
+    $titleField = $("<input>").attr("type", "text").attr("placeholder", i18n.t("table.unnamed")+" "+(++snteTableCounter)).addClass("snte-element-title-input");
     $titleControl = $("<div>").addClass("snte-element-title snte-element-draghandle");
     $titleControl.append($titleField);
     $newElementContainer.append($titleControl);
@@ -1040,9 +1042,46 @@ function snte_workspace_add_table() {
       this.selectCell(0, 0);
     },
     afterSelectionEnd: function (row_start, column_start, row_end, column_end) {
+      console.log("afterSelectionEnd");
+      console.log("start: "+row_start+" "+column_start);
+      console.log("end: "+row_end+" "+column_end);
       snte_workspace_set_focus(this.rootElement);
       snte_chrome_set_font_controls("table_cell", $(this.getCell(row_start, column_start)));
       snte_chrome_set_type_control({"row": row_start, "col": column_start});
+
+      // TODO: wenn eine Zelle gerade editiert wird, die selection in die Formel einfügen
+    },
+    onBeginEditing: function() {
+      console.log("onBeginEditing");
+      snteCellEditorOpened = true;
+    },
+    onFinishEditing: function() {
+      console.log("onFinishEditing");
+      snteCellEditorOpened = false;
+    },
+    afterOnCellMouseDown: function(evt, coords, td) {
+      console.log("afterOnCellMouseDown");
+      console.log(evt);
+      console.log(coords);
+      if(snteCellEditorOpened) {
+        var $targetTable = $(td).closest(".snte-element");
+        if($targetTable.attr("id") === $snteWorkspaceFocusedElement.attr("id")) { // this should be removed in the future - need good idea for referencing tables though
+          var editor = $snteWorkspaceFocusedElement.handsontable("getInstance").getActiveEditor();
+          console.log(editor);
+          if(editor.TEXTAREA.value[0] === "=") {
+            editor.putCellReference(Handsontable.helper.spreadsheetColumnLabel(coords[1])+(coords[0]+1));
+            editor.focus();
+            editor.refreshDimensions();
+
+            evt.stopImmediatePropagation();
+            evt.preventDefault();
+            evt.stopPropagation();
+          }
+        }
+      }
+    },
+    beforeKeyDown: function(evt) {
+      // TODO: wenn zelle gerade editiert wird, soll mit Pfeiltasten Zelle für Formel ausgewählt werden können
     },
     beforeAutofill: function(start, end, data) {
       var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");

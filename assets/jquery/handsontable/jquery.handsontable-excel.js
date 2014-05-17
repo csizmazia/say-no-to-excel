@@ -1588,7 +1588,13 @@ ExcelEditor.prototype.finishEditing = function () {
   }
 };
 ExcelEditor.prototype.putCellReference = function (cellReference) {
-  this.TEXTAREA.value += cellReference;
+  var caret = this.wtDom.getCaretPosition(this.TEXTAREA);
+  var origValue = this.TEXTAREA.value;
+
+  this.TEXTAREA.value = origValue.substring(0, caret)+cellReference+origValue.substring(caret);
+  this.focus();
+  this.wtDom.setCaretPosition(this.TEXTAREA, caret+cellReference.length);
+  this.refreshDimensions();
 };
 
 Handsontable.editors.ExcelEditor = ExcelEditor;

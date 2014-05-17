@@ -1070,8 +1070,6 @@ function snte_workspace_add_table() {
           console.log(editor);
           if(editor.TEXTAREA.value[0] === "=") {
             editor.putCellReference(Handsontable.helper.spreadsheetColumnLabel(coords[1])+(coords[0]+1));
-            editor.focus();
-            editor.refreshDimensions();
 
             evt.stopImmediatePropagation();
             evt.preventDefault();

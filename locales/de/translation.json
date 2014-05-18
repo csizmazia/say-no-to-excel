@@ -112,5 +112,110 @@
         "true": "Wahr",
         "false": "Falsch"
     }
+  },
+  "formula": {
+    "function": {
+        "sum": {
+            "title": "Summe (SUM)",
+            "button": "Summe"
+        },
+        "avg": {
+            "title": "Mittelwert (AVG)",
+            "button": "Mittelwert"
+        },
+        "min": {
+            "title": "Minimum (MIN)",
+            "button": "Minimum"
+        },
+        "max": {
+            "title": "Maximum (MAX)",
+            "button": "Maximum"
+        },
+        "count": {
+            "title": "Zählen (COUNT)",
+            "button": "Zählen"
+        },
+        "if": {
+            "title": "Bedingung (IF)",
+            "button": "Bedingung"
+        }
+    },
+    "relation": {
+        "lt": {
+            "title": "Kleiner als",
+            "button": "<"
+        },
+        "gt": {
+            "title": "Größer als",
+            "button": ">"
+        },
+        "lte": {
+            "title": "Kleiner-gleich als",
+            "button": "≤"
+        },
+        "gte": {
+            "title": "Größer-gleich als",
+            "button": "≥"
+        },
+        "eq": {
+            "title": "Ist gleich",
+            "button": "="
+        },
+        "neq": {
+            "title": "Ist ungleich",
+            "button": "≠"
+        }
+    },
+    "arithmetic": {
+        "add": {
+            "title": "Addieren",
+            "button": "+"
+        },
+        "sub": {
+            "title": "Subtrahieren",
+            "button": "-"
+        },
+        "mult": {
+            "title": "Multiplizieren",
+            "button": "*"
+        },
+        "div": {
+            "title": "Dividieren",
+            "button": "÷"
+        }
+    }
+  },
+  "calculator": {
+    "buttons": {
+        "0": "0",
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5",
+        "6": "6",
+        "7": "7",
+        "8": "8",
+        "9": "9",
+        "comma": ",",
+        "add": "+",
+        "sub": "-",
+        "mult": "*",
+        "div": "÷",
+        "done": "OK",
+        "sum": "Summe",
+        "count": "Zählen",
+        "avg": "Durchschnitt",
+        "min": "Minimum",
+        "max": "Maximum",
+        "if": "Bedingung",
+        "lt": "<",
+        "gt": ">",
+        "lte": "≤",
+        "gte": "≥",
+        "eq": "=",
+        "neq": "≠"
+    }
+    
   }
 }

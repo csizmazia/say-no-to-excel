@@ -531,6 +531,7 @@ function snte_table_apply_cell_type() {
         }
       }
       tableInstance.render();
+      snte_chrome_set_font_controls("table_cell", $(tableInstance.getCell(selectedCells[0], selectedCells[1])));
     }
   }
 }

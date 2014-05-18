@@ -1467,6 +1467,12 @@ Handsontable.renderers.NumericRenderer = function (instance, td, row, col, prop,
     if(cellProperties.snteExplicitType === 'numeric') {
       myformat = cellProperties.snteFormats['numericExplicit'];
     }
+    else if(cellProperties.snteExplicitType === 'percent') {
+      myformat = cellProperties.snteFormats['percent'];
+    }
+    else if(cellProperties.snteExplicitType === 'currency') {
+      myformat = cellProperties.snteFormats['currency'];
+    }
     else {
       myformat = cellProperties.snteFormats['numericImplicit'];
     }

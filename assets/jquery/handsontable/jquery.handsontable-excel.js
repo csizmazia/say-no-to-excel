@@ -1593,13 +1593,13 @@ ExcelEditor.prototype.finishEditing = function () {
     onFinishEditing();
   }
 };
-ExcelEditor.prototype.putCellReference = function (cellReference) {
+ExcelEditor.prototype.putString = function (string) {
   var caret = this.wtDom.getCaretPosition(this.TEXTAREA);
   var origValue = this.TEXTAREA.value;
 
-  this.TEXTAREA.value = origValue.substring(0, caret)+cellReference+origValue.substring(caret);
+  this.TEXTAREA.value = origValue.substring(0, caret)+string+origValue.substring(caret);
   this.focus();
-  this.wtDom.setCaretPosition(this.TEXTAREA, caret+cellReference.length);
+  this.wtDom.setCaretPosition(this.TEXTAREA, caret+string.length);
   this.refreshDimensions();
 };
 

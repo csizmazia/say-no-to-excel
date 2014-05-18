@@ -5,7 +5,7 @@ html, body {
 }
 div#snte-chrome-top {
   width: 100%;
-  height: 55px;
+  /*height: 55px;*/
   border-bottom: 1px darkgray solid;
   background: lightgray;
 
@@ -14,9 +14,46 @@ div#snte-chrome-top {
   top: 0;
   left: 0;
 }
-div#snte-chrome-top>div.btn-toolbar>div.btn-group {
-  margin-top: 10px;
+div#snte-chrome-top-left {
+  width: 110px;
+  height: 100%;
+  display: table-cell;
+  vertical-align: middle;
 }
+div#snte-chrome-top-right {
+  width: 100%;
+  height: 100%;
+  display: table-cell;
+  margin-left: 110px;
+  vertical-align: top;
+}
+div#snte-menubar-top {
+  margin: 10px 0;
+}
+div#snte-menubar-formula {
+  margin-bottom: 5px;
+}
+div#snte-menubar-formula-help {
+  /*display: inline;
+  background: grey;*/
+}
+div#snte-menubar-formula-help span.syntax {
+  font-family: "Courier New";
+}
+div#snte-menubar-formula-help span.function {
+  color: #006699;
+}
+div#snte-menubar-formula-help span.bracket {
+  color: #FF0000;
+}
+div#snte-menubar-formula-help span.text {
+  color: #0000FF;
+}
+div#snte-menubar-formula-help span.cellref {
+  font-weight: bolder;
+  color: #FF8822;
+}
+
 div#snte-logo {
   display: table-cell;
   float: left;
@@ -73,6 +110,10 @@ button#snte-menu-font-underline {
   text-decoration: underline;
 }
 
+div#snte-menubar-formula button, div.snte-formula-arithmetics button {
+  font-weight: bold;
+}
+
 
 
 
@@ -92,6 +133,11 @@ div.snte-element-table table tr td, div.snte-element-table table tr th {
   cursor: default;
 }
 div.snte-element-table table tr td.snte-formula {
+  background-image: url('../img/formula-indicator-8x8.png');
+  background-position: 3px 3px;
+  background-repeat: no-repeat;
+}
+textarea.snte-formula {
   background-image: url('../img/formula-indicator-8x8.png');
   background-position: 3px 3px;
   background-repeat: no-repeat;
@@ -153,7 +199,7 @@ div.snte-element-container {
   padding: 0;
   display: inline-block;
   position: absolute;
-  top: 100px;
+  top: 115px;
   left: 50px;
 }
 div.snte-element-container div.snte-element-controls {

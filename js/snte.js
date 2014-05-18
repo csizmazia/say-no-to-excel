@@ -66,7 +66,7 @@ var snteTableCounter = 0;
 
 var snteImage = {"maxWidth": 500};
 
-var snteChromeSize = {"left": {"width": 0}, "top": {"height": 55}};
+var snteChromeSize = {"left": {"width": 0}, "top": {"height": 115}};
 var snteWorkspaceSize = {"width": 9999999999, "height": 9999999999};
 var snteDefaultElementSizes = {"comment": {"width": 275, "height": 150}};
 
@@ -258,6 +258,43 @@ function snte_bootstrap() {
   });
 }
 
+function snte_table_put_formula(formula) {
+  var editor = $snteWorkspaceFocusedElement.handsontable("getInstance").getActiveEditor();
+  console.log(editor);
+  var functionString = "";
+  if(editor.TEXTAREA.value.trim() === "") {
+    functionString = "="+formula;
+  }
+  else  {
+    functionString = formula;
+  }
+  editor.putString(functionString);
+}
+
+function snte_chrome_setup_formula_controls() {
+  $("div#snte-menubar-formula button").click(function(evt) {
+    console.log("clicked "+$(this).attr("id"));
+    snte_table_put_formula($(this).data("value"));
+    evt.stopImmediatePropagation();
+    evt.stopPropagation();
+    evt.preventDefault();
+  }).on("mousedown", function(evt) {
+    evt.stopImmediatePropagation();
+    evt.stopPropagation();
+    evt.preventDefault();
+  }).on("mouseover", function(evt) {
+    $("div#snte-menubar-formula-help").html(i18n.t($(this).attr("id").replace("snte-menu-","").replace(/-/g,".")+".help"));
+    evt.stopImmediatePropagation();
+    evt.stopPropagation();
+    evt.preventDefault();
+  }).on("mouseout", function(evt) {
+    $("div#snte-menubar-formula-help").html("&nbsp;");
+    evt.stopImmediatePropagation();
+    evt.stopPropagation();
+    evt.preventDefault();
+  });
+}
+
 function snte_chrome_setup() {
   snte_chrome_setup_image_control();
 
@@ -269,6 +306,8 @@ function snte_chrome_setup() {
     trigger: "hover",
     animation: false
   }).click(function() { $(this).tooltip("hide"); });
+
+  snte_chrome_setup_formula_controls();
 
   $("button#snte-menu-undo").click(function(evt) {
     snte_wysiwyg_exec_command("undo", null);
@@ -304,6 +343,7 @@ function snte_chrome_setup() {
     container: "body",
     placement: "bottom",
     trigger: "hover",
+    html: true,
     animation: false
   }).click(function() { $(this).tooltip("hide"); });
 
@@ -1055,10 +1095,12 @@ function snte_workspace_add_table() {
     onBeginEditing: function() {
       console.log("onBeginEditing");
       snteCellEditorOpened = true;
+      $("#snte-menubar-formula").show("slow");
     },
     onFinishEditing: function() {
       console.log("onFinishEditing");
       snteCellEditorOpened = false;
+      $("#snte-menubar-formula").hide("slow");
     },
     afterOnCellMouseDown: function(evt, coords, td) {
       console.log("afterOnCellMouseDown");
@@ -1070,7 +1112,7 @@ function snte_workspace_add_table() {
           var editor = $snteWorkspaceFocusedElement.handsontable("getInstance").getActiveEditor();
           console.log(editor);
           if(editor.TEXTAREA.value[0] === "=") {
-            editor.putCellReference(Handsontable.helper.spreadsheetColumnLabel(coords[1])+(coords[0]+1));
+            editor.putString(Handsontable.helper.spreadsheetColumnLabel(coords[1])+(coords[0]+1));
 
             evt.stopImmediatePropagation();
             evt.preventDefault();
@@ -1080,7 +1122,7 @@ function snte_workspace_add_table() {
       }
     },
     beforeKeyDown: function(evt) {
-      // TODO: wenn zelle gerade editiert wird, soll mit Pfeiltasten Zelle für Formel ausgewählt werden können
+      // TODO: wenn zelle gerade editiert wird, soll mit Pfeiltasten Zelle für Formel ausgewählt werden können?! oder besser so wie es ist: pfeiltasten navigieren in der textarea
     },
     beforeAutofill: function(start, end, data) {
       var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");

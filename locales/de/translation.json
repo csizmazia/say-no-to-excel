@@ -116,71 +116,71 @@
   "formula": {
     "function": {
         "sum": {
-            "title": "Summe (SUM)",
+            "help": "Berechnet die Summe eines Tabellenbereichs oder aller Einzelparameter. <strong>Syntax:</strong> <span class=\"syntax\"><span class=\"function\">SUM</span><span class=\"bracket\">(</span><span class=\"cellref\">von</span>:<span class=\"cellref\">bis</span><span class=\"bracket\">)</span></span> oder <span class=\"syntax\"><span class=\"function\">SUM</span><span class=\"bracket\">(</span>Wert1;Wert2;Wert3<span class=\"bracket\">)</span></span> <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"function\">SUM</span><span class=\"bracket\">(</span><span class=\"cellref\">A1</span>:<span class=\"cellref\">A7</span><span class=\"bracket\">)</span></span> oder <span class=\"syntax\"><span class=\"function\">SUM</span><span class=\"bracket\">(</span>77;9;18<span class=\"bracket\">)</span></span>",
             "button": "Summe"
         },
         "avg": {
-            "title": "Mittelwert (AVG)",
+            "help": "Berechnet den Mittelwert eines Tabellenbereichs oder aller Einzelparameter. <strong>Syntax:</strong> <span class=\"syntax\"><span class=\"function\">AVG</span><span class=\"bracket\">(</span><span class=\"cellref\">von</span>:<span class=\"cellref\">bis</span><span class=\"bracket\">)</span></span> oder <span class=\"syntax\"><span class=\"function\">AVG</span><span class=\"bracket\">(</span>Wert1;Wert2;Wert3<span class=\"bracket\">)</span></span> <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"function\">AVG</span><span class=\"bracket\">(</span><span class=\"cellref\">A2</span>:<span class=\"cellref\">A8</span><span class=\"bracket\">)</span></span> oder <span class=\"syntax\"><span class=\"function\">AVG</span><span class=\"bracket\">(</span>77;9;18<span class=\"bracket\">)</span></span>",
             "button": "Mittelwert"
         },
         "min": {
-            "title": "Minimum (MIN)",
+            "help": "Findet den kleinsten Wert eines Tabellenbereichs oder aller Einzelparameter. <strong>Syntax:</strong> <span class=\"syntax\"><span class=\"function\">MIN</span><span class=\"bracket\">(</span><span class=\"cellref\">von</span>:<span class=\"cellref\">bis</span><span class=\"bracket\">)</span></span> oder <span class=\"syntax\"><span class=\"function\">MIN</span><span class=\"bracket\">(</span>Wert1;Wert2;Wert3<span class=\"bracket\">)</span></span> <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"function\">MIN</span><span class=\"bracket\">(</span><span class=\"cellref\">B9</span>:<span class=\"cellref\">C9</span><span class=\"bracket\">)</span></span> oder <span class=\"syntax\"><span class=\"function\">MIN</span><span class=\"bracket\">(</span>77;9;18<span class=\"bracket\">)</span></span>",
             "button": "Minimum"
         },
         "max": {
-            "title": "Maximum (MAX)",
+            "help": "Findet den größten Wert eines Tabellenbereichs oder aller Einzelparameter. <strong>Syntax:</strong> <span class=\"syntax\"><span class=\"function\">MAX</span><span class=\"bracket\">(</span><span class=\"cellref\">von</span>:<span class=\"cellref\">bis</span><span class=\"bracket\">)</span></span> oder <span class=\"syntax\"><span class=\"function\">MAX</span><span class=\"bracket\">(</span>Wert1;Wert2;Wert3<span class=\"bracket\">)</span></span> <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"function\">MAX</span><span class=\"bracket\">(</span><span class=\"cellref\">A1</span>:<span class=\"cellref\">B2</span><span class=\"bracket\">)</span></span> oder <span class=\"syntax\"><span class=\"function\">MAX</span><span class=\"bracket\">(</span>77;9;18<span class=\"bracket\">)</span></span>",
             "button": "Maximum"
         },
         "count": {
-            "title": "Zählen (COUNT)",
+            "help": "Zählt numerische Werte. <strong>Syntax:</strong> <span class=\"syntax\"><span class=\"function\">COUNT</span><span class=\"bracket\">(</span><span class=\"cellref\">von</span>:<span class=\"cellref\">bis</span><span class=\"bracket\">)</span></span> oder <span class=\"syntax\"><span class=\"function\">COUNT</span><span class=\"bracket\">(</span>Wert1;Wert2;Wert3<span class=\"bracket\">)</span></span> <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"function\">COUNT</span><span class=\"bracket\">(</span><span class=\"cellref\">C1</span>:<span class=\"cellref\">C10</span><span class=\"bracket\">)</span></span> oder <span class=\"syntax\"><span class=\"function\">COUNT</span><span class=\"bracket\">(</span>77;<span class=\"text\">\"Text\"</span>;18<span class=\"bracket\">)</span></span>",
             "button": "Zählen"
         },
         "if": {
-            "title": "Bedingung (IF)",
+            "help": "Wertet eine Bedingung aus. <strong>Syntax:</strong> <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">(</span>Bedingung;Wahr;Falsch<span class=\"bracket\">)</span></span> <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">(</span><span class=\"cellref\">A10</span><4;<span class=\"text\">\"Kleiner vier\"</span>;<span class=\"text\">\"Größer vier\"</span><span class=\"bracket\">)</span></span>",
             "button": "Bedingung"
         }
     },
     "relation": {
         "lt": {
-            "title": "Kleiner als",
+            "help": "Kleiner als. Gibt \"Wahr\" oder \"Falsch\" aus. Kann in <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">()</span></span> verwendet werden. <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"cellref\">A1</span>&lt;10</span> oder <span class=\"syntax\">5&lt;7</span>",
             "button": "<"
         },
         "gt": {
-            "title": "Größer als",
+            "help": "Größer als. Gibt \"Wahr\" oder \"Falsch\" aus. Kann in <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">()</span></span> verwendet werden. <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"cellref\">A9</span>&gt;7</span> oder <span class=\"syntax\">5&gt;7</span>",
             "button": ">"
         },
         "lte": {
-            "title": "Kleiner-gleich als",
+            "help": "Kleiner-gleich. Gibt \"Wahr\" oder \"Falsch\" aus. Kann in <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">()</span></span> verwendet werden. <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"cellref\">A1</span>&lt;=10</span> oder <span class=\"syntax\">5&lt;=5</span>",
             "button": "≤"
         },
         "gte": {
-            "title": "Größer-gleich als",
+            "help": "Größer-gleich. Gibt \"Wahr\" oder \"Falsch\" aus. Kann in <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">()</span></span> verwendet werden. <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"cellref\">A9</span>&gt;=7</span> oder <span class=\"syntax\">99&gt;=10</span>",
             "button": "≥"
         },
         "eq": {
-            "title": "Ist gleich",
+            "help": "Ist gleich. Gibt \"Wahr\" oder \"Falsch\" aus. Kann in <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">()</span></span> verwendet werden. <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"cellref\">A9</span>=7</span> oder <span class=\"syntax\">99=99</span>",
             "button": "="
         },
         "neq": {
-            "title": "Ist ungleich",
+            "help": "Ist ungleich. Gibt \"Wahr\" oder \"Falsch\" aus. Kann in <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">()</span></span> verwendet werden. <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"cellref\">A9</span>&lt;&gt;7</span> oder <span class=\"syntax\">11&lt;&gt;10</span>",
             "button": "≠"
         }
     },
     "arithmetic": {
         "add": {
-            "title": "Addieren",
+            "help": "Addition von Zahlen und Tabellenzellen. <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"cellref\">A1</span>+7</span> oder <span class=\"syntax\">1+2</span>",
             "button": "+"
         },
         "sub": {
-            "title": "Subtrahieren",
+            "help": "Subtraktion von Zahlen und Tabellenzellen. <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"cellref\">A9</span>-<span class=\"cellref\">B2</span></span> oder <span class=\"syntax\">10-2</span>",
             "button": "-"
         },
         "mult": {
-            "title": "Multiplizieren",
+            "help": "Multiplikation von Zahlen und Tabellenzellen. <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"cellref\">A1</span>*<span class=\"cellref\">B1</span></span> oder <span class=\"syntax\">3*3</span>",
             "button": "*"
         },
         "div": {
-            "title": "Dividieren",
+            "help": "Division von Zahlen und Tabellenzellen. <strong>Beispiel:</strong> <span class=\"syntax\"><span class=\"cellref\">A1</span>/<span class=\"cellref\">B1</span></span> oder <span class=\"syntax\">20/5</span>",
             "button": "÷"
         }
     }

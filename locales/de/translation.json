@@ -78,6 +78,7 @@
     "unnamed": "Unbenannte Tabelle",
     "add-row": "Zeile hinzufügen",
     "add-column": "Spalte hinzufügen",
+    "vacuum-confirm": "Einige Zellen außerhalb des markierten Bereichs sind nicht leer. Trotzdem entfernen?",
     "context-menu": {
         "insert-row-above": "Zeile oberhalb hinzufügen",
         "insert-row-below": "Zeile unterhalb hinzufügen",
@@ -89,7 +90,8 @@
         "hide-column-headers": "Spaltenbeschriftung ausblenden",
         "show-row-headers": "Zeilenbeschriftung einblenden",
         "show-column-headers": "Spaltenbeschriftung einblenden",
-        "table-options": "Tabelle"
+        "table-options": "Tabelle",
+        "vacuum": "Nur ausgewählte Zellen behalten"
     },
     "formula": {
         "error": {

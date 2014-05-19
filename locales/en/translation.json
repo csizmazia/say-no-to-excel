@@ -76,6 +76,7 @@
     "unnamed": "Unnamed Table",
     "add-row": "Add row",
     "add-column": "Add column",
+    "vacuum-confirm": "Some cells outside the selected area are not empty. Remove them anyways?",
     "context-menu": {
         "insert-row-above": "Insert row above",
         "insert-row-below": "Insert row below",
@@ -87,7 +88,8 @@
         "hide-column-headers": "Hide column headers",
         "show-row-headers": "Show row headers",
         "show-column-headers": "Show column headers",
-        "table-options": "Table"
+        "table-options": "Table",
+        "vacuum": "Keep only selected cells"
     },
     "formula": {
         "error": {

@@ -925,6 +925,7 @@ function snte_workspace_reset_focus() {
     else if($snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
       $snteWorkspaceFocusedElement.handsontable("getInstance").deselectCell();
       $("div#snte-menu-cell-type button").addClass("disabled");
+      $("#snte-menubar-formula").hide("slow");
     }
   }
   $snteWorkspaceFocusedElement = void 0;
@@ -943,6 +944,7 @@ function snte_workspace_set_focus($elem) {
     $("div#snte-menu-cell-type button").removeClass("disabled");
     $("button#snte-menu-ordered-list").addClass("disabled");
     $("button#snte-menu-unordered-list").addClass("disabled");
+    $("#snte-menubar-formula").show("slow");
   }
   else {
     $("div#snte-menu-cell-type button").addClass("disabled");
@@ -1095,17 +1097,13 @@ function snte_workspace_add_table() {
     onBeginEditing: function() {
       console.log("onBeginEditing");
       snteCellEditorOpened = true;
-      $("#snte-menubar-formula").show("slow");
     },
     onFinishEditing: function() {
       console.log("onFinishEditing");
       snteCellEditorOpened = false;
-      $("#snte-menubar-formula").hide("slow");
     },
     afterOnCellMouseDown: function(evt, coords, td) {
       console.log("afterOnCellMouseDown");
-      console.log(evt);
-      console.log(coords);
       if(snteCellEditorOpened) {
         var $targetTable = $(td).closest(".snte-element");
         if($targetTable.attr("id") === $snteWorkspaceFocusedElement.attr("id")) { // this should be removed in the future - need good idea for referencing tables though

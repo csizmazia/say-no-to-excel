@@ -184,38 +184,5 @@
             "button": "÷"
         }
     }
-  },
-  "calculator": {
-    "buttons": {
-        "0": "0",
-        "1": "1",
-        "2": "2",
-        "3": "3",
-        "4": "4",
-        "5": "5",
-        "6": "6",
-        "7": "7",
-        "8": "8",
-        "9": "9",
-        "comma": ",",
-        "add": "+",
-        "sub": "-",
-        "mult": "*",
-        "div": "÷",
-        "done": "OK",
-        "sum": "Summe",
-        "count": "Zählen",
-        "avg": "Durchschnitt",
-        "min": "Minimum",
-        "max": "Maximum",
-        "if": "Bedingung",
-        "lt": "<",
-        "gt": ">",
-        "lte": "≤",
-        "gte": "≥",
-        "eq": "=",
-        "neq": "≠"
-    }
-    
   }
 }

@@ -110,5 +110,77 @@
         "true": "True",
         "false": "False"
     }
+  },
+  "formula": {
+    "function": {
+        "sum": {
+            "help": "Calculates the sum of a table range or all single parameters. <strong>Syntax:</strong> <span class=\"syntax\"><span class=\"function\">SUM</span><span class=\"bracket\">(</span><span class=\"cellref\">from</span>:<span class=\"cellref\">to</span><span class=\"bracket\">)</span></span> or <span class=\"syntax\"><span class=\"function\">SUM</span><span class=\"bracket\">(</span>Value1;Value2;Value3<span class=\"bracket\">)</span></span> <strong>Example:</strong> <span class=\"syntax\"><span class=\"function\">SUM</span><span class=\"bracket\">(</span><span class=\"cellref\">A1</span>:<span class=\"cellref\">A7</span><span class=\"bracket\">)</span></span> or <span class=\"syntax\"><span class=\"function\">SUM</span><span class=\"bracket\">(</span>77;9;18<span class=\"bracket\">)</span></span>",
+            "button": "Sum"
+        },
+        "avg": {
+            "help": "Calculates the average of a table range or all single parameters. <strong>Syntax:</strong> <span class=\"syntax\"><span class=\"function\">AVG</span><span class=\"bracket\">(</span><span class=\"cellref\">from</span>:<span class=\"cellref\">to</span><span class=\"bracket\">)</span></span> or <span class=\"syntax\"><span class=\"function\">AVG</span><span class=\"bracket\">(</span>Value1;Value2;Value3<span class=\"bracket\">)</span></span> <strong>Example:</strong> <span class=\"syntax\"><span class=\"function\">AVG</span><span class=\"bracket\">(</span><span class=\"cellref\">A2</span>:<span class=\"cellref\">A8</span><span class=\"bracket\">)</span></span> or <span class=\"syntax\"><span class=\"function\">AVG</span><span class=\"bracket\">(</span>77;9;18<span class=\"bracket\">)</span></span>",
+            "button": "Average"
+        },
+        "min": {
+            "help": "Finds the minumum in a table range or all single parameters. <strong>Syntax:</strong> <span class=\"syntax\"><span class=\"function\">MIN</span><span class=\"bracket\">(</span><span class=\"cellref\">from</span>:<span class=\"cellref\">to</span><span class=\"bracket\">)</span></span> or <span class=\"syntax\"><span class=\"function\">MIN</span><span class=\"bracket\">(</span>Value1;Value2;Value3<span class=\"bracket\">)</span></span> <strong>Example:</strong> <span class=\"syntax\"><span class=\"function\">MIN</span><span class=\"bracket\">(</span><span class=\"cellref\">B9</span>:<span class=\"cellref\">C9</span><span class=\"bracket\">)</span></span> or <span class=\"syntax\"><span class=\"function\">MIN</span><span class=\"bracket\">(</span>77;9;18<span class=\"bracket\">)</span></span>",
+            "button": "Minimum"
+        },
+        "max": {
+            "help": "Finds the maximum in a table range or all single parameters. <strong>Syntax:</strong> <span class=\"syntax\"><span class=\"function\">MAX</span><span class=\"bracket\">(</span><span class=\"cellref\">from</span>:<span class=\"cellref\">to</span><span class=\"bracket\">)</span></span> or <span class=\"syntax\"><span class=\"function\">MAX</span><span class=\"bracket\">(</span>Value1;Value2;Value3<span class=\"bracket\">)</span></span> <strong>Example:</strong> <span class=\"syntax\"><span class=\"function\">MAX</span><span class=\"bracket\">(</span><span class=\"cellref\">A1</span>:<span class=\"cellref\">B2</span><span class=\"bracket\">)</span></span> or <span class=\"syntax\"><span class=\"function\">MAX</span><span class=\"bracket\">(</span>77;9;18<span class=\"bracket\">)</span></span>",
+            "button": "Maximum"
+        },
+        "count": {
+            "help": "Counts numeric values. <strong>Syntax:</strong> <span class=\"syntax\"><span class=\"function\">COUNT</span><span class=\"bracket\">(</span><span class=\"cellref\">from</span>:<span class=\"cellref\">to</span><span class=\"bracket\">)</span></span> or <span class=\"syntax\"><span class=\"function\">COUNT</span><span class=\"bracket\">(</span>Value1;Value2;Value3<span class=\"bracket\">)</span></span> <strong>Example:</strong> <span class=\"syntax\"><span class=\"function\">COUNT</span><span class=\"bracket\">(</span><span class=\"cellref\">C1</span>:<span class=\"cellref\">C10</span><span class=\"bracket\">)</span></span> or <span class=\"syntax\"><span class=\"function\">COUNT</span><span class=\"bracket\">(</span>77;<span class=\"text\">\"Text\"</span>;18<span class=\"bracket\">)</span></span>",
+            "button": "Count"
+        },
+        "if": {
+            "help": "Evaluates a condition. <strong>Syntax:</strong> <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">(</span>Condition;Then;Else<span class=\"bracket\">)</span></span> <strong>Example:</strong> <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">(</span><span class=\"cellref\">A10</span><4;<span class=\"text\">\"Less than 4\"</span>;<span class=\"text\">\"Greater than 4\"</span><span class=\"bracket\">)</span></span>",
+            "button": "Condition"
+        }
+    },
+    "relation": {
+        "lt": {
+            "help": "Less than. Evaluates to \"True\" or \"False\". Can be used in <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">()</span></span> conditions. <strong>Example:</strong> <span class=\"syntax\"><span class=\"cellref\">A1</span>&lt;10</span> or <span class=\"syntax\">5&lt;7</span>",
+            "button": "<"
+        },
+        "gt": {
+            "help": "Greater than. Evaluates to \"True\" or \"False\". Can be used in <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">()</span></span> conditions. <strong>Example:</strong> <span class=\"syntax\"><span class=\"cellref\">A9</span>&gt;7</span> or <span class=\"syntax\">5&gt;7</span>",
+            "button": ">"
+        },
+        "lte": {
+            "help": "Lower than or equals. Evaluates to \"True\" or \"False\". Can be used in <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">()</span></span> conditions. <strong>Example:</strong> <span class=\"syntax\"><span class=\"cellref\">A1</span>&lt;=10</span> or <span class=\"syntax\">5&lt;=5</span>",
+            "button": "≤"
+        },
+        "gte": {
+            "help": "Greater than or equals. Evaluates to \"True\" or \"False\". Can be used in <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">()</span></span> conditions. <strong>Example:</strong> <span class=\"syntax\"><span class=\"cellref\">A9</span>&gt;=7</span> or <span class=\"syntax\">99&gt;=10</span>",
+            "button": "≥"
+        },
+        "eq": {
+            "help": "Is equal. Evaluates to \"True\" or \"False\". Can be used in <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">()</span></span> conditions. <strong>Example:</strong> <span class=\"syntax\"><span class=\"cellref\">A9</span>=7</span> or <span class=\"syntax\">99=99</span>",
+            "button": "="
+        },
+        "neq": {
+            "help": "Is not equal. Evaluates to \"True\" or \"False\". Can be used in <span class=\"syntax\"><span class=\"function\">IF</span><span class=\"bracket\">()</span></span> conditions. <strong>Example:</strong> <span class=\"syntax\"><span class=\"cellref\">A9</span>&lt;&gt;7</span> or <span class=\"syntax\">11&lt;&gt;10</span>",
+            "button": "≠"
+        }
+    },
+    "arithmetic": {
+        "add": {
+            "help": "Summation of numbers and table cells. <strong>Example:</strong> <span class=\"syntax\"><span class=\"cellref\">A1</span>+7</span> or <span class=\"syntax\">1+2</span>",
+            "button": "+"
+        },
+        "sub": {
+            "help": "Subtraction of numbers and table cells. <strong>Example:</strong> <span class=\"syntax\"><span class=\"cellref\">A9</span>-<span class=\"cellref\">B2</span></span> or <span class=\"syntax\">10-2</span>",
+            "button": "-"
+        },
+        "mult": {
+            "help": "Multiplication of numbers and table cells. <strong>Example:</strong> <span class=\"syntax\"><span class=\"cellref\">A1</span>*<span class=\"cellref\">B1</span></span> or <span class=\"syntax\">3*3</span>",
+            "button": "*"
+        },
+        "div": {
+            "help": "Division of numbers and table cells. <strong>Example:</strong> <span class=\"syntax\"><span class=\"cellref\">A1</span>/<span class=\"cellref\">B1</span></span> or <span class=\"syntax\">20/5</span>",
+            "button": "÷"
+        }
+    }
   }
 }

@@ -258,19 +258,6 @@ function snte_bootstrap() {
   });
 }
 
-function snte_table_put_formula(formula) {
-  var editor = $snteWorkspaceFocusedElement.handsontable("getInstance").getActiveEditor();
-  console.log(editor);
-  var functionString = "";
-  if(editor.TEXTAREA.value.trim() === "") {
-    functionString = "="+formula;
-  }
-  else  {
-    functionString = formula;
-  }
-  editor.putString(functionString);
-}
-
 function snte_chrome_setup_formula_controls() {
   $("div#snte-menubar-formula button").click(function(evt) {
     console.log("clicked "+$(this).attr("id"));
@@ -519,8 +506,8 @@ function snte_chrome_setup_image_control() {
       $("#snte-image-modal").modal("hide");
       var dataTransfer = evt.originalEvent.dataTransfer;
       if (dataTransfer && dataTransfer.files) {
-        $.each(dataTransfer.files, function (idx, file) {
-          async.readFileAsDataURL(file).then(function (url) {
+        $.each(dataTransfer.files, function(idx, file) {
+          async.readFileAsDataURL(file).then(function(url) {
             snte_workspace_add_image(url);
           }).fail(function () {
             alert(t("image-upload.upload-error"));
@@ -538,8 +525,8 @@ function snte_chrome_setup_image_control() {
     }).bind('drop', function(evt) {
       var dataTransfer = evt.originalEvent.dataTransfer;
       if (dataTransfer && dataTransfer.files) {
-        $.each(dataTransfer.files, function (idx, file) {
-          async.readFileAsDataURL(file).then(function (url) {
+        $.each(dataTransfer.files, function(idx, file) {
+          async.readFileAsDataURL(file).then(function(url) {
             snte_workspace_add_image(url);
           }).fail(function () {
             alert(t("image-upload.upload-error"));
@@ -552,9 +539,23 @@ function snte_chrome_setup_image_control() {
     });
   }
 
-  $("button#snte-image-upload-ok").click(function (evt) {
+  $("#snte-image-modal").on("shown.bs.modal", function(evt) {
+    $("input#snte-image-link").focus();
+  });
+  $("#snte-image-add-tab-link-header a").on("shown.bs.tab", function(evt) {
+    $("input#snte-image-link").focus();
+  });
+  $("input#snte-image-link").on("keyup", function(evt) {
+    if(evt.keyCode === Handsontable.helper.keyCode.ENTER) {
+      if($(this).val().trim() !== "") {
+        snte_workspace_add_image($(this).val());
+      }
+    }
+  });
+  $("button#snte-image-upload-ok").click(function(evt) {
     if($("#snte-image-add-tab-link-header").hasClass("active") && $("input#snte-image-link").val().trim() !== "") {
       snte_workspace_add_image($("input#snte-image-link").val());
+      $("input#snte-image-link").val("");
     }
   });
 }
@@ -574,6 +575,19 @@ function snte_table_apply_cell_type() {
       snte_chrome_set_font_controls("table_cell", $(tableInstance.getCell(selectedCells[0], selectedCells[1])));
     }
   }
+}
+
+function snte_table_put_formula(formula) {
+  var editor = $snteWorkspaceFocusedElement.handsontable("getInstance").getActiveEditor();
+  console.log(editor);
+  var functionString = "";
+  if(editor.TEXTAREA.value.trim() === "") {
+    functionString = "="+formula;
+  }
+  else  {
+    functionString = formula;
+  }
+  editor.putString(functionString);
 }
 
 function snte_chrome_setup_search() {

@@ -986,9 +986,16 @@ function snte_workspace_make_resizable($elem) {
     handles: "se",
     minHeight: 50,
     minWidth: 70,
-    stop: function(evt, ui) {
+    /*stop: function(evt, ui) {
       console.log(ui);
-    }
+      var $elem = ui.element.find(".snte-element");
+      console.log($elem);
+      if($elem.hasClass("snte-element-table")) {
+        console.log("hier");
+        var tableInstance = $elem.handsontable("getInstance");
+        tableInstance.updateSettings({"width": ui.size.width, "height": ui.size.height})
+      }
+    }*/
   });
 }
 
@@ -1065,7 +1072,6 @@ function snte_workspace_add_table() {
     scrollH: "none",
     outsideClickDeselects: false,
     useFormula: true,
-    // http://handsontable.com/demo/buttons.html
     rowHeaders: true,
     colHeaders: true,
     search: {
@@ -1109,7 +1115,7 @@ function snte_workspace_add_table() {
       snte_chrome_set_font_controls("table_cell", $(this.getCell(row_start, column_start)));
       snte_chrome_set_type_control({"row": row_start, "col": column_start});
 
-      // TODO: wenn eine Zelle gerade editiert wird, die selection in die Formel einfügen
+      // TODO: wenn eine Zelle gerade editiert wird, die selection (zellbereich/range) in die Formel einfügen
     },
     onBeginEditing: function() {
       console.log("onBeginEditing");
@@ -1125,7 +1131,6 @@ function snte_workspace_add_table() {
         var $targetTable = $(td).closest(".snte-element");
         if($targetTable.attr("id") === $snteWorkspaceFocusedElement.attr("id")) { // this should be removed in the future - need good idea for referencing tables though
           var editor = $snteWorkspaceFocusedElement.handsontable("getInstance").getActiveEditor();
-          console.log(editor);
           if(editor.TEXTAREA.value[0] === "=") {
             editor.putString(Handsontable.helper.spreadsheetColumnLabel(coords[1])+(coords[0]+1));
 
@@ -1392,7 +1397,7 @@ function snte_workspace_add_table() {
   $newElementContainer.append($addColumnControl);
 
   snte_workspace_make_draggable($newElementContainer);
-  snte_workspace_make_resizable($newElementContainer);
+  //snte_workspace_make_resizable($newElementContainer);
   snte_workspace_bring_to_front($newElementContainer);
 
   snteWorkspaceElements[nextId] = $newElement;

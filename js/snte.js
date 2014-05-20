@@ -578,7 +578,12 @@ function snte_table_apply_cell_type() {
 }
 
 function snte_table_put_formula(formula) {
-  var editor = $snteWorkspaceFocusedElement.handsontable("getInstance").getActiveEditor();
+  var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+  var editor = tableInstance.getActiveEditor();
+  if(!snteCellEditorOpened) {
+    editor.beginEditing();
+  }
+  
   console.log(editor);
   var functionString = "";
   if(editor.TEXTAREA.value.trim() === "") {
@@ -1127,12 +1132,13 @@ function snte_workspace_add_table() {
     },
     afterOnCellMouseDown: function(evt, coords, td) {
       console.log("afterOnCellMouseDown");
+      console.log(evt);
       if(snteCellEditorOpened) {
         var $targetTable = $(td).closest(".snte-element");
         if($targetTable.attr("id") === $snteWorkspaceFocusedElement.attr("id")) { // this should be removed in the future - need good idea for referencing tables though
           var editor = $snteWorkspaceFocusedElement.handsontable("getInstance").getActiveEditor();
           if(editor.TEXTAREA.value[0] === "=") {
-            editor.putString(Handsontable.helper.spreadsheetColumnLabel(coords[1])+(coords[0]+1));
+            editor.putString((evt.shiftKey?":":"")+Handsontable.helper.spreadsheetColumnLabel(coords[1])+(coords[0]+1));
 
             evt.stopImmediatePropagation();
             evt.preventDefault();

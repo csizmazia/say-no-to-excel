@@ -186,5 +186,8 @@
             "button": "÷"
         }
     }
+  },
+  "resize": {
+    "drag-handle-help": "Doppelklick: Originalgröße wiederherstellen"
   }
 }

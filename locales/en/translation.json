@@ -184,5 +184,8 @@
             "button": "÷"
         }
     }
+  },
+  "resize": {
+    "drag-handle-help": "Double-click: Restore original size"
   }
 }

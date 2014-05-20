@@ -260,7 +260,6 @@ function snte_bootstrap() {
 
 function snte_chrome_setup_formula_controls() {
   $("div#snte-menubar-formula button").click(function(evt) {
-    console.log("clicked "+$(this).attr("id"));
     snte_table_put_formula($(this).data("value"));
     evt.stopImmediatePropagation();
     evt.stopPropagation();
@@ -584,7 +583,6 @@ function snte_table_put_formula(formula) {
     editor.beginEditing();
   }
   
-  console.log(editor);
   var functionString = "";
   if(editor.TEXTAREA.value.trim() === "") {
     functionString = "="+formula;
@@ -1132,7 +1130,6 @@ function snte_workspace_add_table() {
     },
     afterOnCellMouseDown: function(evt, coords, td) {
       console.log("afterOnCellMouseDown");
-      console.log(evt);
       if(snteCellEditorOpened) {
         var $targetTable = $(td).closest(".snte-element");
         if($targetTable.attr("id") === $snteWorkspaceFocusedElement.attr("id")) { // this should be removed in the future - need good idea for referencing tables though

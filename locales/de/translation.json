@@ -189,5 +189,47 @@
   },
   "resize": {
     "drag-handle-help": "Doppelklick: Originalgröße wiederherstellen"
+  },
+  "chart": {
+    "unnamed": "Unbenanntes Diagramm",
+    "error-no-cells-selected": "Kein Zellbereich ausgewählt.",
+    "wizard": {
+        "header": "Neues Diagramm erstellen",
+        "header-data": "Daten",
+        "header-title": "Titel",
+        "header-type": "Art",
+        "header-axis": "Achsbeschriftungen",
+        "xaxis": "Hotizontale Achse",
+        "yaxis": "Vertikale Achse",
+        "unnamed-axis": "keine Beschriftung",
+        "first-data-row": "Die erste Zeile enthält Überschriften",
+        "data-table": "Tabelle",
+        "data-cellrange": "Zellbereich",
+        "ok-button": "OK",
+        "cancel-button": "Abbrechen"
+    },
+    "type": {
+        "line": {
+            "title": "Linie"
+        },
+        "smoothline": {
+            "title": "Glatte Linie"
+        },
+        "area": {
+            "title": "Fläche"
+        },
+        "vbar": {
+            "title": "Säule"
+        },
+        "hbar": {
+            "title": "Balken"
+        },
+        "pie": {
+            "title": "Torte"
+        },
+        "donut": {
+            "title": "Kreis"
+        }
+    }
   }
 }

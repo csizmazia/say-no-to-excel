@@ -4,39 +4,42 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>say no to excel!</title>
-    <script src="assets/jquery/jquery-2.1.0.js"></script>
-    <script src="assets/jquery/jquery-ui-1.10.4.custom.js"></script>
-    <script src="assets/bootstrap3/js/bootstrap.js"></script>
-    <script src="assets/i18next/i18next-1.7.3.js"></script>
-    <!--<script src="assets/bootstrap2/js/bootstrap-editable.js"></script>-->
-    <!--<script src="assets/bootstrap3/js/bootstrap-colorpicker.js"></script>-->
-    <script src="assets/jquery/handsontable/jquery.handsontable.full.js"></script>
-    <script src="assets/jquery/handsontable/jquery.handsontable-excel.js"></script>
 
+    <!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
+    <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+
+
+    <script type="text/javascript" src="assets/jquery/jquery-2.1.0.js"></script>
+    <script type="text/javascript" src="assets/jquery/jquery-ui-1.10.4.custom.js"></script>
+
+    <script type="text/javascript" src="assets/bootstrap3/js/bootstrap.js"></script>
+
+    <script type="text/javascript" src="assets/i18next/i18next-1.7.3.js"></script>
+
+    <script type="text/javascript" src="assets/jquery/handsontable/jquery.handsontable.full.js"></script>
+    <script type="text/javascript" src="assets/jquery/handsontable/jquery.handsontable-excel.js"></script>
+    
     <!--<script src="assets/numeral/numeral.js"></script>-->
-    <script src="assets/numeral/languages/de.js"></script>
+    <script type="text/javascript" src="assets/numeral/languages/de.js"></script>
 
-    <script src="assets/jquery/jquery.highlight.js"></script>
-    <script src="assets/jquery/jquery.pulsate.js"></script>
+    <script type="text/javascript" src="assets/jquery/jquery.highlight.js"></script>
+    <script type="text/javascript" src="assets/jquery/jquery.pulsate.js"></script>
 
-    <script src="assets/phpjs/strtotime.js"></script>
-    <script src="assets/phpjs/date.js"></script>
+    <script type="text/javascript" src="assets/phpjs/strtotime.js"></script>
+    <script type="text/javascript" src="assets/phpjs/date.js"></script>
 
-    <script src="js/color.js"></script>
-    <script src="js/snte.js"></script>
+    <script type="text/javascript" src="js/color.js"></script>
+    <script type="text/javascript" src="js/snte.js"></script>
 
-    <!--<link rel="stylesheet" media="screen" href="css/ui-bootstrap/jquery-ui.custom.css">
-     <link rel="stylesheet" media="screen" href="css/smoothness/jquery-ui.custom.css"> -->
-    <link rel="stylesheet" media="screen" href="assets/jquery/ui-lightness/jquery-ui-1.10.4.custom.css">
-    <link rel="stylesheet" media="screen" href="assets/jquery/handsontable/jquery.handsontable.full.css">
-    <link rel="stylesheet" media="screen" href="assets/bootstrap3/css/bootstrap.css">
-    <!--<link rel="stylesheet" media="screen" href="assets/bootstrap2/css/bootstrap-editable.css">-->
-    <!--<link rel="stylesheet" media="screen" href="assets/bootstrap3/css/bootstrap-colorpicker.css">
-    <link rel="stylesheet" media="screen" href="assets/bootstrap3/css/bootstrap-colorselector.css">-->
-    <link rel="stylesheet" media="screen" href="css/snte.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/jquery/ui-lightness/jquery-ui-1.10.4.custom.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/jquery/handsontable/jquery.handsontable.full.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/bootstrap3/css/bootstrap.css">
 
-    <link href='http://fonts.googleapis.com/css?family=Gilda+Display' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/snte.css">
+
+    <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Gilda+Display'>
   </head>
   <body>
     <!-- Error Message Modal 
@@ -84,6 +87,54 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-dismiss="modal" id="snte-image-upload-ok" data-i18n="image-upload.button"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Image Upload Modal -->
+    <!-- Chart Creation Modal -->
+    <div class="modal fade" id="snte-chart-modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title" data-i18n="chart.wizard.header"></h4>
+          </div>
+          <div class="modal-body">
+            <h5 data-i18n="chart.wizard.header-title"></h5>
+            <div class="well">
+              <input type="text" id="snte-chart-wizard-title" class="form-control" placeholder="" data-i18n="[placeholder]chart.unnamed" />
+            </div>
+            <h5 data-i18n="chart.wizard.header-type"></h5>
+            <div class="btn-toolbar well">
+              <button type="button" class="btn btn-default snte-chart-wizard-type" id="snte-chart-wizard-type-line" data-value="line" title="" data-i18n="[title]chart.type.line.title"><span></span></button>
+              <button type="button" class="btn btn-default snte-chart-wizard-type" id="snte-chart-wizard-type-smoothline" data-value="smoothline" title="" data-i18n="[title]chart.type.smoothline.title"><span></span></button>
+              <button type="button" class="btn btn-default snte-chart-wizard-type" id="snte-chart-wizard-type-area" data-value="area" title="" data-i18n="[title]chart.type.area.title"><span></span></button><br />
+
+              <button type="button" class="btn btn-default snte-chart-wizard-type" id="snte-chart-wizard-type-vbar" data-value="vbar" title="" data-i18n="[title]chart.type.vbar.title"><span></span></button>
+              <button type="button" class="btn btn-default snte-chart-wizard-type" id="snte-chart-wizard-type-hbar" data-value="hbar" title="" data-i18n="[title]chart.type.hbar.title"><span></span></button><br />
+
+              <button type="button" class="btn btn-default snte-chart-wizard-type active" id="snte-chart-wizard-type-pie" data-value="pie" title="" data-i18n="[title]chart.type.pie.title"><span></span></button>
+              <button type="button" class="btn btn-default snte-chart-wizard-type" id="snte-chart-wizard-type-donut" data-value="donut" title="" data-i18n="[title]chart.type.donut.title"><span></span></button>
+            </div>
+            <h5 data-i18n="chart.wizard.header-data"></h5>
+            <div class="well">
+              <div id="snte-chart-wizard-cellrange"></div>
+              <div>
+                <input type="checkbox" id="snte-chart-wizard-first-data-row" checked="checked">&nbsp;<label for="snte-chart-wizard-first-data-row" data-i18n="chart.wizard.first-data-row">
+              </div>
+            </div>
+            <h5 data-i18n="chart.wizard.header-axis"></h5>
+            <div class="well">
+              <label for="snte-chart-wizard-xaxis" data-i18n="chart.wizard.xaxis"></label><br />
+              <input type="text" id="snte-chart-wizard-xaxis" class="form-control" placeholder="" data-i18n="[placeholder]chart.wizard.unnamed-axis" /><br />
+              <label for="snte-chart-wizard-yaxis" data-i18n="chart.wizard.yaxis"></label><br />
+              <input type="text" id="snte-chart-wizard-yaxis" class="form-control" placeholder="" data-i18n="[placeholder]chart.wizard.unnamed-axis" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" id="snte-chart-wizard-cancel" data-i18n="chart.wizard.cancel-button"></button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="snte-chart-wizard-ok" data-i18n="chart.wizard.ok-button"></button>
           </div>
         </div>
       </div>
@@ -219,7 +270,7 @@
               <li><a href="#" data-item="table" data-i18n="[append]chrome.new-element-table"><span class="glyphicon glyphicon-th-large"></span></a></li>
               <li><a href="#" data-item="text" data-i18n="[append]chrome.new-element-text"><span class="glyphicon glyphicon-font"></span></a></li>
               <li><a href="#" data-item="comment" data-i18n="[append]chrome.new-element-comment"><span class="glyphicon glyphicon-comment"></span></a></li>
-              <li><a href="#" data-item="chart" data-i18n="[append]chrome.new-element-chart"><span class="glyphicon glyphicon-signal"></span></a></li>
+              <li id="snte-menu-add-element-chart" class="disabled"><a href="#" data-item="chart" data-i18n="[append]chrome.new-element-chart"><span class="glyphicon glyphicon-signal"></span></a></li>
               <li><a href="#" data-item="image" data-i18n="[append]chrome.new-element-image"><span class="glyphicon glyphicon-picture"></span></a></li>
             </ul>
           </div>

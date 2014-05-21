@@ -187,5 +187,47 @@
   },
   "resize": {
     "drag-handle-help": "Double-click: Restore original size"
+  },
+  "chart": {
+    "unnamed": "Unnamed Chart",
+    "error-no-cells-selected": "No cells selected.",
+    "wizard": {
+        "header": "Create New Chart",
+        "header-data": "Data",
+        "header-title": "Title",
+        "header-type": "Type",
+        "header-axis": "Axis Labels",
+        "xaxis": "Horizontal Axis",
+        "yaxis": "Vertical Axis",
+        "unnamed-axis": "No label",
+        "first-data-row": "First row contains column headers",
+        "data-table": "Table",
+        "data-cellrange": "Cellrange",
+        "ok-button": "OK",
+        "cancel-button": "Cancel"
+    },
+    "type": {
+        "line": {
+            "title": "Line"
+        },
+        "smoothline": {
+            "title": "Smooth line"
+        },
+        "area": {
+            "title": "Area"
+        },
+        "vbar": {
+            "title": "Column"
+        },
+        "hbar": {
+            "title": "Bar"
+        },
+        "pie": {
+            "title": "Pie"
+        },
+        "donut": {
+            "title": "Donut"
+        }
+    }
   }
 }

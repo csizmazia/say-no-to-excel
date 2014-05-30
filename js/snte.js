@@ -1268,7 +1268,7 @@ function snte_workspace_reset_focus($becauseOfElem) {
       $snteWorkspaceFocusedElement.handsontable("getInstance").deselectCell();
       $("div#snte-menu-cell-type button").addClass("disabled");
       $("li#snte-menu-add-element-chart").addClass("disabled");
-      if($becauseOfElem !== void 0 && !$becauseOfElem.hasClass("snte-element-table")) {
+      if($becauseOfElem === void 0 || ($becauseOfElem !== void 0 && !$becauseOfElem.hasClass("snte-element-table"))) {
         $("div#snte-menubar-formula").hide("slow");
       }
     }
@@ -1380,6 +1380,10 @@ function snte_workspace_make_resizable($elem, keepAspectRatio, restoreOriginal) 
         "height": "auto"
       });
     });
+  };
+  if($elem.find("div.snte-element").hasClass("snte-element-comment")) {
+    // need this to move resizehandle away from scrollbar
+    $elem.find("div.ui-resizable-handle").addClass("snte-comment-resizehandle");  
   }
 }
 
@@ -1387,7 +1391,20 @@ function snte_workspace_create_element_container(withTitle, titlePlaceholder) {
   var $newElementContainer = $("<div>").addClass("snte-element-container");
 
   if(withTitle) {
-    $titleField = $("<input>").attr("type", "text").attr("placeholder", titlePlaceholder).addClass("snte-element-title-input");
+    $titleField = $("<input>").attr("type", "text").attr("placeholder", titlePlaceholder).addClass("snte-element-title-input").blur(function(evt) {
+      // reset cursor (set to 0) so the title text is only cut off on the right side in case content is longer than input field
+      if (this.setSelectionRange) {
+        this.focus();
+        this.setSelectionRange(0, 0);
+      }
+      else if (this.createTextRange) { //IE8
+        var range = this.createTextRange();
+        range.collapse(true);
+        range.moveEnd('character', 0);
+        range.moveStart('character', 0);
+        range.select();
+      }
+    });
     $titleControl = $("<div>").addClass("snte-element-title snte-element-draghandle");
     $titleControl.append($titleField);
     $newElementContainer.append($titleControl);
@@ -1482,11 +1499,13 @@ function snte_workspace_add_chart(chartType) {
     
     $newElementContainer = snte_workspace_create_element_container(true, i18n.t("chart.unnamed")+" "+(++snteChartCounter));
     $newElementContainer.find("input.snte-element-title-input").val($("input#snte-chart-wizard-title").val());
-    $newElement.click(function() {
+    $newElement.click(function(evt) {
       var elemId = $(this).attr("id").replace("snte-element-","");
-      $table = $("#snte-element-"+snteCharts[elemId].table.id);
-      snte_workspace_set_focus($table);
-      $table.handsontable("getInstance").selectCell(snteCharts[elemId].table.cellrange[0], snteCharts[elemId].table.cellrange[1], snteCharts[elemId].table.cellrange[2], snteCharts[elemId].table.cellrange[3]);
+      if(snteWorkspaceElements[snteCharts[elemId].table.id]) {
+        $table = $("#snte-element-"+snteCharts[elemId].table.id);
+        snte_workspace_set_focus($table);
+        $table.handsontable("getInstance").selectCell(snteCharts[elemId].table.cellrange[0], snteCharts[elemId].table.cellrange[1], snteCharts[elemId].table.cellrange[2], snteCharts[elemId].table.cellrange[3]);
+      }
     });
 
     snte_workspace_make_draggable($newElementContainer);
@@ -1527,6 +1546,9 @@ function snte_workspace_add_chart(chartType) {
       var chartDataRow = [];
       for(var col = selectedCells[1]; col <= selectedCells[3]; col++) {
         var cellProperties = tableInstance.getCellMeta(row, col);
+        if(cellProperties.snteRendered === void 0) {
+          cellProperties.snteRendered = "";
+        }
         var cellValue;
         switch(columnTypes[col-selectedCells[1]]) {
           case "text":
@@ -1702,6 +1724,7 @@ function snte_workspace_add_table() {
             editor.putString((evt.shiftKey?":":"")+Handsontable.helper.spreadsheetColumnLabel(coords[1])+(coords[0]+1));
 
             evt.stopImmediatePropagation();
+            evt.preventDefault();
           }
         }
       }
@@ -2014,10 +2037,6 @@ function snte_workspace_add_comment() {
   
   $newElementContainer = snte_workspace_create_element_container(false, void 0);
   $newElementContainer.width(snteDefaultElementSizes.comment.width).height(snteDefaultElementSizes.comment.height);
-  
-  snte_workspace_make_draggable($newElementContainer);
-  snte_workspace_make_resizable($newElementContainer, false, false);
-  snte_workspace_bring_to_front($newElementContainer);
 
   $newElement.focus(function(evt) {
     snte_workspace_set_focus($(this));
@@ -2030,6 +2049,11 @@ function snte_workspace_add_comment() {
 
   snteWorkspaceElements[nextId] = $newElement;
   $newElement.appendTo($newElementContainer);
+
+  snte_workspace_make_draggable($newElementContainer);
+  snte_workspace_make_resizable($newElementContainer, false, false);
+  snte_workspace_bring_to_front($newElementContainer);
+
   $newElementContainer.appendTo($snteWorkspace);
   $newElement.focus();
   snte_wysiwyg_apply_font();
@@ -2041,13 +2065,9 @@ function snte_workspace_add_comment() {
 function snte_workspace_add_image(url) {
   var nextId = snte_workspace_generate_element_id();
 
-  var $newElement = $("<div>").addClass("snte-element snte-element-image").attr("id", "snte-element-"+nextId);
+  var $newElement = $("<div>").addClass("snte-element snte-element-image snte-element-draghandle").attr("id", "snte-element-"+nextId);
 
   $newElementContainer = snte_workspace_create_element_container(false, void 0);
-
-  snte_workspace_make_draggable($newElementContainer);
-  snte_workspace_make_resizable($newElementContainer, true, true);
-  snte_workspace_bring_to_front($newElementContainer);
 
   async.createImage(url).then(function ($image) {
     var imageWidth = Math.min(snteImage.maxWidth, $image.width());
@@ -2058,8 +2078,13 @@ function snte_workspace_add_image(url) {
     $newElement.append($image);
     snteWorkspaceElements[nextId] = $newElement;
     $newElement.appendTo($newElementContainer);
+
+    snte_workspace_make_draggable($newElementContainer);
+    snte_workspace_make_resizable($newElementContainer, true, true);
+    snte_workspace_bring_to_front($newElementContainer);
+    snte_workspace_set_focus($newElement);
+
     $newElementContainer.appendTo($snteWorkspace);
-    $newElement.focus();
     $("#snte-image-modal").modal("hide");
   }).fail(function () {
     alert(i18n.t("image-upload.filetype-error"));

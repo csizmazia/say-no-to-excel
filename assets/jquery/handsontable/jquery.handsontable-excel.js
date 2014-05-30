@@ -395,6 +395,7 @@ var evalFormula = function (instance, formula) {
     //if (c == '-' || c == '+' || c == '.'|| c == ',' || (c >= '0' && c <= '9')) {  // Numeric constant
     if (c == '-' || c == '+' || c == '.'|| c == ',' || Handsontable.helper.isNumeric(val)) {	// Numeric constant
       res.type = 'number';
+      val = (typeof val === "string") ? val.replace(",",".") : val;
       res.token = (val * 1.0);
       return res;
     }

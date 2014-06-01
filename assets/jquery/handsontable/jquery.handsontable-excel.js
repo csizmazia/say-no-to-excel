@@ -646,42 +646,44 @@ var evalFormula = function (instance, formula) {
   //
   var funcCount = function (tokens) {
     var i;
-    var count = null;
+    var count = 0;
     var res = {};
-
-    for (i = 0; i < tokens.length; i++)
+    
+    for (i = 0; i < tokens.length; i++) {
       if (tokens[i].type == 'range') {
         var topleft, bottomright;
-	var r, c;
+        var r, c;
 
-	if (i == 0 || i == tokens.length - 1) {	// Range error
-	  return { "type": 'error', error: i18n.t("table.formula.error.bad-range"), next: null };
-	}
-	topleft = getRC(tokens[i-1].token);
-	bottomright = getRC(tokens[i+1].token);
-	for (r = topleft.row; r <= bottomright.row; r++)
-	  for (c = topleft.col; c <= bottomright.col; c++) {
-	    res = getData(r,c);
-	    if (res.type == 'error')
-	      return res;
-	    if (res.type == 'number' || res.type == 'boolean') {
-	      if (count == null)
-	        count = 0;
-	      count++;
-	    }
-	  }
-	tokens.splice(i-1,3);		// Remove range itself as we have just counted all within
-	i = i - 2;
-	continue;
+        if (i == 0 || i == tokens.length - 1) {	// Range error
+          return { "type": 'error', error: i18n.t("table.formula.error.bad-range"), next: null };
+        }
+        topleft = getRC(tokens[i-1].token);
+        bottomright = getRC(tokens[i+1].token);
+        for (r = topleft.row; r <= bottomright.row; r++) {
+          for (c = topleft.col; c <= bottomright.col; c++) {
+            res = getData(r,c);
+            
+            if (res.type == 'error') {
+              return res;
+            }
+            if (res.type == 'number' || res.type == 'boolean') {
+              count++;
+            }
+          }
+        }
+        tokens.splice(i-1,3);		// Remove range itself as we have just counted all within
+        i = i - 2;
+        continue;
       }
+    }
     tokens = fixParams(tokens);			// evaluate all parameters
-    for (i = 0; i < tokens.length; i++)
+    for (i = 0; i < tokens.length; i++) {
       if (tokens[i].type == 'number' || tokens[i].type == 'boolean') {
-        if (count == null)
-	  count = 0;
         count++;
       }
-    return { "type": count == null ? '' : 'number', token: count, next: null };
+    }
+    
+    return { "type": "number", token: count, next: null };
   }
 
 

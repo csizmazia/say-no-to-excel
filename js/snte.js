@@ -456,10 +456,7 @@ function snte_chrome_set_font_controls(element_type, $source) {
         }
       }
       if($currentElement.is("div") && $currentElement.attr("style")) {
-        console.log("div");
-        console.log($currentElement.attr("style"));
         if($currentElement.attr("style").contains("text-align")) {
-          console.log($("button#snte-menu-font-align-"+$currentElement.css("text-align")));
           $("button#snte-menu-font-align-"+$currentElement.css("text-align")).addClass("active");
         }
       }
@@ -1467,9 +1464,6 @@ function snte_workspace_remove_element($elem, moveToTrash) {
 
   var elementId = $elem.attr("id").replace("snte-element-", "");
 
-  console.log(elementId);
-  console.log(snteWorkspaceElements[elementId]);
-
   if(snteWorkspaceElements[elementId]) {
     // delete is slow: http://stackoverflow.com/questions/208105/how-to-remove-a-property-from-a-javascript-object
     delete snteWorkspaceElements[elementId];
@@ -1487,7 +1481,6 @@ function snte_workspace_remove_element($elem, moveToTrash) {
     }
   }
 
-  console.log(Object.size(snteWorkspaceElements));
   if(Object.size(snteWorkspaceElements) === 0) {
     $("div#snte-menu-add-element button").popover("show");
   }
@@ -1711,7 +1704,11 @@ function snte_workspace_create_element_container(withTitle, titlePlaceholder) {
   var $newElementContainer = $("<div>").addClass("snte-element-container");
 
   if(withTitle) {
-    $titleField = $("<input>").attr("type", "text").attr("placeholder", titlePlaceholder).addClass("snte-element-title-input").blur(function(evt) {
+    $titleField = $("<input>").attr("type", "text").attr("placeholder", titlePlaceholder).addClass("snte-element-title-input");
+    $titleField.focus(function(evt) {
+      $(this).data("content-before", $(this).val());
+    });
+    $titleField.blur(function(evt) {
       // reset cursor (set to 0) so the title text is only cut off on the right side in case content is longer than input field
       if (this.setSelectionRange) {
         this.focus();
@@ -1723,6 +1720,19 @@ function snte_workspace_create_element_container(withTitle, titlePlaceholder) {
         range.moveEnd('character', 0);
         range.moveStart('character', 0);
         range.select();
+      }
+
+      $that = $(this);
+      var contentAfter = $that.val();
+      if(contentAfter !== $that.data("content-before")) {
+        snteUndoManager.add({
+          undo: function() {
+            $that.val($that.data("content-before"));
+          },
+          redo: function() {
+            $that.val(contentAfter);
+          }
+        });
       }
     });
     $titleControl = $("<div>").addClass("snte-element-title snte-element-draghandle");
@@ -2323,7 +2333,6 @@ function snte_workspace_add_table() {
       }
     }
   });
-console.log($newElement.handsontable("getInstance"));
   
   $newElementContainer = snte_workspace_create_element_container(true, i18n.t("table.unnamed")+" "+(++snteTableCounter));
 
@@ -2407,7 +2416,6 @@ function snte_workspace_add_text() {
 
   snteUndoManager.add({
     undo: function() {
-      console.log("undo create text");
       snte_workspace_remove_element($newElement, true);
     },
     redo: function() {
@@ -2430,7 +2438,6 @@ function snte_workspace_add_comment() {
     evt.preventDefault();
   });
   $newElement.click(function(evt) {
-    console.log(evt.target);
     snte_chrome_set_font_controls("text", $(evt.target));
     evt.preventDefault();
   });

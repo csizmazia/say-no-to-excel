@@ -8,6 +8,7 @@
     "save-worksheet": "Save workspace",
     "undo": "Undo",
     "redo": "Redo",
+    "cut": "Cut",
     "copy": "Copy",
     "paste": "Paste",
     "font-family": "Font family",
@@ -228,6 +229,21 @@
         "donut": {
             "title": "Donut"
         }
+    }
+  },
+  "copy-paste": {
+    "hint": {
+        "header": "Copying and Pasting in SNTE",
+        "description": "For security reasons, cut, copy and paste work via key shortcuts only in your browser.<br />The following shortcuts work for textfields, comments and tables.",
+        "cut": "for cut",
+        "cmd-cut-mac": "Cmd+X",
+        "cmd-cut-pc": "Ctrl+X",
+        "copy": "for copy",
+        "cmd-copy-mac": "Cmd+C",
+        "cmd-copy-pc": "Ctrl+C",
+        "paste": "for paste",
+        "cmd-paste-mac": "Cmd+V",
+        "cmd-paste-pc": "Ctrl+V"
     }
   }
 }

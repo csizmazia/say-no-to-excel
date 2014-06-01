@@ -8,6 +8,7 @@
     "save-worksheet": "Arbeitsfläche speichern",
     "undo": "Letzte Änderung rückgängig machen",
     "redo": "Letzte Änderung wiederherstellen",
+    "cut": "Auswahl ausschneiden",
     "copy": "Auswahl kopieren",
     "paste": "Einfügen",
     "font-family": "Schriftart",
@@ -230,6 +231,21 @@
         "donut": {
             "title": "Kreis"
         }
+    }
+  },
+  "copy-paste": {
+    "hint": {
+        "header": "Kopieren und Einfügen in SNTE",
+        "description": "Ausschneiden, Kopieren und Einfügen ist aus Sicherheitsgründen in Browsern nur mittels Tastenkombinationen möglich.<br />Die Tastenkombinationen funktionieren in Textfeldern, Kommentaren und Tabellen.",
+        "cut": "um auszuschneiden",
+        "cmd-cut-mac": "Cmd+X",
+        "cmd-cut-pc": "Strg+X",
+        "copy": "um zu kopieren",
+        "cmd-copy-mac": "Cmd+C",
+        "cmd-copy-pc": "Strg+C",
+        "paste": "um einzufügen",
+        "cmd-paste-mac": "Cmd+V",
+        "cmd-paste-pc": "Strg+V"
     }
   }
 }

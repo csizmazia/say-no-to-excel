@@ -513,6 +513,15 @@ button#snte-chart-wizard-type-donut>span {
   background: url('../img/google-charts-thumbs.png') no-repeat scroll 0 -2371px rgba(0, 0, 0, 0);
 }
 
+div.snte-copypaste-modal-shortcut {
+  display: inline-block;
+  padding: 30px;
+}
+div.snte-copypaste-modal-shortcut-command {
+  font-size: 36px;
+  color: #666666;
+}
+
 
 /*
 override handsontable

@@ -264,6 +264,11 @@ function snte_bootstrap() {
     };
 
     snte_chrome_setup();
+
+    var os = navigator.userAgent.indexOf('Mac') === -1 ? "pc" : "mac";
+    $("#snte-copypaste-modal-shortcut-command-copy").text(t("copy-paste.hint.cmd-copy-"+os));
+    $("#snte-copypaste-modal-shortcut-command-cut").text(t("copy-paste.hint.cmd-cut-"+os));
+    $("#snte-copypaste-modal-shortcut-command-paste").text(t("copy-paste.hint.cmd-paste-"+os));
   });
 
   //google.load('visualization', '1.0', {'packages':['corechart']});
@@ -589,11 +594,19 @@ function snte_chrome_setup() {
       snteUndoManager.redo();
     }
   });
+
   $("button#snte-menu-copy").click(function(evt) {
-    
+    $("div#snte-copypaste-modal").modal("show");
+  });
+  $("button#snte-menu-cut").click(function(evt) {
+    $("div#snte-copypaste-modal").modal("show");
   });
   $("button#snte-menu-paste").click(function(evt) {
-    
+    $("div#snte-copypaste-modal").modal("show");
+  });
+  $("div#snte-copypaste-modal").on("shown.bs.modal", function() {
+    // so that the modal can be closed with enter-key
+    $(this).find("button.btn-primary").focus();
   });
 
   $("div#snte-menu-add-element ul.dropdown-menu li a").click(function(evt) {

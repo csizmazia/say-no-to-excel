@@ -206,8 +206,10 @@ div.snte-element-container {
   padding: 0;
   display: inline-block;
   position: absolute;
-  top: 115px;
-  left: 50px;
+  /*top: 115px;
+  left: 50px;*/
+  left: 30%;
+  top: 30%;
 }
 div.snte-element-container div.snte-element-controls {
   display: none;
@@ -237,7 +239,7 @@ div.snte-element-container div.snte-element-title {
   top: 0;
   left: 0;
   padding-left: 20px;
-  background: #fff;
+  background: none;
   border-radius: 5px 5px 0 0;
   font-weight: bold;
 }

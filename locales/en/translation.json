@@ -234,7 +234,7 @@
   "copy-paste": {
     "hint": {
         "header": "Copying and Pasting in SNTE",
-        "description": "For security reasons, cut, copy and paste work via key shortcuts only in your browser.<br />The following shortcuts work for textfields, comments and tables.",
+        "description": "For security reasons, cut, copy and paste in your browser only work via keyboard shortcuts.<br />The following shortcuts work for textfields, comments and tables.",
         "cut": "for cut",
         "cmd-cut-mac": "Cmd+X",
         "cmd-cut-pc": "Ctrl+X",

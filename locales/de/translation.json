@@ -236,7 +236,7 @@
   "copy-paste": {
     "hint": {
         "header": "Kopieren und Einfügen in SNTE",
-        "description": "Ausschneiden, Kopieren und Einfügen ist aus Sicherheitsgründen in Browsern nur mittels Tastenkombinationen möglich.<br />Die Tastenkombinationen funktionieren in Textfeldern, Kommentaren und Tabellen.",
+        "description": "Ausschneiden, Kopieren und Einfügen ist aus Sicherheitsgründen in Browsern nur mittels Tastenkombinationen möglich.<br />Diese Tastenkombinationen funktionieren in Textfeldern, Kommentaren und Tabellen.",
         "cut": "um auszuschneiden",
         "cmd-cut-mac": "Cmd+X",
         "cmd-cut-pc": "Strg+X",

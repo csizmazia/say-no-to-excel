@@ -8,7 +8,7 @@
     <title>say no to excel!</title>
 
     <!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
-    <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart','table']}]}"></script>
 
 
     <script type="text/javascript" src="assets/jquery/jquery-2.1.0.js"></script>
@@ -40,6 +40,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="assets/jquery/handsontable/jquery.handsontable.full.css">
     <link rel="stylesheet" type="text/css" media="screen" href="assets/bootstrap3/css/bootstrap.css">
 
+    <link rel="stylesheet" type="text/css" media="screen" href="css/icomoon.css">
     <link rel="stylesheet" type="text/css" media="screen" href="css/snte.css">
 
     <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Gilda+Display'>
@@ -136,7 +137,7 @@
             <div class="well">
               <div id="snte-chart-wizard-cellrange"></div>
               <div>
-                <input type="checkbox" id="snte-chart-wizard-first-data-row" checked="checked">&nbsp;<label for="snte-chart-wizard-first-data-row" data-i18n="chart.wizard.first-data-row">
+                <input type="checkbox" id="snte-chart-wizard-first-data-row" checked="checked">&nbsp;<label for="snte-chart-wizard-first-data-row" data-i18n="chart.wizard.first-data-row"></label>
               </div>
             </div>
             <h5 data-i18n="chart.wizard.header-axis"></h5>
@@ -168,9 +169,15 @@
                 <input type="text" class="form-control snte-menu-search-input" placeholder="" data-i18n="[placeholder]search.placeholder" />
               </div>
               <div class="btn-group">
-                <button type="button" class="btn btn-default snte-menu-search-next" title="" data-i18n="[title]search.next-result"><span class="glyphicon glyphicon-chevron-down"></span></button>
-                <button type="button" class="btn btn-default snte-menu-search-prev" title="" data-i18n="[title]search.previous-result"><span class="glyphicon glyphicon-chevron-up"></span></button>
-                <button type="button" class="btn btn-default snte-menu-search-clear" title="" data-i18n="[title]search.clear"><span class="glyphicon glyphicon-remove"></span></button>
+                <button type="button" class="btn btn-default snte-menu-search-next" title="" data-i18n="[title]search.next-result">
+                  <span class="glyphicon glyphicon-chevron-down"></span>
+                </button>
+                <button type="button" class="btn btn-default snte-menu-search-prev" title="" data-i18n="[title]search.previous-result">
+                  <span class="glyphicon glyphicon-chevron-up"></span>
+                </button>
+                <button type="button" class="btn btn-default snte-menu-search-clear" title="" data-i18n="[title]search.clear">
+                  <span class="glyphicon glyphicon-remove"></span>
+                </button>
               </div>
           </div>
         </div>
@@ -182,19 +189,24 @@
       </div>
       <div id="snte-chrome-top-right">
         <div id="snte-menubar-top" class="btn-toolbar" role="toolbar">
-          <!--<div class="btn-group">
-            <button type="button" class="btn btn-default" id="snte-menu-new-worksheet" title="" data-i18n="[title]chrome.new-worksheet"><span class="glyphicon glyphicon-file"></span></button>
-            <button type="button" class="btn btn-default" id="snte-menu-open-worksheet" title="" data-i18n="[title]chrome.open-worksheet"><span class="glyphicon glyphicon-folder-open"></span></button>
-            <button type="button" class="btn btn-default" id="snte-menu-save-worksheet" title="" data-i18n="[title]chrome.save-worksheet"><span class="glyphicon glyphicon-floppy-disk"></span></button>
-          </div>-->
           <div class="btn-group">
-            <button type="button" class="btn btn-default disabled" id="snte-menu-undo" title="" data-i18n="[title]chrome.undo"><span class="glyphicon glyphicon-arrow-left"></span></button>
-            <button type="button" class="btn btn-default disabled" id="snte-menu-redo" title="" data-i18n="[title]chrome.redo"><span class="glyphicon glyphicon-share-alt"></span></button>
+            <button type="button" class="btn btn-default disabled" id="snte-menu-undo" title="" data-i18n="[title]chrome.undo">
+              <span class="icon-undo"></span>
+            </button>
+            <button type="button" class="btn btn-default disabled" id="snte-menu-redo" title="" data-i18n="[title]chrome.redo">
+              <span class="icon-redo"></span>
+            </button>
           </div>
           <div class="btn-group">
-            <button type="button" class="btn btn-default" id="snte-menu-copy" title="" data-i18n="[title]chrome.copy">C</button>
-            <button type="button" class="btn btn-default" id="snte-menu-cut" title="" data-i18n="[title]chrome.cut">C</button>
-            <button type="button" class="btn btn-default" id="snte-menu-paste" title="" data-i18n="[title]chrome.paste">P</button>
+            <button type="button" class="btn btn-default" id="snte-menu-copy" title="" data-i18n="[title]chrome.copy">
+              <span class="icon-copy"></span>
+            </button>
+            <button type="button" class="btn btn-default" id="snte-menu-cut" title="" data-i18n="[title]chrome.cut">
+              <span class="icon-scissors"></span>
+            </button>
+            <button type="button" class="btn btn-default" id="snte-menu-paste" title="" data-i18n="[title]chrome.paste">
+              <span class="icon-paste"></span>
+            </button>
           </div>
           <div class="btn-group">
             <div class="btn-group" id="snte-menu-font-family">
@@ -228,7 +240,8 @@
             </div>
             <div class="btn-group" id="snte-menu-font-color-container">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="rgba(0,0,0,1)" id="snte-menu-font-color" title="" data-i18n="[title]chrome.font-color">
-                A
+                <!--<span style="font-family:'icomoon'; line-height:50%; font-weight:bold;">A</span>-->
+                <span class="glyphicon glyphicon-font"></span>
                 <span id="snte-menu-font-color-indicator"></span>
                 <span class="caret"></span>
               </button>
@@ -236,27 +249,45 @@
             </div>
             <div class="btn-group" id="snte-menu-fill-color-container">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-value="rgba(0,0,0,0)" id="snte-menu-fill-color" title="" data-i18n="[title]chrome.fill-color">
-                F
+                <span class="icon-droplet"></span>
                 <span id="snte-menu-fill-color-indicator"></span>
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu dropdown-caret snte-menu-colorselector"></ul>
             </div>
             <div class="btn-group">
-              <button type="button" class="btn btn-default" id="snte-menu-font-bold" title="" data-i18n="[title]chrome.bold">B</button>
-              <button type="button" class="btn btn-default" id="snte-menu-font-italic" title="" data-i18n="[title]chrome.italic">I</button>
-              <button type="button" class="btn btn-default" id="snte-menu-font-underline" title="" data-i18n="[title]chrome.underline">U</button>
-              <button type="button" class="btn btn-default" id="snte-menu-font-strikethrough" title="" data-i18n="[title]chrome.strikethrough">S</button>
+              <button type="button" class="btn btn-default" id="snte-menu-font-bold" title="" data-i18n="[title]chrome.bold">
+                <span class="icon-bold"></span>
+              </button>
+              <button type="button" class="btn btn-default" id="snte-menu-font-italic" title="" data-i18n="[title]chrome.italic">
+                <span class="icon-italic"></span>
+              </button>
+              <button type="button" class="btn btn-default" id="snte-menu-font-underline" title="" data-i18n="[title]chrome.underline">
+                <span class="icon-underline"></span>
+              </button>
+              <button type="button" class="btn btn-default" id="snte-menu-font-strikethrough" title="" data-i18n="[title]chrome.strikethrough">
+                <span class="icon-strikethrough"></span>
+              </button>
             </div>
           </div>
           <div class="btn-group">
-            <button type="button" class="btn btn-default active" id="snte-menu-font-align-left" title="" data-i18n="[title]chrome.text-align-left"><span class="glyphicon glyphicon-align-left"></span></button>
-            <button type="button" class="btn btn-default" id="snte-menu-font-align-center" title="" data-i18n="[title]chrome.text-align-center"><span class="glyphicon glyphicon-align-center"></span></button>
-            <button type="button" class="btn btn-default" id="snte-menu-font-align-right" title="" data-i18n="[title]chrome.text-align-right"><span class="glyphicon glyphicon-align-right"></span></button>
+            <button type="button" class="btn btn-default active" id="snte-menu-font-align-left" title="" data-i18n="[title]chrome.text-align-left">
+              <span class="icon-paragraph-left2"></span>
+            </button>
+            <button type="button" class="btn btn-default" id="snte-menu-font-align-center" title="" data-i18n="[title]chrome.text-align-center">
+              <span class="icon-paragraph-center2"></span>
+            </button>
+            <button type="button" class="btn btn-default" id="snte-menu-font-align-right" title="" data-i18n="[title]chrome.text-align-right">
+              <span class="icon-paragraph-right2"></span>
+            </button>
           </div>
           <div class="btn-group">
-            <button type="button" class="btn btn-default disabled" id="snte-menu-unordered-list" title="" data-i18n="[title]chrome.unordered-list">UL<!--<span class="glyphicon glyphicon-list"></span>--></button>
-            <button type="button" class="btn btn-default disabled" id="snte-menu-ordered-list" title="" data-i18n="[title]chrome.ordered-list">OL<!--<span class="glyphicon glyphicon-list"></span>--></button>
+            <button type="button" class="btn btn-default disabled" id="snte-menu-unordered-list" title="" data-i18n="[title]chrome.unordered-list">
+              <span class="icon-list"></span>
+            </button>
+            <button type="button" class="btn btn-default disabled" id="snte-menu-ordered-list" title="" data-i18n="[title]chrome.ordered-list">
+              <span class="icon-numbered-list"></span>
+            </button>
           </div>
           <div class="btn-group" id="snte-menu-cell-type">
             <button type="button" class="btn btn-default dropdown-toggle disabled" data-toggle="dropdown" data-value="auto" style="min-width:150px; text-align: left;" title="" data-i18n="[title]chrome.cell-format">
@@ -264,15 +295,32 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-caret" style="min-width: 200px;">
-              <li class="active"><a href="#" data-value="auto" title="" data-i18n="[title]chrome.cell-format-auto;chrome.cell-format-auto"></a></li>
+              <li class="active">
+                <a href="#" data-value="auto" title="" data-i18n="[title]chrome.cell-format-auto;chrome.cell-format-auto"></a>
+              </li>
               <li role="presentation" class="divider" style="clear: both;"></li>
-              <li><a href="#" data-value="text" title="" data-i18n="[title]chrome.cell-format-text;chrome.cell-format-text"></a><span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-text"></span></li>
+              <li>
+                <a href="#" data-value="text" title="" data-i18n="[title]chrome.cell-format-text;chrome.cell-format-text"></a>
+                <span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-text"></span>
+              </li>
               <li role="presentation" class="divider" style="clear: both;"></li>
-              <li><a href="#" data-value="numeric" title="" data-i18n="[title]chrome.cell-format-number;chrome.cell-format-number"></a><span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-number"></span></li>
-              <li><a href="#" data-value="percent" title="" data-i18n="[title]chrome.cell-format-percent;chrome.cell-format-percent"></a><span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-percent"></span></li>
-              <li><a href="#" data-value="currency" title="" data-i18n="[title]chrome.cell-format-currency;chrome.cell-format-currency"></a><span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-currency"></span></li>
+              <li>
+                <a href="#" data-value="numeric" title="" data-i18n="[title]chrome.cell-format-number;chrome.cell-format-number"></a>
+                <span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-number"></span>
+              </li>
+              <li>
+                <a href="#" data-value="percent" title="" data-i18n="[title]chrome.cell-format-percent;chrome.cell-format-percent"></a>
+                <span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-percent"></span>
+              </li>
+              <li>
+                <a href="#" data-value="currency" title="" data-i18n="[title]chrome.cell-format-currency;chrome.cell-format-currency"></a>
+                <span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-currency"></span>
+              </li>
               <li role="presentation" class="divider" style="clear: both;"></li>
-              <li><a href="#" data-value="date" title="" data-i18n="[title]chrome.cell-format-date;chrome.cell-format-date"></a><span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-date"></span></li>
+              <li>
+                <a href="#" data-value="date" title="" data-i18n="[title]chrome.cell-format-date;chrome.cell-format-date"></a>
+                <span class="snte-menu-cell-type-example" data-i18n="chrome.cell-format-example-date"></span>
+              </li>
             </ul>
           </div>
 
@@ -283,23 +331,43 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-              <li><a href="#" data-item="table" data-i18n="[append]chrome.new-element-table"><span class="glyphicon glyphicon-th-large"></span></a></li>
-              <li><a href="#" data-item="text" data-i18n="[append]chrome.new-element-text"><span class="glyphicon glyphicon-font"></span></a></li>
-              <li><a href="#" data-item="comment" data-i18n="[append]chrome.new-element-comment"><span class="glyphicon glyphicon-comment"></span></a></li>
-              <li id="snte-menu-add-element-chart" class="disabled"><a href="#" data-item="chart" data-i18n="[append]chrome.new-element-chart"><span class="glyphicon glyphicon-signal"></span></a></li>
-              <li><a href="#" data-item="image" data-i18n="[append]chrome.new-element-image"><span class="glyphicon glyphicon-picture"></span></a></li>
+              <li>
+                <a href="#" data-item="table" data-i18n="[append]chrome.new-element-table">
+                  <span class="icon-table"></span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-item="text" data-i18n="[append]chrome.new-element-text">
+                  <span class="glyphicon glyphicon-font"></span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-item="comment" data-i18n="[append]chrome.new-element-comment">
+                  <span class="icon-bubble"></span>
+                </a>
+              </li>
+              <li id="snte-menu-add-element-chart" class="disabled">
+                <a href="#" data-item="chart" data-i18n="[append]chrome.new-element-chart">
+                  <span class="icon-pie"></span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-item="image" data-i18n="[append]chrome.new-element-image">
+                  <span class="icon-image"></span>
+                </a>
+              </li>
             </ul>
           </div>
 
           <div class="btn-group">
             <button type="button" class="btn btn-default" id="snte-menu-toggle-search">
-              <span class="glyphicon glyphicon-search"></span>
+              <span class="icon-search"></span>
             </button>
           </div>
 
           <div class="btn-group">
             <button type="button" class="btn btn-default active" id="snte-menu-toggle-comments" title="" data-i18n="[title]chrome.toggle-comments">
-              <span class="glyphicon glyphicon-comment"></span>
+              <span class="icon-bubble"></span>
             </button>
           </div>
         </div>

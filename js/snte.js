@@ -1593,9 +1593,10 @@ function snte_workspace_remove_element_useraction($elem) {
 function snte_workspace_reset_focus($becauseOfElem) {
   if($snteWorkspaceFocusedElement !== void 0 && jQuery.contains(document, $snteWorkspaceFocusedElement[0])) {
     $snteWorkspaceFocusedElement.removeClass("snte-highlighted");
+    snte_chrome_reset_font_controls();
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
-      $("button#snte-menu-unordered-list").removeClass("active");
-      $("button#snte-menu-ordered-list").removeClass("active");
+      $("button#snte-menu-unordered-list").addClass("disabled");
+      $("button#snte-menu-ordered-list").addClass("disabled");
       if($snteWorkspaceFocusedElement.hasClass("snte-element-text")) {
         if($snteWorkspaceFocusedElement.text().trim() === "") {
           snte_workspace_remove_element($snteWorkspaceFocusedElement, false);

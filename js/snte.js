@@ -1931,13 +1931,15 @@ function snte_workspace_add_chart(chartType) {
       }
     });
 
-    snte_workspace_make_draggable($newElementContainer);
+    
     snte_workspace_make_resizable($newElementContainer, true, true);
     snte_workspace_bring_to_front($newElementContainer);
 
     snteWorkspaceElements[nextId] = $newElement;
     $newElement.appendTo($newElementContainer);
     $newElementContainer.appendTo($snteWorkspace);
+
+    snte_workspace_make_draggable($newElementContainer); // needs to be after append-to-DOM because of chrome/opera "bug"
     snte_workspace_center_element($newElementContainer);
 
     var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
@@ -2447,13 +2449,14 @@ function snte_workspace_add_table() {
   });
   $newElementContainer.append($addColumnControl);
 
-  snte_workspace_make_draggable($newElementContainer);
   //snte_workspace_make_resizable($newElementContainer, false, false);
   snte_workspace_bring_to_front($newElementContainer);
 
   snteWorkspaceElements[nextId] = $newElement;
   $newElement.appendTo($newElementContainer);
   $newElementContainer.appendTo($snteWorkspace);
+
+  snte_workspace_make_draggable($newElementContainer); // needs to be after append-to-DOM because of chrome/opera "bug"
   snte_workspace_center_element($newElementContainer);
 
   snteUndoManager.add({
@@ -2473,7 +2476,6 @@ function snte_workspace_add_text() {
   
   $newElementContainer = snte_workspace_create_element_container(false, void 0);
 
-  snte_workspace_make_draggable($newElementContainer);
   snte_workspace_bring_to_front($newElementContainer);
 
   $newElement.focus(function(event) {
@@ -2506,7 +2508,10 @@ function snte_workspace_add_text() {
   snteWorkspaceElements[nextId] = $newElement;
   $newElement.appendTo($newElementContainer);
   $newElementContainer.appendTo($snteWorkspace);
+
+  snte_workspace_make_draggable($newElementContainer); // needs to be after append-to-DOM because of chrome/opera "bug"
   snte_workspace_center_element($newElementContainer);
+
   $newElement.focus();
   snte_wysiwyg_apply_font(false);
 
@@ -2552,12 +2557,14 @@ function snte_workspace_add_comment() {
   snteWorkspaceElements[nextId] = $newElement;
   $newElement.appendTo($newElementContainer);
 
-  snte_workspace_make_draggable($newElementContainer);
   snte_workspace_make_resizable($newElementContainer, false, false);
   snte_workspace_bring_to_front($newElementContainer);
 
   $newElementContainer.appendTo($snteWorkspace);
+
+  snte_workspace_make_draggable($newElementContainer); // needs to be after append-to-DOM because of chrome/opera "bug"
   snte_workspace_center_element($newElementContainer);
+
   $newElement.focus();
   snte_wysiwyg_apply_font(false);
 
@@ -2591,13 +2598,15 @@ function snte_workspace_add_image(url) {
     snteWorkspaceElements[nextId] = $newElement;
     $newElement.appendTo($newElementContainer);
 
-    snte_workspace_make_draggable($newElementContainer);
     snte_workspace_make_resizable($newElementContainer, true, true);
     snte_workspace_bring_to_front($newElementContainer);
     snte_workspace_set_focus($newElement);
 
     $newElementContainer.appendTo($snteWorkspace);
+
+    snte_workspace_make_draggable($newElementContainer); // needs to be after append-to-DOM because of chrome/opera "bug"
     snte_workspace_center_element($newElementContainer);
+
     $("#snte-image-modal").modal("hide");
 
     snteUndoManager.add({

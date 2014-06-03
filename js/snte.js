@@ -1367,7 +1367,6 @@ function snte_wysiwyg_apply_font_color(recordUndo) {
         contentBefore = $snteWorkspaceFocusedElement.html();
       }
 
-      console.log($("button#snte-menu-font-color").data("value"));
       snte_wysiwyg_exec_command("foreColor", $("button#snte-menu-font-color").data("value"));
       
       if(recordUndo) {
@@ -2501,7 +2500,6 @@ function snte_workspace_add_comment() {
   $newElementContainer.width(snteDefaultElementSizes.comment.width).height(snteDefaultElementSizes.comment.height);
 
   $newElement.focus(function(event) {
-    console.log("on.focus");
     snte_workspace_set_focus($(this));
     $(this).data("content-before", $(this).html());
   });

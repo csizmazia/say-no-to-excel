@@ -1852,7 +1852,7 @@ function snte_workspace_hide_comments() {
 }
 
 function snte_workspace_add_element(type) {
-  //snte_chrome_reset_font_controls();
+  snte_chrome_reset_font_controls();
 
   switch(type) {
       case "table":

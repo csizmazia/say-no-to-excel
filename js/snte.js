@@ -1872,6 +1872,13 @@ function snte_workspace_send_to_back($elementContainer) {
   $elementContainer.css("zIndex", 0);
 }
 
+function snte_workspace_center_element($elementContainer) {
+  $elementContainer.css({
+    "top": (((window.innerHeight-$elementContainer[0].offsetHeight)/2)+$(document).scrollTop())+"px",
+    "left": (((window.innerWidth-$elementContainer[0].offsetWidth)/2)+$(document).scrollLeft())+"px"
+  });
+}
+
 function snte_workspace_generate_element_id() {
   var date = new Date();
   return "e"+date.getTime();
@@ -1931,6 +1938,7 @@ function snte_workspace_add_chart(chartType) {
     snteWorkspaceElements[nextId] = $newElement;
     $newElement.appendTo($newElementContainer);
     $newElementContainer.appendTo($snteWorkspace);
+    snte_workspace_center_element($newElementContainer);
 
     var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
     var selectedCells = snte_table_normalize_cell_selection(tableInstance.getSelected()); // [startRow, startCol, endRow, endCol]
@@ -2446,6 +2454,7 @@ function snte_workspace_add_table() {
   snteWorkspaceElements[nextId] = $newElement;
   $newElement.appendTo($newElementContainer);
   $newElementContainer.appendTo($snteWorkspace);
+  snte_workspace_center_element($newElementContainer);
 
   snteUndoManager.add({
     undo: function() {
@@ -2497,6 +2506,7 @@ function snte_workspace_add_text() {
   snteWorkspaceElements[nextId] = $newElement;
   $newElement.appendTo($newElementContainer);
   $newElementContainer.appendTo($snteWorkspace);
+  snte_workspace_center_element($newElementContainer);
   $newElement.focus();
   snte_wysiwyg_apply_font(false);
 
@@ -2547,6 +2557,7 @@ function snte_workspace_add_comment() {
   snte_workspace_bring_to_front($newElementContainer);
 
   $newElementContainer.appendTo($snteWorkspace);
+  snte_workspace_center_element($newElementContainer);
   $newElement.focus();
   snte_wysiwyg_apply_font(false);
 
@@ -2586,6 +2597,7 @@ function snte_workspace_add_image(url) {
     snte_workspace_set_focus($newElement);
 
     $newElementContainer.appendTo($snteWorkspace);
+    snte_workspace_center_element($newElementContainer);
     $("#snte-image-modal").modal("hide");
 
     snteUndoManager.add({

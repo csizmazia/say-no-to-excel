@@ -2310,29 +2310,32 @@ function snte_workspace_add_table() {
       }
     },
     afterChange: function(changes, source) {
-      snte_table_handsontable_undoable_action();
+      if(changes !== null) {
+        snte_table_handsontable_undoable_action();
 
-      if($snteWorkspaceFocusedElement !== void 0 && $snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
-        var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+        if($snteWorkspaceFocusedElement !== void 0 && $snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
+          var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
 
-        var chartsToUpdate = {};
+          var chartsToUpdate = {};
 
-        for(var ii = 0; ii < changes.length; ii++) {
-          for(var chartId in snteCharts) {
-            if(changes[ii][0] >= snteCharts[chartId].table.cellrange[0] &&
-               changes[ii][1] >= snteCharts[chartId].table.cellrange[1] &&
-               changes[ii][0] <= snteCharts[chartId].table.cellrange[2] &&
-               changes[ii][1] <= snteCharts[chartId].table.cellrange[3]) {
-              chartsToUpdate[chartId] = snteCharts[chartId];
+          for(var ii = 0; ii < changes.length; ii++) {
+            for(var chartId in snteCharts) {
+              console.log(snteCharts[chartId]);
+              if(changes[ii][0] >= snteCharts[chartId].table.cellrange[0] &&
+                 changes[ii][1] >= snteCharts[chartId].table.cellrange[1] &&
+                 changes[ii][0] <= snteCharts[chartId].table.cellrange[2] &&
+                 changes[ii][1] <= snteCharts[chartId].table.cellrange[3]) {
+                chartsToUpdate[chartId] = snteCharts[chartId];
+              }
             }
           }
-        }
 
-        for(var chartId in chartsToUpdate) {
-          var chartData = snte_chart_generate_data(tableInstance, chartsToUpdate[chartId].table.cellrange, chartsToUpdate[chartId].headerOffset);
-          snteCharts[chartId].data = chartData;
-          async.drawChart(chartsToUpdate[chartId].obj, chartData, chartsToUpdate[chartId].options);
-          //chartsToUpdate[chartId].obj.draw(chartData, chartsToUpdate[chartId].options);
+          for(var chartId in chartsToUpdate) {
+            var chartData = snte_chart_generate_data(tableInstance, chartsToUpdate[chartId].table.cellrange, chartsToUpdate[chartId].headerOffset);
+            snteCharts[chartId].data = chartData;
+            async.drawChart(chartsToUpdate[chartId].obj, chartData, chartsToUpdate[chartId].options);
+            //chartsToUpdate[chartId].obj.draw(chartData, chartsToUpdate[chartId].options);
+          }
         }
       }
     },

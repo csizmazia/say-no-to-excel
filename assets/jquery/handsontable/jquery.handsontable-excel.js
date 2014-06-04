@@ -139,15 +139,15 @@ Formula.prototype.tokenize = function () {
         c = formulaString[i];
         // XXX stefanc
         // if (state == 0 && c == '.') {
-        if (state == 0 && (c == '.' || c == ','))  {
+        if (state === 0 && (c == '.' || c == ','))  {
           state = 1;
         }
-        else if (state == 0) {
+        else if (state === 0) {
           val = val * 10 + formulaString.charCodeAt(i) - "0".charCodeAt(0);
         }
         // XXX stefanc
         // else if (state == 0 && c == '.') {
-        else if (state == 0 && (c == '.' || c == ',')) {
+        else if (state === 0 && (c == '.' || c == ',')) {
           return { "type": 'error', error: i18n.t("table.formula.error.bad-number"), next: null };
         }
         else if (state == 1) {
@@ -191,7 +191,7 @@ Formula.prototype.tokenize = function () {
       }
     }
     else if (c == '"') {
-      var str = ''
+      var str = '';
       var i;
       for (i = 1; i < formulaString.length && formulaString[i] != '"'; i++) {
         c = formulaString[i];
@@ -202,7 +202,7 @@ Formula.prototype.tokenize = function () {
         str = str + c;
       }
       if (i == formulaString.length || formulaString[i] != '"') {
-        return { "type": 'error', error: i18n.t("table.formula.error.unbalanced-string"), next: null };
+        return { "type": "error", error: i18n.t("table.formula.error.unbalanced-string"), next: null };
       }
       result = { "type": "text", token: str, next: formulaString.substring(i+1) };
     }
@@ -218,7 +218,7 @@ Formula.prototype.tokenize = function () {
   var tokens = [];
 
   theToken = nextToken(this.formula);
-  while (theToken.type != 'error' && theToken.next != '' && theToken.next != null) {
+  while (theToken.type != 'error' && theToken.next !== '' && theToken.next !== null) {
     tokens.push(theToken);
     theToken = nextToken(theToken.next);
   }
@@ -528,7 +528,7 @@ var evalFormula = function (instance, formula) {
       }
     }
     else if (c == '"') {
-      var str = ''
+      var str = '';
       var i;
       for (i = 1; i < formulaString.length && formulaString[i] != '"'; i++) {
         c = formulaString[i];

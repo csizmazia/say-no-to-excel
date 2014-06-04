@@ -37,9 +37,17 @@ var async = (function () {
     }).promise();
   };
 
+  var drawChart = function(chartObj, chartData, chartOptions) {
+    return $.Deferred(function (deferred) {
+      chartObj.draw(chartData, chartOptions);
+      deferred.resolve();
+    }).promise();
+  };
+
   return {
     readFileAsDataURL: readFileAsDataURL,
-    createImage: createImage
+    createImage: createImage,
+    drawChart: drawChart
   };
 })();
 
@@ -1556,6 +1564,7 @@ function snte_workspace_reset_focus($becauseOfElem) {
     snte_chrome_reset_font_controls();
 
     if($snteWorkspaceFocusedElement.hasClass("snte-element-text") || $snteWorkspaceFocusedElement.hasClass("snte-element-comment")) {
+      $snteWorkspaceFocusedElement.blur();
       $("button#snte-menu-unordered-list").addClass("disabled");
       $("button#snte-menu-ordered-list").addClass("disabled");
       if($snteWorkspaceFocusedElement.hasClass("snte-element-text")) {
@@ -1904,75 +1913,9 @@ function snte_workspace_add_chart(chartType) {
     var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
     var selectedCells = snte_table_normalize_cell_selection(tableInstance.getSelected()); // [startRow, startCol, endRow, endCol]
     
-    var chartData = new google.visualization.DataTable();
-    var columnTypes = [];
     var headerOffset = $("input#snte-chart-wizard-first-data-row").is(":checked")?1:0;
-    for(var col = selectedCells[1]; col <= selectedCells[3]; col++) {
-      var cellPropertiesFirstDataCell = tableInstance.getCellMeta(selectedCells[0]+headerOffset, col);
-      var cellPropertiesHeaderCell = tableInstance.getCellMeta(selectedCells[0], col);
-      var snteType = cellPropertiesFirstDataCell.snteExplicitType !== "auto" ? cellPropertiesFirstDataCell.snteExplicitType : cellPropertiesFirstDataCell.snteImplicitType;
-      columnTypes.push(snteType);
-      switch(snteType) {
-        case "text":
-          chartData.addColumn("string", cellPropertiesHeaderCell.snteRendered);
-          break;
-        case "numeric":
-        case "numericWithoutComma":
-        case "percent":
-        case "currency":
-          chartData.addColumn("number", cellPropertiesHeaderCell.snteRendered);
-          break;
-        case "date":
-          chartData.addColumn("date", cellPropertiesHeaderCell.snteRendered);
-          break;
-      }
-    }
-    for(var row = selectedCells[0]+headerOffset; row <= selectedCells[2]; row++) {
-      var chartDataRow = [];
-      for(var col = selectedCells[1]; col <= selectedCells[3]; col++) {
-        var cellProperties = tableInstance.getCellMeta(row, col);
-        if(cellProperties.snteRendered === void 0) {
-          cellProperties.snteRendered = "";
-        }
-        var cellValue;
-        switch(columnTypes[col-selectedCells[1]]) {
-          case "text":
-            cellValue = cellProperties.snteRendered;
-            break;
-          case "numeric":
-          case "numericWithoutComma":
-            if(cellProperties.language === "en") {
-              cellValue = parseFloat(cellProperties.snteRendered.replace(/\,/g, "").trim());
-            }
-            else if(cellProperties.language === "de") {
-              cellValue = parseFloat(cellProperties.snteRendered.replace(/\./g, "").replace(/\,/g, ".").trim());
-            }
-            break;
-          case "percent":
-            if(cellProperties.language === "en") {
-              cellValue = parseFloat(cellProperties.snteRendered.replace(/\,/g, "").replace(/\%/g).trim());
-            }
-            else if(cellProperties.language === "de") {
-              cellValue = parseFloat(cellProperties.snteRendered.replace(/\./g, "").replace(/\,/g, ".").replace(/\%/g).trim());
-            }
-            break;
-          case "currency":
-            if(cellProperties.language === "en") {
-              cellValue = parseFloat(cellProperties.snteRendered.replace(/\,/g, "").replace(/[$€]/g).trim());
-            }
-            else if(cellProperties.language === "de") {
-              cellValue = parseFloat(cellProperties.snteRendered.replace(/\./g, "").replace(/\,/g, ".").replace(/[$€]/g).trim());
-            }
-            break;
-          case "date":
-            cellValue = new DateTime(strtotime(cellProperties.snteRendered)*1000);
-            break;
-        }
-        
-        chartDataRow.push(cellValue);
-      }
-      chartData.addRow(chartDataRow);
-    }
+
+    var chartData = snte_chart_generate_data(tableInstance, selectedCells, headerOffset);
 
     // Set chart options
     var chartOptions = {"width": snteDefaultElementSizes.chart.width, "height": snteDefaultElementSizes.chart.height};
@@ -2014,7 +1957,8 @@ function snte_workspace_add_chart(chartType) {
         chart = new google.visualization.PieChart($newElement[0]);
     }
 
-    chart.draw(chartData, chartOptions);
+    async.drawChart(chart, chartData, chartOptions);
+    //chart.draw(chartData, chartOptions);
 
     snteCharts[nextId] = {
       "table": {
@@ -2023,6 +1967,7 @@ function snte_workspace_add_chart(chartType) {
       },
       "type": chartType,
       "data": chartData,
+      "headerOffset": headerOffset,
       "options": chartOptions,
       "obj": chart
     };
@@ -2039,6 +1984,80 @@ function snte_workspace_add_chart(chartType) {
   else {
     alert(i18n.t("chart.error-no-cells-selected"));
   }
+}
+
+function snte_chart_generate_data(tableInstance, selectedCells, headerOffset) {
+  var chartData = new google.visualization.DataTable();
+  var columnTypes = [];
+  
+  for(var col = selectedCells[1]; col <= selectedCells[3]; col++) {
+    var cellPropertiesFirstDataCell = tableInstance.getCellMeta(selectedCells[0]+headerOffset, col);
+    var cellPropertiesHeaderCell = tableInstance.getCellMeta(selectedCells[0], col);
+    var snteType = cellPropertiesFirstDataCell.snteExplicitType !== "auto" ? cellPropertiesFirstDataCell.snteExplicitType : cellPropertiesFirstDataCell.snteImplicitType;
+    columnTypes.push(snteType);
+    switch(snteType) {
+      case "text":
+        chartData.addColumn("string", cellPropertiesHeaderCell.snteRendered);
+        break;
+      case "numeric":
+      case "numericWithoutComma":
+      case "percent":
+      case "currency":
+        chartData.addColumn("number", cellPropertiesHeaderCell.snteRendered);
+        break;
+      case "date":
+        chartData.addColumn("date", cellPropertiesHeaderCell.snteRendered);
+        break;
+    }
+  }
+  for(var row = selectedCells[0]+headerOffset; row <= selectedCells[2]; row++) {
+    var chartDataRow = [];
+    for(var col = selectedCells[1]; col <= selectedCells[3]; col++) {
+      var cellProperties = tableInstance.getCellMeta(row, col);
+      if(cellProperties.snteRendered === void 0) {
+        cellProperties.snteRendered = "";
+      }
+      var cellValue;
+      switch(columnTypes[col-selectedCells[1]]) {
+        case "text":
+          cellValue = cellProperties.snteRendered;
+          break;
+        case "numeric":
+        case "numericWithoutComma":
+          if(cellProperties.language === "en") {
+            cellValue = parseFloat(cellProperties.snteRendered.replace(/\,/g, "").trim());
+          }
+          else if(cellProperties.language === "de") {
+            cellValue = parseFloat(cellProperties.snteRendered.replace(/\./g, "").replace(/\,/g, ".").trim());
+          }
+          break;
+        case "percent":
+          if(cellProperties.language === "en") {
+            cellValue = parseFloat(cellProperties.snteRendered.replace(/\,/g, "").replace(/\%/g).trim());
+          }
+          else if(cellProperties.language === "de") {
+            cellValue = parseFloat(cellProperties.snteRendered.replace(/\./g, "").replace(/\,/g, ".").replace(/\%/g).trim());
+          }
+          break;
+        case "currency":
+          if(cellProperties.language === "en") {
+            cellValue = parseFloat(cellProperties.snteRendered.replace(/\,/g, "").replace(/[$€]/g).trim());
+          }
+          else if(cellProperties.language === "de") {
+            cellValue = parseFloat(cellProperties.snteRendered.replace(/\./g, "").replace(/\,/g, ".").replace(/[$€]/g).trim());
+          }
+          break;
+        case "date":
+          cellValue = new DateTime(strtotime(cellProperties.snteRendered)*1000);
+          break;
+      }
+      
+      chartDataRow.push(cellValue);
+    }
+    chartData.addRow(chartDataRow);
+  }
+
+  return chartData;
 }
 
 function snte_workspace_add_table() {
@@ -2174,6 +2193,9 @@ function snte_workspace_add_table() {
               
               formulaTarget += formula.coordinatesToCellReference(newCellCoordinates).token;
             }
+            else if(tokens[ii].type === "text") {
+              formulaTarget += "\""+tokens[ii].token+"\"";
+            }
             else {
               formulaTarget += tokens[ii].token;
             }
@@ -2289,6 +2311,30 @@ function snte_workspace_add_table() {
     },
     afterChange: function(changes, source) {
       snte_table_handsontable_undoable_action();
+
+      if($snteWorkspaceFocusedElement !== void 0 && $snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
+        var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+
+        var chartsToUpdate = {};
+
+        for(var ii = 0; ii < changes.length; ii++) {
+          for(var chartId in snteCharts) {
+            if(changes[ii][0] >= snteCharts[chartId].table.cellrange[0] &&
+               changes[ii][1] >= snteCharts[chartId].table.cellrange[1] &&
+               changes[ii][0] <= snteCharts[chartId].table.cellrange[2] &&
+               changes[ii][1] <= snteCharts[chartId].table.cellrange[3]) {
+              chartsToUpdate[chartId] = snteCharts[chartId];
+            }
+          }
+        }
+
+        for(var chartId in chartsToUpdate) {
+          var chartData = snte_chart_generate_data(tableInstance, chartsToUpdate[chartId].table.cellrange, chartsToUpdate[chartId].headerOffset);
+          snteCharts[chartId].data = chartData;
+          async.drawChart(chartsToUpdate[chartId].obj, chartData, chartsToUpdate[chartId].options);
+          //chartsToUpdate[chartId].obj.draw(chartData, chartsToUpdate[chartId].options);
+        }
+      }
     },
     afterCreateRow: function (index, amount, createdAutomatically) {
       if (createdAutomatically) {

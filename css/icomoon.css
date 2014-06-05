@@ -89,6 +89,9 @@
 .icon-upload4:before {
 	content: "\e615";
 }
+.icon-eye:before {
+	content: "\e62c";
+}
 .icon-eye-blocked:before {
 	content: "\e62b";
 }

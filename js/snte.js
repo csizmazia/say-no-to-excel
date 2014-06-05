@@ -2471,6 +2471,7 @@ function snte_workspace_add_table() {
             var rowHeadersVisible = !tableSettings.rowHeaders;
             $snteWorkspaceFocusedElement.handsontable("updateSettings", { rowHeaders: rowHeadersVisible });
             this.contextMenu.options.items.toggle_row_headers.name = rowHeadersVisible ? i18n.t("table.context-menu.hide-row-headers") : i18n.t("table.context-menu.show-row-headers");
+            this.contextMenu.options.items.toggle_row_headers.icon = rowHeadersVisible ? "icon-eye-blocked" : "icon-eye";
           }
         },
         "toggle_column_headers": {
@@ -2481,6 +2482,7 @@ function snte_workspace_add_table() {
             var colHeadersVisible = !tableSettings.colHeaders;
             $snteWorkspaceFocusedElement.handsontable("updateSettings", { colHeaders: colHeadersVisible });
             this.contextMenu.options.items.toggle_column_headers.name = colHeadersVisible ? i18n.t("table.context-menu.hide-column-headers") : i18n.t("table.context-menu.show-column-headers");
+            this.contextMenu.options.items.toggle_column_headers.icon = colHeadersVisible ? "icon-eye-blocked" : "icon-eye";
           }
         }
       }

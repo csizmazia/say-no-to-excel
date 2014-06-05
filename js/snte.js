@@ -2468,10 +2468,10 @@ function snte_workspace_add_table() {
           icon: "icon-eye-blocked",
           callback: function (key, options) {
             var tableSettings = $snteWorkspaceFocusedElement.handsontable("getSettings");
-            var rowHeadersVisible = !tableSettings.rowHeaders;
-            $snteWorkspaceFocusedElement.handsontable("updateSettings", { rowHeaders: rowHeadersVisible });
-            this.contextMenu.options.items.toggle_row_headers.name = rowHeadersVisible ? i18n.t("table.context-menu.hide-row-headers") : i18n.t("table.context-menu.show-row-headers");
-            this.contextMenu.options.items.toggle_row_headers.icon = rowHeadersVisible ? "icon-eye-blocked" : "icon-eye";
+            tableSettings.rowHeaders = !tableSettings.rowHeaders;
+            $snteWorkspaceFocusedElement.handsontable("getInstance").render();
+            this.contextMenu.options.items.toggle_row_headers.name = tableSettings.rowHeaders ? i18n.t("table.context-menu.hide-row-headers") : i18n.t("table.context-menu.show-row-headers");
+            this.contextMenu.options.items.toggle_row_headers.icon = tableSettings.rowHeaders ? "icon-eye-blocked" : "icon-eye";
           }
         },
         "toggle_column_headers": {
@@ -2479,10 +2479,10 @@ function snte_workspace_add_table() {
           icon: "icon-eye-blocked",
           callback: function (key, options) {
             var tableSettings = $snteWorkspaceFocusedElement.handsontable("getSettings");
-            var colHeadersVisible = !tableSettings.colHeaders;
-            $snteWorkspaceFocusedElement.handsontable("updateSettings", { colHeaders: colHeadersVisible });
-            this.contextMenu.options.items.toggle_column_headers.name = colHeadersVisible ? i18n.t("table.context-menu.hide-column-headers") : i18n.t("table.context-menu.show-column-headers");
-            this.contextMenu.options.items.toggle_column_headers.icon = colHeadersVisible ? "icon-eye-blocked" : "icon-eye";
+            tableSettings.colHeaders = !tableSettings.colHeaders;
+            $snteWorkspaceFocusedElement.handsontable("getInstance").render();
+            this.contextMenu.options.items.toggle_column_headers.name = tableSettings.colHeaders ? i18n.t("table.context-menu.hide-column-headers") : i18n.t("table.context-menu.show-column-headers");
+            this.contextMenu.options.items.toggle_column_headers.icon = tableSettings.colHeaders ? "icon-eye-blocked" : "icon-eye";
           }
         }
       }

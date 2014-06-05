@@ -1845,7 +1845,7 @@ function snte_workspace_send_to_back($elementContainer) {
 
 function snte_workspace_center_element($elementContainer) {
   $elementContainer.css({
-    "top": (((window.innerHeight-$elementContainer[0].offsetHeight)/2)+$(document).scrollTop())+"px",
+    "top": Math.max(snteChromeSize.top.height, (((window.innerHeight-$elementContainer[0].offsetHeight)/2)+$(document).scrollTop()))+"px",
     "left": (((window.innerWidth-$elementContainer[0].offsetWidth)/2)+$(document).scrollLeft())+"px"
   });
 }

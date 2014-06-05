@@ -206,7 +206,7 @@
         "xaxis": "Horizontal Axis",
         "yaxis": "Vertical Axis",
         "unnamed-axis": "No label",
-        "first-data-row": "First row contains column headers",
+        "first-data-row": "Does first row contain column headers?",
         "data-table": "Table",
         "data-cellrange": "Cellrange",
         "ok-button": "OK",

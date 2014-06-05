@@ -557,6 +557,10 @@ div.htContextMenu table tbody tr td {
 div.htContextMenu table tbody tr td.htSeparator {
   padding: 0 !important;
 }
+div.htContextMenu table tbody tr td div span[class^="icon-"], div.htContextMenu table tbody tr td div span[class*=" icon-"] {
+  width: 20px;
+  margin-right: 5px;
+}
 
 /*
 override bootstrap

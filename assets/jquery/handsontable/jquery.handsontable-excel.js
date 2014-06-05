@@ -1621,3 +1621,55 @@ Handsontable.cellTypes['excel'] = Handsontable.ExcelCell;
 Handsontable.PluginHooks.add('afterInit', initExcelCell);
 
 })(jQuery);
+
+/*(function (Handsontable) {
+  'use strict';
+*/
+  Handsontable.ContextMenu.prototype.renderer = function(instance, TD, row, col, prop, value, cellProperties){
+    var contextMenu = this;
+    var item = instance.getData()[row];
+    var wrapper = document.createElement('DIV');
+
+    Handsontable.Dom.empty(TD);
+    TD.appendChild(wrapper);
+
+    if(itemIsSeparator(item)){
+      Handsontable.Dom.addClass(TD, 'htSeparator');
+    } else {
+      var icon = document.createElement('SPAN');
+      if(item.icon) {
+        Handsontable.Dom.addClass(icon, item.icon);
+      }
+      wrapper.appendChild(icon);
+
+      var text = document.createElement('SPAN');
+      Handsontable.Dom.fastInnerText(text, value);
+      wrapper.appendChild(text);
+      //Handsontable.Dom.fastInnerText(wrapper, value);
+    }
+
+    if (itemIsDisabled(item, contextMenu.instance)){
+      Handsontable.Dom.addClass(TD, 'htDisabled');
+
+      $(wrapper).on('mouseenter', function () {
+        instance.deselectCell();
+      });
+
+    } else {
+      Handsontable.Dom.removeClass(TD, 'htDisabled');
+
+      $(wrapper).on('mouseenter', function () {
+        instance.selectCell(row, col);
+      });
+
+    }
+
+    function itemIsSeparator(item){
+      return new RegExp(Handsontable.ContextMenu.SEPARATOR, 'i').test(item.name);
+    }
+
+    function itemIsDisabled(item, instance){
+      return item.disabled === true || (typeof item.disabled == 'function' && item.disabled.call(contextMenu.instance) === true);
+    }
+  };
+//});

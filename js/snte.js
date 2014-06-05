@@ -2296,7 +2296,7 @@ function snte_workspace_add_table() {
       }
     },
     afterRender: function(isForced) {
-      //console.log("afterRender");
+      console.log("afterRender");
       $("span.snte-formula-error").tooltip();
     },
     beforeChange: function(changes, source) {
@@ -2364,18 +2364,21 @@ function snte_workspace_add_table() {
       items: {
         "copy": {
           name: i18n.t("table.context-menu.copy"),
+          icon: "icon-copy",
           callback: function (key, options) {
             $("div#snte-copypaste-modal").modal("show");
           }
         },
         "cut": {
           name: i18n.t("table.context-menu.cut"),
+          icon: "icon-scissors",
           callback: function (key, options) {
             $("div#snte-copypaste-modal").modal("show");
           }
         },
         "paste": {
           name: i18n.t("table.context-menu.paste"),
+          icon: "icon-paste",
           callback: function (key, options) {
             $("div#snte-copypaste-modal").modal("show");
           }
@@ -2383,6 +2386,7 @@ function snte_workspace_add_table() {
         "hsep0": "---------",
         "vacuum": {
           name: i18n.t("table.context-menu.vacuum"),
+          icon: "icon-crop",
           callback: function (key, options) {
             var doIt = true;
             var someCellsNotEmpty = false;
@@ -2426,20 +2430,34 @@ function snte_workspace_add_table() {
           }
         },
         "hsep1": "---------",
-        "row_above": {name: i18n.t("table.context-menu.insert-row-above")},
-        "row_below": {name: i18n.t("table.context-menu.insert-row-below")},
+        "row_above": {
+          name: i18n.t("table.context-menu.insert-row-above"),
+          icon: "icon-row-above",
+        },
+        "row_below": {
+          name: i18n.t("table.context-menu.insert-row-below"),
+          icon: "icon-row-below",
+        },
         "hsep2": "---------",
-        "col_left": {name: i18n.t("table.context-menu.insert-column-left")},
-        "col_right": {name: i18n.t("table.context-menu.insert-column-right")},
+        "col_left": {
+          name: i18n.t("table.context-menu.insert-column-left"),
+          icon: "icon-col-left",
+        },
+        "col_right": {
+          name: i18n.t("table.context-menu.insert-column-right"),
+          icon: "icon-col-right",
+        },
         "hsep3": "---------",
         "remove_row": {
           name: i18n.t("table.context-menu.remove-row"),
+          icon: "icon-close",
           disabled: function () {
             return this.countRows() === 1;
           }
         },
         "remove_col": {
           name: i18n.t("table.context-menu.remove-column"),
+          icon: "icon-close",
           disabled: function () {
             return this.countCols() === 1;
           }
@@ -2447,6 +2465,7 @@ function snte_workspace_add_table() {
         "hsep4": "---------",
         "toggle_row_headers": {
           name: i18n.t("table.context-menu.hide-row-headers"),
+          icon: "icon-eye-blocked",
           callback: function (key, options) {
             var tableSettings = $snteWorkspaceFocusedElement.handsontable("getSettings");
             var rowHeadersVisible = !tableSettings.rowHeaders;
@@ -2456,6 +2475,7 @@ function snte_workspace_add_table() {
         },
         "toggle_column_headers": {
           name: i18n.t("table.context-menu.hide-column-headers"),
+          icon: "icon-eye-blocked",
           callback: function (key, options) {
             var tableSettings = $snteWorkspaceFocusedElement.handsontable("getSettings");
             var colHeadersVisible = !tableSettings.colHeaders;

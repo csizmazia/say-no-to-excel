@@ -2320,8 +2320,8 @@ function snte_workspace_add_table() {
 
           for(var ii = 0; ii < changes.length; ii++) {
             for(var chartId in snteCharts) {
-              console.log(snteCharts[chartId]);
-              if(changes[ii][0] >= snteCharts[chartId].table.cellrange[0] &&
+              if($snteWorkspaceFocusedElement.attr("id").replace("snte-element-","") === snteCharts[chartId].table.id &&
+                 changes[ii][0] >= snteCharts[chartId].table.cellrange[0] &&
                  changes[ii][1] >= snteCharts[chartId].table.cellrange[1] &&
                  changes[ii][0] <= snteCharts[chartId].table.cellrange[2] &&
                  changes[ii][1] <= snteCharts[chartId].table.cellrange[3]) {

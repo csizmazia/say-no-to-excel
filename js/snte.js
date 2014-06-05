@@ -1018,7 +1018,7 @@ function snte_reset_search_on_element($elem) {
   if($elem.hasClass("snte-element-text")) {
     $elem.unhighlight({"className": "snte-search-match"});
   }
-  else if($elem.hasClass("snte-element-comment") && $("button#snte-menu-toggle-comments").hasClass("active")) {
+  else if($elem.hasClass("snte-element-comment")) {
     $elem.unhighlight({"className": "snte-search-match"});
   }
   else if($elem.hasClass("snte-element-table")) {

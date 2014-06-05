@@ -57,7 +57,9 @@
     "next-result": "Next result",
     "previous-result": "Previous result",
     "clear": "Clear search",
-    "wait": "searching..."
+    "wait": "searching...",
+    "resultcount": "__count__ match",
+    "resultcount_plural": "__count__ matches"
   },
   "image-upload": {
     "header": "Add image",

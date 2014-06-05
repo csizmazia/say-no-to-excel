@@ -92,7 +92,10 @@
         "show-row-headers": "Show row headers",
         "show-column-headers": "Show column headers",
         "table-options": "Table",
-        "vacuum": "Keep only selected cells"
+        "vacuum": "Keep only selected cells",
+        "copy": "Copy",
+        "cut": "Cut",
+        "paste": "Paste"
     },
     "formula": {
         "error": {

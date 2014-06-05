@@ -58,8 +58,8 @@
     "previous-result": "zum vorherigen Treffer springen",
     "clear": "Suchfeld leeren",
     "wait": "sucht...",
-    "resultcount": "__count__ Ergebnis",
-    "resultcount_plural": "__count__ Ergebnisse"
+    "resultcount": "__count__ Treffer",
+    "resultcount_plural": "__count__ Treffer"
   },
   "image-upload": {
     "header": "Bild hinzufügen",
@@ -92,7 +92,10 @@
         "show-row-headers": "Zeilenbeschriftung einblenden",
         "show-column-headers": "Spaltenbeschriftung einblenden",
         "table-options": "Tabelle",
-        "vacuum": "Nur ausgewählte Zellen behalten"
+        "vacuum": "Tabelle auf Auswahl minimieren",
+        "copy": "Kopieren",
+        "cut": "Ausschneiden",
+        "paste": "Einfügen"
     },
     "formula": {
         "error": {

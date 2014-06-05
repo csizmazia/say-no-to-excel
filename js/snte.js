@@ -576,6 +576,9 @@ function snte_chrome_set_type_control(cell) {
 function snte_chrome_setup_key_shortcuts() {
   $(document).on("keydown", function(event) {
     if(event.metaKey || event.ctrlKey) {
+      if(event.keyCode === 65) { // A
+        event.stopImmediatePropagation(); // prevent native handling by handsontable
+      }
       if(event.keyCode === 70) { // F
         // search
         event.preventDefault();
@@ -2359,6 +2362,25 @@ function snte_workspace_add_table() {
     },
     contextMenu: {
       items: {
+        "copy": {
+          name: i18n.t("table.context-menu.copy"),
+          callback: function (key, options) {
+            $("div#snte-copypaste-modal").modal("show");
+          }
+        },
+        "cut": {
+          name: i18n.t("table.context-menu.cut"),
+          callback: function (key, options) {
+            $("div#snte-copypaste-modal").modal("show");
+          }
+        },
+        "paste": {
+          name: i18n.t("table.context-menu.paste"),
+          callback: function (key, options) {
+            $("div#snte-copypaste-modal").modal("show");
+          }
+        },
+        "hsep0": "---------",
         "vacuum": {
           name: i18n.t("table.context-menu.vacuum"),
           callback: function (key, options) {
@@ -2403,13 +2425,13 @@ function snte_workspace_add_table() {
             }
           }
         },
-        "hsep0": "---------",
+        "hsep1": "---------",
         "row_above": {name: i18n.t("table.context-menu.insert-row-above")},
         "row_below": {name: i18n.t("table.context-menu.insert-row-below")},
-        "hsep1": "---------",
+        "hsep2": "---------",
         "col_left": {name: i18n.t("table.context-menu.insert-column-left")},
         "col_right": {name: i18n.t("table.context-menu.insert-column-right")},
-        "hsep2": "---------",
+        "hsep3": "---------",
         "remove_row": {
           name: i18n.t("table.context-menu.remove-row"),
           disabled: function () {
@@ -2422,7 +2444,7 @@ function snte_workspace_add_table() {
             return this.countCols() === 1;
           }
         },
-        "hsep3": "---------",
+        "hsep4": "---------",
         "toggle_row_headers": {
           name: i18n.t("table.context-menu.hide-row-headers"),
           callback: function (key, options) {
@@ -2449,18 +2471,35 @@ function snte_workspace_add_table() {
 
   $addRowControl = $("<div>").addClass("snte-table-control snte-table-control-add-row").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", i18n.t("table.add-row")));
   $addRowControl.click(function(event) {
+    $(this).find("span").tooltip("hide");
+
     var $workspaceElement = $(event.target).closest("div.snte-element-container").find("div.snte-element");
     snte_workspace_set_focus($workspaceElement);
     var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
     tableInstance.alter("insert_row");
   });
+  $addRowControl.find("span").tooltip({
+    container: "body",
+    placement: "bottom",
+    trigger: "hover",
+    animation: false
+  });
   $newElementContainer.append($addRowControl);
+
   $addColumnControl = $("<div>").addClass("snte-table-control snte-table-control-add-column").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", i18n.t("table.add-column")));
   $addColumnControl.click(function(event) {
+    $(this).find("span").tooltip("hide");
+
     var $workspaceElement = $(event.target).closest("div.snte-element-container").find("div.snte-element");
     snte_workspace_set_focus($workspaceElement);
     var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
     tableInstance.alter("insert_col");
+  });
+  $addColumnControl.find("span").tooltip({
+    container: "body",
+    placement: "right",
+    trigger: "hover",
+    animation: false
   });
   $newElementContainer.append($addColumnControl);
 

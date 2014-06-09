@@ -206,7 +206,7 @@
         "xaxis": "Hotizontale Achse",
         "yaxis": "Vertikale Achse",
         "unnamed-axis": "keine Beschriftung",
-        "first-data-row": "Enthält die erste Zeile Überschriften",
+        "first-data-row": "Die erste Zeile enthält Überschriften",
         "data-table": "Tabelle",
         "data-cellrange": "Zellbereich",
         "ok-button": "OK",

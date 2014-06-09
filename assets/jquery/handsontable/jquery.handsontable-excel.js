@@ -1261,6 +1261,9 @@ var evalFormula = function (instance, formula) {
 
     // Unary + and -
     if (tokens[0].type == 'operator' && (tokens[0].token == '-' || tokens[0].token == '+')) {
+      if(tokens.length == 1) {
+        return { "type": 'error', "error": i18n.t("table.formula.error.bad-formula"), "next": null };
+      }
       if (tokens[1].type == 'error') {
         return tokens[1];
       }

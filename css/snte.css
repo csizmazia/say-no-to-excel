@@ -154,18 +154,20 @@ div.snte-element-chart {
 }
 
 div.snte-element-text {
+  padding: 5px;
   margin: 0 0 0 20px;
   /*min-width: 200px;
   min-height: 200px;*/
   min-width: 20px;
   min-height: 35px; 
-  border-radius: 5px;
+  border-radius: none;
   -moz-box-shadow: none;
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 div.snte-element-text:hover, div.snte-element-text:focus {
   outline: none; /* for chrome */
+  border-radius: 5px;
   border: 2px dashed #e4e4e4;
   -moz-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -187,7 +189,6 @@ div.snte-element-comment {
   height: 100%;
   margin: 0 12px 0 20px;
 
-  background: #fefabc; 
   padding: 15px; 
   /*font-family: 'Gloria Hallelujah', cursive;*/
   font-size: 15px; 
@@ -568,4 +569,5 @@ override bootstrap
 .popover {
   max-width: none !important;
   width: auto !important;
+  position: fixed !important;
 }

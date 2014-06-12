@@ -79,6 +79,9 @@ var snteWorkspaceDragHelper; // used to store drag starting position
 var snteUndoManager = new UndoManager();
 var snteUndoTypeTimeout = 0;
 
+var snteSupportedLanguages = ["en", "de"];
+var snteDefaultLanguage = "en";
+
 var snteImage = {"maxWidth": 500};
 
 var snteChromeSize = {"left": {"width": 0}, "top": {"height": 120}};
@@ -272,7 +275,7 @@ function snte_bootstrap() {
 
   snteUndoManager.setCallback(snte_chrome_set_undo_controls);
 
-  i18n.init({ detectLngQS: 'lang', cookieName: 'lang', fallbackLng: 'en', debug: false }, function(t) {
+  i18n.init({ detectLngQS: 'lang', cookieName: 'lang', fallbackLng: snteDefaultLanguage, debug: false }, function(t) {
     $("body").i18n();
 
     snteCellTypes =  {
@@ -2153,7 +2156,7 @@ function snte_workspace_add_table() {
       searchResultClass: "snte-search-match"
     },
     cells: function (row, col, prop) {
-      this.language = i18n.lng();
+      this.language = snte_i18n_supported_language(i18n.lng());
       this.renderer = snteCellRenderer;
       this.type = "excel";
       this.snteFormats = {
@@ -2366,7 +2369,7 @@ function snte_workspace_add_table() {
       }
     },
     afterRender: function(isForced) {
-      console.log("afterRender");
+      /*console.log("afterRender");*/
       $("span.snte-formula-error").tooltip();
     },
     beforeChange: function(changes, source) {
@@ -2884,4 +2887,18 @@ function snte_table_get_title($elem) {
   }
 
   return title;
+}
+
+function snte_i18n_supported_language(lang) {
+  if(snteSupportedLanguages.indexOf(lang) !== -1) {
+    return lang;
+  }
+  else {
+    var fixedLang = lang.substring(0, lang.indexOf("-"));
+    if(snteSupportedLanguages.indexOf(fixedLang) !== -1) {
+      return fixedLang;
+    }
+  }
+
+  return snteDefaultLanguage;
 }

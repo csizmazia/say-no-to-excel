@@ -1872,7 +1872,15 @@ function snte_workspace_create_element_container(withTitle, titlePlaceholder) {
     $newElementContainer.append($titleControl);
   }
 
-  $deleteControl = $("<div>").addClass("snte-element-delete").append($("<span>").addClass("glyphicon glyphicon-remove").attr("title", i18n.t("chrome.delete-element")));
+  $deleteControl = $("<div>").addClass("snte-element-delete").attr("title", i18n.t("chrome.delete-element"));
+  $deleteControl.tooltip({
+    container: "body",
+    placement: "left",
+    trigger: "hover",
+    html: false,
+    animation: false
+  }).click(function() { $(this).tooltip("hide"); });
+  $deleteControl.append($("<span>").addClass("glyphicon glyphicon-remove"));
   $deleteControl.click(snte_workspace_remove_element_confirm);
   $elementControls = $("<div>").addClass("snte-element-controls snte-element-draghandle").append($deleteControl);
   $newElementContainer.append($elementControls);
@@ -2566,16 +2574,16 @@ function snte_workspace_add_table() {
   
   $newElementContainer = snte_workspace_create_element_container(true, i18n.t("table.unnamed")+" "+(++snteTableCounter));
 
-  $addRowControl = $("<div>").addClass("snte-table-control snte-table-control-add-row").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", i18n.t("table.add-row")));
+  $addRowControl = $("<div>").addClass("snte-table-control snte-table-control-add-row").append($("<span>").addClass("glyphicon glyphicon-plus")).attr("title", i18n.t("table.add-row"));
   $addRowControl.click(function(event) {
-    $(this).find("span").tooltip("hide");
+    $(this).tooltip("hide");
 
     var $workspaceElement = $(event.target).closest("div.snte-element-container").find("div.snte-element");
     snte_workspace_set_focus($workspaceElement);
     var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
     tableInstance.alter("insert_row");
   });
-  $addRowControl.find("span").tooltip({
+  $addRowControl.tooltip({
     container: "body",
     placement: "bottom",
     trigger: "hover",
@@ -2583,16 +2591,16 @@ function snte_workspace_add_table() {
   });
   $newElementContainer.append($addRowControl);
 
-  $addColumnControl = $("<div>").addClass("snte-table-control snte-table-control-add-column").append($("<span>").addClass("glyphicon glyphicon-plus").attr("title", i18n.t("table.add-column")));
+  $addColumnControl = $("<div>").addClass("snte-table-control snte-table-control-add-column").append($("<span>").addClass("glyphicon glyphicon-plus")).attr("title", i18n.t("table.add-column"));
   $addColumnControl.click(function(event) {
-    $(this).find("span").tooltip("hide");
+    $(this).tooltip("hide");
 
     var $workspaceElement = $(event.target).closest("div.snte-element-container").find("div.snte-element");
     snte_workspace_set_focus($workspaceElement);
     var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
     tableInstance.alter("insert_col");
   });
-  $addColumnControl.find("span").tooltip({
+  $addColumnControl.tooltip({
     container: "body",
     placement: "right",
     trigger: "hover",

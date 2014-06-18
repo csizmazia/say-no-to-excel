@@ -135,12 +135,12 @@ div.snte-element-table table tr td, div.snte-element-table table tr th {
   cursor: default;
 }
 div.snte-element-table table tr td.snte-formula {
-  background-image: url('../img/formula-indicator-8x8.png');
+  background-image: url('../img/formula-indicator2-12x12.png');
   background-position: 3px 3px;
   background-repeat: no-repeat;
 }
 textarea.snte-formula {
-  background-image: url('../img/formula-indicator-8x8.png');
+  background-image: url('../img/formula-indicator2-12x12.png');
   background-position: 3px 3px;
   background-repeat: no-repeat;
 }

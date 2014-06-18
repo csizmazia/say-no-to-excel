@@ -743,13 +743,16 @@ function snte_chrome_setup() {
 
   $("button#snte-menu-toggle-search").click(function(event) {
     snte_chrome_toggle_button($(this));
+    var searchTerm = $("input.snte-menu-search-input").val();
     if($(this).hasClass("active")) {
       snte_chrome_setup_search();
       snte_workspace_reset_focus(void 0);
       $("input.snte-menu-search-input").focus();
+      if(searchTerm !== "") {
+        snte_search(searchTerm);
+      }
     }
     else {
-      var searchTerm = $("input.snte-menu-search-input").val();
       snte_reset_search();
       $("input.snte-menu-search-input").val(searchTerm);
     }

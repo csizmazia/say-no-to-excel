@@ -2863,6 +2863,32 @@ function snte_table_apply_cell_type() {
 
 function snte_table_put_formula(formula) {
   var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+
+  var formulaBody = "";
+  if(formula !== "IF") {
+    var selectedCells = snte_table_normalize_cell_selection(tableInstance.getSelected());
+    var selectionHeight = selectedCells[2]-selectedCells[0]+1;
+    var selectionWidth = selectedCells[3]-selectedCells[1]+1;
+    
+    if(selectionHeight > 1 || selectionWidth > 1) {
+      if(selectionHeight > selectionWidth || selectionHeight === selectionWidth) {
+        if(tableInstance.countRows() === selectedCells[2]+1) {
+          tableInstance.alter("insert_row");
+        }
+        tableInstance.selectCell(selectedCells[2]+1, selectedCells[3]);
+      }
+      else {
+        if(tableInstance.countCols() === selectedCells[3]+1) {
+          tableInstance.alter("insert_col");
+        }
+        tableInstance.selectCell(selectedCells[2], selectedCells[3]+1);
+      }
+
+      formulaBody = Handsontable.helper.spreadsheetColumnLabel(selectedCells[1])+(selectedCells[0]+1)+":"+Handsontable.helper.spreadsheetColumnLabel(selectedCells[3])+(selectedCells[2]+1);
+    }
+  }
+
+
   var editor = tableInstance.getActiveEditor();
   if(!snteCellEditorOpened) {
     editor.beginEditing();
@@ -2870,12 +2896,23 @@ function snte_table_put_formula(formula) {
   
   var functionString = "";
   if(editor.TEXTAREA.value.trim() === "") {
-    functionString = "="+formula;
+    functionString = "="+formula+"(";
   }
   else  {
-    functionString = formula;
+    functionString = formula+"(";
   }
+  functionString += formulaBody;
+
+  if(formulaBody !== "") {
+    functionString += ")";
+  }
+
   editor.putString(functionString);
+
+  if(formulaBody !== "") {
+    // close editor
+    editor.finishEditing();
+  }
 }
 
 function snte_table_normalize_cell_selection(selectedCells) {

@@ -707,7 +707,9 @@ function snte_chrome_setup() {
   });
 
   $("div#snte-menu-add-element ul.dropdown-menu li a").click(function(event) {
-    snte_workspace_add_element($(this).data("item"));
+    if(!$(this).parent("li").hasClass("disabled")) {
+      snte_workspace_add_element($(this).data("item"));
+    }
     
     event.preventDefault();
   });

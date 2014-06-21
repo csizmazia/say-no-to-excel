@@ -172,3 +172,16 @@
 .icon-col-right:before {
 	content: "\e614";
 }
+
+.icon-eject:before, .icon-arrow-top:before {
+	content: "\e62d";
+}
+.icon-eject2:before, .icon-arrow-left:before {
+	content: "\e62e";
+}
+.icon-eject3:before, .icon-arrow-right:before {
+	content: "\e62f";
+}
+.icon-eject4:before, .icon-arrow-bottom:before {
+	content: "\e630";
+}

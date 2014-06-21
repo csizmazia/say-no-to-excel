@@ -535,6 +535,83 @@ div.snte-copypaste-modal-shortcut-command {
 }
 
 
+.snte-element-container > .arrow,
+.snte-element-container > .arrow:after {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+.snte-element-container > .arrow {
+  border-width: 11px;
+}
+.snte-element-container > .arrow:after {
+  content: "";
+  border-width: 10px;
+}
+.snte-element-container > .arrow.bottom {
+  bottom: -11px;
+  left: 50%;
+  margin-left: -11px;
+  border-top-color: #999;
+  border-top-color: rgba(0, 0, 0, 0.1);
+  border-bottom-width: 0;
+}
+.snte-element-container > .arrow.bottom:after {
+  bottom: 1px;
+  margin-left: -10px;
+  content: " ";
+  border-top-color: rgb(255, 242, 204);
+  border-bottom-width: 0;
+}
+
+.snte-element-container > .arrow.left {
+  top: 50%;
+  left: -11px;
+  margin-top: -11px;
+  border-right-color: rgba(0, 0, 0, 0.1);
+  border-left-width: 0;
+}
+.snte-element-container > .arrow.left:after {
+  bottom: -10px;
+  left: 1px;
+  content: " ";
+  border-right-color: rgb(255, 242, 204);
+  border-left-width: 0;
+}
+.snte-element-container > .arrow.top {
+  top: -11px;
+  left: 50%;
+  margin-left: -11px;
+  border-top-width: 0;
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+.snte-element-container > .arrow.top:after {
+  top: 1px;
+  margin-left: -10px;
+  content: " ";
+  border-top-width: 0;
+  border-bottom-color: rgb(255, 242, 204);
+}
+.snte-element-container > .arrow.right {
+  top: 50%;
+  right: -11px;
+  margin-top: -11px;
+  border-right-width: 0;
+  border-left-color: rgba(0, 0, 0, 0.1);
+}
+.snte-element-container > .arrow.right:after {
+  right: 1px;
+  bottom: -10px;
+  content: " ";
+  border-right-width: 0;
+  border-left-color: rgb(255, 242, 204);
+}
+
+
+
 /*
 override handsontable
 */

@@ -1446,17 +1446,27 @@ function snte_wysiwyg_apply_fill_color(recordUndo) {
         colorBefore = $snteWorkspaceFocusedElement.css("background-color");
       }
 
-      $snteWorkspaceFocusedElement.css("background-color", $("button#snte-menu-fill-color").data("value"));
+      var fillColor = $("button#snte-menu-fill-color").data("value");
+      $snteWorkspaceFocusedElement.css("background-color", fillColor);
+
+      var focusedElementId = snte_workspace_get_element_id($snteWorkspaceFocusedElement);
+      $("#snte-css-"+focusedElementId).remove();
+      $("<style>"+
+        "#snte-element-container-"+focusedElementId+" > .arrow.bottom:after {border-top-color:"+fillColor+";}"+
+        "#snte-element-container-"+focusedElementId+" > .arrow.left:after {border-right-color:"+fillColor+";}"+
+        "#snte-element-container-"+focusedElementId+" > .arrow.right:after {border-left-color:"+fillColor+";}"+
+        "#snte-element-container-"+focusedElementId+" > .arrow.top:after {border-bottom-color:"+fillColor+";}"+
+        "</style>").attr("id","snte-css-"+focusedElementId).appendTo('head');
       
       if(recordUndo) {
-        colorAfter = $("button#snte-menu-fill-color").data("value");
+        colorAfter = fillColor;
       }
 
       $snteWorkspaceFocusedElement.focus();
 
       if(recordUndo) {
         var $elem = $snteWorkspaceFocusedElement;
-        var elementId = $snteWorkspaceFocusedElement.attr("id").replace("snte-element-", "");
+        var elementId = snte_workspace_get_element_id($snteWorkspaceFocusedElement);
 
         snteUndoManager.add({
           undo: function() {
@@ -1611,6 +1621,7 @@ function snte_workspace_remove_element($elem, moveToTrash) {
     }
     else {
       $elem.closest("div.snte-element-container").remove();
+      $("#snte-css-"+snte_workspace_get_element_id($elem)).remove();
     }
   }
 
@@ -1943,6 +1954,10 @@ function snte_workspace_generate_element_id() {
   return "e"+date.getTime();
 }
 
+function snte_workspace_get_element_id($elem) {
+  return $elem.attr("id").replace("snte-element-", "");
+}
+
 function snte_workspace_show_comments() {
   $("div.snte-element-comment").parent("div.snte-element-container").removeClass("snte-hidden");
 }
@@ -2053,7 +2068,7 @@ function snte_workspace_add_chart(chartType) {
 
     snteCharts[nextId] = {
       "table": {
-        "id": $snteWorkspaceFocusedElement.attr("id").replace("snte-element-",""),
+        "id": snte_workspace_get_element_id($snteWorkspaceFocusedElement),
         "cellrange": selectedCells
       },
       "type": chartType,
@@ -2411,7 +2426,7 @@ function snte_workspace_add_table() {
 
           for(var ii = 0; ii < changes.length; ii++) {
             for(var chartId in snteCharts) {
-              if($snteWorkspaceFocusedElement.attr("id").replace("snte-element-","") === snteCharts[chartId].table.id &&
+              if(snte_workspace_get_element_id($snteWorkspaceFocusedElement) === snteCharts[chartId].table.id &&
                  changes[ii][0] >= snteCharts[chartId].table.cellrange[0] &&
                  changes[ii][1] >= snteCharts[chartId].table.cellrange[1] &&
                  changes[ii][0] <= snteCharts[chartId].table.cellrange[2] &&
@@ -2698,6 +2713,7 @@ function snte_workspace_add_comment() {
   snte_chrome_set_color_control("fill", "rgb(255, 242, 204)");
 
   $newElementContainer = snte_workspace_create_element_container(false, void 0);
+  $newElementContainer.attr("id", "snte-element-container-"+nextId);
   $newElementContainer.width(snteDefaultElementSizes.comment.width).height(snteDefaultElementSizes.comment.height);
 
   $newElement.focus(function(event) {
@@ -2720,6 +2736,10 @@ function snte_workspace_add_comment() {
   });
 
   snteWorkspaceElements[nextId] = $newElement;
+
+  $arrow = $("<div>").addClass("arrow bottom");
+  $arrow.appendTo($newElementContainer);
+
   $newElement.appendTo($newElementContainer);
 
   snte_workspace_make_resizable($newElementContainer, false, false);

@@ -747,18 +747,18 @@ function snte_chrome_setup() {
 
   $("button#snte-menu-toggle-search").click(function(event) {
     snte_chrome_toggle_button($(this));
-    var searchTerm = $("input.snte-menu-search-input").val();
+    var searchTerm = $("#snte-menu-search-input").val();
     if($(this).hasClass("active")) {
       snte_chrome_setup_search();
       snte_workspace_reset_focus(void 0);
-      $("input.snte-menu-search-input").focus();
+      $("#snte-menu-search-input").focus();
       if(searchTerm !== "") {
         snte_search(searchTerm);
       }
     }
     else {
       snte_reset_search();
-      $("input.snte-menu-search-input").val(searchTerm);
+      $("#snte-menu-search-input").val(searchTerm);
     }
   });
 
@@ -996,30 +996,30 @@ function snte_chrome_setup_chart_control() {
 }
 
 function snte_chrome_setup_search() {
-  $("div.popover-content button.snte-menu-search-next").off("click").click(function() {
+  $("button#snte-menu-search-next").off("click").click(function() {
     $(this).tooltip("hide");
     snte_search_mark("next");
   });
-  $("div.popover-content button.snte-menu-search-prev").off("click").click(function() {
+  $("button#snte-menu-search-prev").off("click").click(function() {
     $(this).tooltip("hide");
     snte_search_mark("prev");
   });
-  $("div.popover-content button.snte-menu-search-clear").off("click").click(function() {
+  $("button#snte-menu-search-clear").off("click").click(function() {
     $(this).tooltip("hide");
     snte_reset_search();
-    $("input.snte-menu-search-input").focus();
+    $("#snte-menu-search-input").focus();
   });
-  $("div.popover-content input.snte-menu-search-input").off("keyup").keyup(function(event) {
+  $("#snte-menu-search-input").off("keyup").keyup(function(event) {
     if(event.which === Handsontable.helper.keyCode.ENTER) {
       if(snteSearchTypeTimeout > 0) {
         $(this).closest("div").removeClass("has-success has-error");
-        $("div.popover div.snte-searchbox-resultcount").text("");
+        $("#snte-searchbox-resultcount").text("");
 
         clearTimeout(snteSearchTypeTimeout);
         snte_search($(this).val());
       }
       else {
-        $("div.popover-content button.snte-menu-search-next").click();
+        $("button#snte-menu-search-next").click();
       }
     }
     else if(event.which === Handsontable.helper.keyCode.ESCAPE) {
@@ -1027,10 +1027,10 @@ function snte_chrome_setup_search() {
     }
     else {
       $(this).closest("div").removeClass("has-success has-error");
-      $("div.popover div.snte-searchbox-resultcount").html("<img src=\"img/loading-icon-16x16.gif\" alt=\""+i18n.t("search.wait")+"\" title=\""+i18n.t("search.wait")+"\" />");
+      $("#snte-searchbox-resultcount").html("<img src=\"img/loading-icon-16x16.gif\" alt=\""+i18n.t("search.wait")+"\" title=\""+i18n.t("search.wait")+"\" />");
 
       clearTimeout(snteSearchTypeTimeout);
-      snteSearchTypeTimeout = setTimeout(function() { snte_search($("div.popover-content input.snte-menu-search-input").val()); }, 200);
+      snteSearchTypeTimeout = setTimeout(function() { snte_search($("#snte-menu-search-input").val()); }, 200);
     }
   });
 }
@@ -1076,8 +1076,8 @@ function snte_reset_search() {
   for(var ii in snteWorkspaceElements) {
     snte_reset_search_on_element(snteWorkspaceElements[ii]);
   }
-  $("div.popover div.snte-searchbox-resultcount").text("");
-  $("div.popover-content input.snte-menu-search-input").val("").closest("div").removeClass("has-success has-error");
+  $("#snte-searchbox-resultcount").text("");
+  $("#snte-menu-search-input").val("").closest("div").removeClass("has-success has-error");
 }
 
 function snte_search(needle) {
@@ -1107,13 +1107,13 @@ function snte_search(needle) {
     snte_search_mark("next"); // highlight first result
 
     if(snteSearchResultCounter > 0) {
-      $("div.popover-content input.snte-menu-search-input").closest("div").addClass("has-success");
+      $("#snte-menu-search-input").closest("div").addClass("has-success");
     }
     else {
-      $("div.popover-content input.snte-menu-search-input").closest("div").addClass("has-error");
+      $("#snte-menu-search-input").closest("div").addClass("has-error");
     }
 
-    $("div.popover div.snte-searchbox-resultcount").text(i18n.t("search.resultcount", { count: snteSearchResultCounter }));
+    $("#snte-searchbox-resultcount").text(i18n.t("search.resultcount", { count: snteSearchResultCounter }));
   }
   else {
     snte_reset_search();

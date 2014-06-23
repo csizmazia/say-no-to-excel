@@ -103,6 +103,8 @@ var snteWYSIWYG = {
 
 var snteCellTypes;
 
+var snteSupportedFormulas = ["SUM", "AVG", "MIN", "MAX", "COUNT", "IF"];
+
 var snteFillColorNeedsBlackFont = [
   "rgba(0,0,0,0)",
   "rgba(239,239,239,1)",
@@ -2885,7 +2887,7 @@ function snte_table_put_formula(formula) {
   var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
 
   var formulaBody = "";
-  if(formula !== "IF") {
+  if(snteSupportedFormulas.indexOf(formula)>-1 && formula !== "IF") {
     var selectedCells = snte_table_normalize_cell_selection(tableInstance.getSelected());
     var selectionHeight = selectedCells[2]-selectedCells[0]+1;
     var selectionWidth = selectedCells[3]-selectedCells[1]+1;
@@ -2915,11 +2917,11 @@ function snte_table_put_formula(formula) {
   }
   
   var functionString = "";
-  if(editor.TEXTAREA.value.trim() === "") {
-    functionString = "="+formula+"(";
+  if(editor.TEXTAREA.value.trim() === "" && formula !== "=") {
+    functionString = "="+formula+(snteSupportedFormulas.indexOf(formula)>-1?"(":"");
   }
   else  {
-    functionString = formula+"(";
+    functionString = formula+(snteSupportedFormulas.indexOf(formula)>-1?"(":"");
   }
   functionString += formulaBody;
 

@@ -1583,7 +1583,7 @@ function snte_workspace_restore_element() {
   var $elementContainer = snteTrash.pop();
   if($elementContainer) { // because empty textfields are deleted automatically (without being moved to trash) it is possible that an undo action is available but trash is empty. therefore this if.
     var $elem = $elementContainer.find("div.snte-element");
-    var elementId = $elem.attr("id").replace("snte-element-", "");
+    var elementId = snte_workspace_get_element_id($elem);
 
     snteWorkspaceElements[elementId] = $elem;
     if($elem.hasClass("snte-element-chart")) {
@@ -1607,7 +1607,7 @@ function snte_workspace_remove_element($elem, moveToTrash) {
     snte_workspace_reset_focus(void 0);
   }
 
-  var elementId = $elem.attr("id").replace("snte-element-", "");
+  var elementId = snte_workspace_get_element_id($elem);
 
   if(snteWorkspaceElements[elementId]) {
     // delete is slow: http://stackoverflow.com/questions/208105/how-to-remove-a-property-from-a-javascript-object
@@ -1744,7 +1744,7 @@ function snte_workspace_resize_element($elem, width, height) {
       "width": width,
       "height": height
     });
-    var elemId = $elem.attr("id").replace("snte-element-","");
+    var elemId = snte_workspace_get_element_id($elem);
     snteCharts[elemId].options.width = width;
     snteCharts[elemId].options.height = height;
     snteCharts[elemId].obj.draw(snteCharts[elemId].data, snteCharts[elemId].options);
@@ -1818,6 +1818,7 @@ function snte_workspace_make_resizable($elementContainer, keepAspectRatio, resto
       });
     }
   });
+
   if(restoreOriginal) {
     var $resizeHandle = $elementContainer.find("div.ui-resizable-handle");
     $resizeHandle.attr("title", i18n.t("resize.drag-handle-help"));
@@ -1844,9 +1845,17 @@ function snte_workspace_make_resizable($elementContainer, keepAspectRatio, resto
     });
   }
 
-  if($elementContainer.find("div.snte-element").hasClass("snte-element-comment")) {
+  var $elem = $elementContainer.find("div.snte-element");
+
+  if($elem.hasClass("snte-element-comment")) {
     // need this to move resizehandle away from scrollbar
     $elementContainer.find("div.ui-resizable-handle").addClass("snte-comment-resizehandle");
+  }
+  else if($elem.hasClass("snte-element-image")) {
+    $elementContainer.resizable("option", "alsoResize", $elem.find("img"));
+  }
+  else if($elem.hasClass("snte-element-chart")) {
+    $elementContainer.resizable("option", "alsoResize", $elem);
   }
 }
 
@@ -1999,7 +2008,7 @@ function snte_workspace_add_chart(chartType) {
     $newElementContainer = snte_workspace_create_element_container(true, i18n.t("chart.unnamed")+" "+(++snteChartCounter));
     $newElementContainer.find("input.snte-element-title-input").val($("input#snte-chart-wizard-title").val());
     $newElement.click(function(event) {
-      var elemId = $(this).attr("id").replace("snte-element-","");
+      var elemId = snte_workspace_get_element_id($(this));
       if(snteWorkspaceElements[snteCharts[elemId].table.id]) {
         $table = $("#snte-element-"+snteCharts[elemId].table.id);
         snte_workspace_set_focus($table);

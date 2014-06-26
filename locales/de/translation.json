@@ -43,6 +43,7 @@
     "new-element-comment": "Kommentar",
     "new-element-chart": "Diagramm",
     "new-element-image": "Bild",
+    "new-element-histogram": "Histogramm",
     "hide-comments": "Kommentare ausblenden",
     "show-comments": "Kommentare einblenden",
     "toggle-comments": "Kommentare ein/ausblenden",
@@ -228,6 +229,9 @@
         "hbar": {
             "title": "Balken"
         },
+        "histogram": {
+            "title": "Histogramm"
+        },
         "pie": {
             "title": "Torte"
         },
@@ -250,5 +254,21 @@
         "cmd-paste-mac": "Cmd+V",
         "cmd-paste-pc": "Strg+V"
     }
+  },
+  "histogram": {
+    "table-title": "Daten",
+    "chart-title": "Histogramm",
+    "columns": {
+        "name": {
+            "header": "Name",
+            "example": "Beispiel"
+        },
+        "value": {
+            "header": "Wert",
+            "example": "10"
+        }
+    },
+    "table-hint": "Diese Tabelle enthält die Daten für das Histogramm.<br />Als Datenpunkte sind nur numerische Werte zulässig (rechte Spalte). Für jeden Datenpunkt kann eine Name (linke Spalte) vergeben werden, um ihn im Diagramm identifizieren zu können.",
+    "chart-hint": "Das Diagramm wird nach jeder Änderung der Tabelle automatisch neu gezeichnet."
   }
 }

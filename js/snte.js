@@ -86,7 +86,7 @@ var snteImage = {"maxWidth": 500};
 
 var snteChromeSize = {"left": {"width": 0}, "top": {"height": 120}};
 var snteWorkspaceSize = {"width": 9999999999, "height": 9999999999};
-var snteDefaultElementSizes = {"comment": {"width": 275, "height": 150}, "chart": {"width": 400, "height": 300}};
+var snteDefaultElementSizes = {"comment": {"width": 275, "height": 150}, "chart": {"width": 400, "height": 300}, "table": {"rows": 10, "columns": 10}, "histogram": {"rows": 20, "columns": 2}};
 
 // http://home.earthlink.net/~silvermaplesoft/standards/size_heading.html
 var snteWYSIWYG = {
@@ -970,7 +970,7 @@ function snte_chrome_setup_chart_control() {
     $("input#snte-chart-wizard-yaxis").val("");
     $("input#snte-chart-wizard-first-data-row").attr("checked", "checked");
     var selectedCells = snte_table_normalize_cell_selection($snteWorkspaceFocusedElement.handsontable("getInstance").getSelected());
-    $("div#snte-chart-wizard-cellrange").html(i18n.t("chart.wizard.data-table")+": "+snte_table_get_title($snteWorkspaceFocusedElement)+"<br />"+i18n.t("chart.wizard.data-cellrange")+": <span class=\"syntax\"><span class=\"cellrange\">"+Handsontable.helper.spreadsheetColumnLabel(selectedCells[1])+(selectedCells[0]+1)+"</span>:<span class=\"cellrange\">"+Handsontable.helper.spreadsheetColumnLabel(selectedCells[3])+(selectedCells[2]+1)+"</span></span>");
+    $("div#snte-chart-wizard-cellrange").html(i18n.t("chart.wizard.data-table")+": "+snte_workspace_get_element_title($snteWorkspaceFocusedElement)+"<br />"+i18n.t("chart.wizard.data-cellrange")+": <span class=\"syntax\"><span class=\"cellrange\">"+Handsontable.helper.spreadsheetColumnLabel(selectedCells[1])+(selectedCells[0]+1)+"</span>:<span class=\"cellrange\">"+Handsontable.helper.spreadsheetColumnLabel(selectedCells[3])+(selectedCells[2]+1)+"</span></span>");
   });
   $("#snte-chart-modal button.snte-chart-wizard-type").click(function(event) {
     $("#snte-chart-modal button.snte-chart-wizard-type").removeClass("active");
@@ -1577,6 +1577,24 @@ SNTE WORKSPACE
 ##############################
 */
 
+function snte_workspace_get_element_title($elem) {
+  var title;
+  var $input = $elem.parent("div.snte-element-container").find("input.snte-element-title-input");
+  if($input.val().trim() === "") {
+    title = $input.attr("placeholder");
+  }
+  else {
+    title = $input.val().trim();
+  }
+
+  return title;
+}
+
+function snte_workspace_set_element_title($elem, title) {
+  var $input = $elem.parent("div.snte-element-container").find("input.snte-element-title-input");
+  $input.val(title);
+}
+
 function snte_workspace_restore_element() {
   snte_chrome_reset_font_controls();
 
@@ -1700,6 +1718,14 @@ function snte_workspace_set_focus($elem) {
       $("button#snte-menu-unordered-list").removeClass("disabled");
     }
   }
+}
+
+function snte_workspace_position_element($elem, top, left) {
+  var $elementContainer = $elem.parent("div.snte-element-container");
+  $elementContainer.css({
+    "top": top+"px",
+    "left": left+"px"
+  });
 }
 
 function snte_workspace_make_draggable($elementContainer) {
@@ -1981,7 +2007,7 @@ function snte_workspace_add_element(type) {
 
   switch(type) {
       case "table":
-        snte_workspace_add_table();
+        snte_workspace_add_table(snteDefaultElementSizes.table.rows, snteDefaultElementSizes.table.columns, true, true, true, true, true, true);
         break;
       case "text":
         snte_workspace_add_text();
@@ -1996,8 +2022,53 @@ function snte_workspace_add_element(type) {
         snte_workspace_reset_focus(void 0);
         $("#snte-image-modal").modal();
         break;
+      case "histogram":
+        snte_workspace_add_histogram();
     }
 }
+
+function snte_workspace_add_histogram() {
+  var $tableCommentElement = snte_workspace_add_comment();
+  $tableCommentElement.html(i18n.t("histogram.table-hint"));
+  snte_workspace_resize_element($tableCommentElement, "400px", "150px");
+  snte_workspace_position_element($tableCommentElement, snteChromeSize.top.height, 50);
+
+  var $chartCommentElement = snte_workspace_add_comment();
+  $chartCommentElement.html(i18n.t("histogram.chart-hint"));
+  snte_workspace_resize_element($chartCommentElement, "300px", "130px");
+  snte_workspace_position_element($chartCommentElement, snteChromeSize.top.height+50, 650);
+
+  var $tableElement = snte_workspace_add_table(snteDefaultElementSizes.histogram.rows, snteDefaultElementSizes.histogram.columns, true, false, true, false, true, false);
+  $tableElement.addClass("snte-element-histogram");
+  var tableInstance = $tableElement.handsontable("getInstance");
+  var tableSettings = $tableElement.handsontable("getSettings");
+  tableSettings.colHeaders = false;
+  tableInstance.setDataAtCell(0,0,i18n.t("histogram.columns.name.header"));
+  tableInstance.setDataAtCell(0,1,i18n.t("histogram.columns.value.header"));
+  tableInstance.setDataAtCell(1,0,i18n.t("histogram.columns.name.example"));
+  tableInstance.setDataAtCell(1,1,i18n.t("histogram.columns.value.example"));
+
+  tableInstance.selectCell(0,0,0,1);
+  snte_wysiwyg_update_table_cell_meta("fillColor", "rgba(239,239,239,1)");
+  snte_wysiwyg_update_table_cell_meta("bold", true);
+
+  snte_workspace_set_element_title($tableElement, i18n.t("histogram.table-title"));
+  snte_workspace_position_element($tableElement, snteChromeSize.top.height+160, 50);
+
+  tableInstance.selectCell(0,0,tableInstance.countRows()-1, tableInstance.countCols()-1);
+  $("input#snte-chart-wizard-first-data-row").attr("checked", "checked");
+  var $chartElement = snte_workspace_add_chart("histogram");
+  $chartElement.addClass("snte-element-histogram");
+  snte_workspace_resize_element($chartElement, "600px", "450px");
+  snte_workspace_position_element($chartElement, snteChromeSize.top.height+160, 250);
+  snte_workspace_set_element_title($chartElement, i18n.t("histogram.chart-title"));
+
+  snte_workspace_bring_to_front($tableCommentElement.parent("div.snte-element-container"));
+  snte_workspace_bring_to_front($chartCommentElement.parent("div.snte-element-container"));
+
+  tableInstance.selectCell(1,0);
+}
+
 
 function snte_workspace_add_chart(chartType) {
   if($snteWorkspaceFocusedElement && $snteWorkspaceFocusedElement.hasClass("snte-element-table")) {
@@ -2060,8 +2131,11 @@ function snte_workspace_add_chart(chartType) {
       case "vbar":
         chart = new google.visualization.ColumnChart($newElement[0]);
         break;
-        case "hbar":
+      case "hbar":
         chart = new google.visualization.BarChart($newElement[0]);
+        break;
+      case "histogram":
+        chart = new google.visualization.Histogram($newElement[0]);
         break;
       case "pie":
         chart = new google.visualization.PieChart($newElement[0]);
@@ -2078,6 +2152,7 @@ function snte_workspace_add_chart(chartType) {
     //chart.draw(chartData, chartOptions);
 
     snteCharts[nextId] = {
+      "element": $newElement,
       "table": {
         "id": snte_workspace_get_element_id($snteWorkspaceFocusedElement),
         "cellrange": selectedCells
@@ -2097,9 +2172,13 @@ function snte_workspace_add_chart(chartType) {
         snte_workspace_restore_element();
       }
     });
+
+    return $newElement;
   }
   else {
     alert(i18n.t("chart.error-no-cells-selected"));
+
+    return void 0;
   }
 }
 
@@ -2177,16 +2256,160 @@ function snte_chart_generate_data(tableInstance, selectedCells, headerOffset) {
   return chartData;
 }
 
-function snte_workspace_add_table() {
+function snte_workspace_add_table(numberOfRows, numberOfColumns, rowHeaders, colHeaders, addRowsAllowed, addColumnsAllowed, removeRowsAllowed, removeColumnsAllowed) {
   var nextId = snte_workspace_generate_element_id();
 
   var $newElement = $("<div>").addClass("snte-element snte-element-table").attr("id", "snte-element-"+nextId);
 
+  if(addRowsAllowed) {
+    $newElement.addClass("has-add-row-control");
+  }
+  if(addColumnsAllowed) {
+    $newElement.addClass("has-add-column-control");
+  }
+
+  var contextMenuItems =  {
+    "copy": {
+      name: i18n.t("table.context-menu.copy"),
+      icon: "icon-copy",
+      callback: function (key, options) {
+        $("div#snte-copypaste-modal").modal("show");
+      }
+    },
+    "cut": {
+      name: i18n.t("table.context-menu.cut"),
+      icon: "icon-scissors",
+      callback: function (key, options) {
+        $("div#snte-copypaste-modal").modal("show");
+      }
+    },
+    "paste": {
+      name: i18n.t("table.context-menu.paste"),
+      icon: "icon-paste",
+      callback: function (key, options) {
+        $("div#snte-copypaste-modal").modal("show");
+      }
+    },
+    "hsep0": "---------",
+    "vacuum": {
+      name: i18n.t("table.context-menu.vacuum"),
+      icon: "icon-crop",
+      callback: function (key, options) {
+        var doIt = true;
+        var someCellsNotEmpty = false;
+        var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+        var selectedCells = snte_table_normalize_cell_selection(tableInstance.getSelected()); //[startRow, startCol, endRow, endCol]
+
+        for(var col = 0; col < tableInstance.countCols(); col++) {
+          if(col < selectedCells[1] || col > selectedCells[3]) {
+            someCellsNotEmpty = someCellsNotEmpty || !tableInstance.isEmptyCol(col);
+            if(someCellsNotEmpty) {
+              break;
+            }
+          }
+        }
+        if(!someCellsNotEmpty) {
+          for(var row = 0; row < tableInstance.countRows(); row++) {
+            if(row < selectedCells[0] || row > selectedCells[2]) {
+              someCellsNotEmpty = someCellsNotEmpty || !tableInstance.isEmptyRow(row);
+              if(someCellsNotEmpty) {
+                break;
+              }
+            }
+          }
+        }
+        if(someCellsNotEmpty) {
+          doIt = confirm(i18n.t("table.vacuum-confirm"));
+        }
+        if(doIt) {
+          for(var col = tableInstance.countCols()-1; col >= 0; col--) {
+            if(col < selectedCells[1] || col > selectedCells[3]) {
+              tableInstance.alter("remove_col", col, 1, "vacuum");
+            }
+          }
+          for(var row = tableInstance.countRows()-1; row >= 0; row--) {
+            if(row < selectedCells[0] || row > selectedCells[2]) {
+              tableInstance.alter("remove_row", row, 1, "vacuum");
+            }
+          }
+          tableInstance.selectCell(0, 0, tableInstance.countRows()-1, tableInstance.countCols()-1);
+        }
+      }
+    }
+  };
+  if(addRowsAllowed) {
+    contextMenuItems["hsep1"] = "---------";
+    contextMenuItems["row_above"] = {
+      name: i18n.t("table.context-menu.insert-row-above"),
+      icon: "icon-row-above",
+    };
+    contextMenuItems["row_below"] = {
+      name: i18n.t("table.context-menu.insert-row-below"),
+      icon: "icon-row-below",
+    };
+  }
+  if(addColumnsAllowed) {
+    contextMenuItems["hsep2"] = "---------";
+    contextMenuItems["col_left"] = {
+      name: i18n.t("table.context-menu.insert-column-left"),
+      icon: "icon-col-left",
+    };
+    contextMenuItems["col_right"] = {
+      name: i18n.t("table.context-menu.insert-column-right"),
+      icon: "icon-col-right",
+    };
+  }
+  if(removeRowsAllowed || removeColumnsAllowed) {
+    contextMenuItems["hsep3"] = "---------";
+  }
+  if(removeRowsAllowed) {
+    contextMenuItems["remove_row"] = {
+      name: i18n.t("table.context-menu.remove-row"),
+      icon: "icon-close",
+      disabled: function () {
+        return this.countRows() === 1;
+      }
+    };
+  }
+  if(removeColumnsAllowed) {
+    contextMenuItems["remove_col"] = {
+      name: i18n.t("table.context-menu.remove-column"),
+      icon: "icon-close",
+      disabled: function () {
+        return this.countCols() === 1;
+      }
+    };
+  }
+
+  contextMenuItems["hsep4"] = "---------";
+  contextMenuItems["toggle_row_headers"] = {
+    name: rowHeaders? i18n.t("table.context-menu.hide-row-headers") : i18n.t("table.context-menu.show-row-headers"),
+    icon: rowHeaders ? "icon-eye-blocked" : "icon-eye",
+    callback: function (key, options) {
+      var tableSettings = $snteWorkspaceFocusedElement.handsontable("getSettings");
+      tableSettings.rowHeaders = !tableSettings.rowHeaders;
+      $snteWorkspaceFocusedElement.handsontable("getInstance").render();
+      this.contextMenu.options.items.toggle_row_headers.name = tableSettings.rowHeaders ? i18n.t("table.context-menu.hide-row-headers") : i18n.t("table.context-menu.show-row-headers");
+      this.contextMenu.options.items.toggle_row_headers.icon = tableSettings.rowHeaders ? "icon-eye-blocked" : "icon-eye";
+    }
+  };
+  contextMenuItems["toggle_column_headers"] = {
+    name: colHeaders? i18n.t("table.context-menu.hide-column-headers") : i18n.t("table.context-menu.show-column-headers"),
+    icon: colHeaders ? "icon-eye-blocked" : "icon-eye",
+    callback: function (key, options) {
+      var tableSettings = $snteWorkspaceFocusedElement.handsontable("getSettings");
+      tableSettings.colHeaders = !tableSettings.colHeaders;
+      $snteWorkspaceFocusedElement.handsontable("getInstance").render();
+      this.contextMenu.options.items.toggle_column_headers.name = tableSettings.colHeaders ? i18n.t("table.context-menu.hide-column-headers") : i18n.t("table.context-menu.show-column-headers");
+      this.contextMenu.options.items.toggle_column_headers.icon = tableSettings.colHeaders ? "icon-eye-blocked" : "icon-eye";
+    }
+  };
+
   $newElement.handsontable({
-    startRows: 10,
-    startCols: 10,
-    colHeaders: true,
-    rowHeaders: true,
+    startRows: numberOfRows,
+    startCols: numberOfColumns,
+    colHeaders: colHeaders,
+    rowHeaders: rowHeaders,
     manualColumnResize: true,
     manualColumnMove: true,
     scrollV: "none",
@@ -2451,7 +2674,6 @@ function snte_workspace_add_table() {
             var chartData = snte_chart_generate_data(tableInstance, chartsToUpdate[chartId].table.cellrange, chartsToUpdate[chartId].headerOffset);
             snteCharts[chartId].data = chartData;
             async.drawChart(chartsToUpdate[chartId].obj, chartData, chartsToUpdate[chartId].options);
-            //chartsToUpdate[chartId].obj.draw(chartData, chartsToUpdate[chartId].options);
           }
         }
       }
@@ -2461,183 +2683,143 @@ function snte_workspace_add_table() {
         return;
       }
       snte_table_handsontable_undoable_action();
+
+      if($snteWorkspaceFocusedElement.hasClass("snte-element-histogram")) {
+        var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+
+        var chartsToUpdate = {};
+
+        for(var chartId in snteCharts) {
+          if(snte_workspace_get_element_id($snteWorkspaceFocusedElement) === snteCharts[chartId].table.id &&
+             snteCharts[chartId].element.hasClass("snte-element-histogram")) {
+            chartsToUpdate[chartId] = snteCharts[chartId];
+          }
+        }
+
+        for(var chartId in chartsToUpdate) {
+          snteCharts[chartId].table.cellrange = [0, 0, tableInstance.countRows()-1, tableInstance.countCols()-1];
+          var chartData = snte_chart_generate_data(tableInstance, snteCharts[chartId].table.cellrange, chartsToUpdate[chartId].headerOffset);
+          snteCharts[chartId].data = chartData;
+          async.drawChart(chartsToUpdate[chartId].obj, chartData, chartsToUpdate[chartId].options);
+        }
+      }
     },
     beforeRemoveRow: function (index, amount) {
       snte_table_handsontable_undoable_action();
+
+      if($snteWorkspaceFocusedElement.hasClass("snte-element-histogram")) {
+        var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+
+        var chartsToUpdate = {};
+
+        for(var chartId in snteCharts) {
+          if(snte_workspace_get_element_id($snteWorkspaceFocusedElement) === snteCharts[chartId].table.id &&
+             snteCharts[chartId].element.hasClass("snte-element-histogram")) {
+            chartsToUpdate[chartId] = snteCharts[chartId];
+          }
+        }
+
+        for(var chartId in chartsToUpdate) {
+          snteCharts[chartId].table.cellrange = [0, 0, tableInstance.countRows()-2, tableInstance.countCols()-1];
+          var chartData = snte_chart_generate_data(tableInstance, snteCharts[chartId].table.cellrange, chartsToUpdate[chartId].headerOffset);
+          snteCharts[chartId].data = chartData;
+          async.drawChart(chartsToUpdate[chartId].obj, chartData, chartsToUpdate[chartId].options);
+        }
+      }
     },
     afterCreateCol: function (index, amount, createdAutomatically) {
       if (createdAutomatically) {
         return;
       }
       snte_table_handsontable_undoable_action();
+
+      if($snteWorkspaceFocusedElement.hasClass("snte-element-histogram")) {
+        var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+
+        var chartsToUpdate = {};
+
+        for(var chartId in snteCharts) {
+          if(snte_workspace_get_element_id($snteWorkspaceFocusedElement) === snteCharts[chartId].table.id &&
+             snteCharts[chartId].element.hasClass("snte-element-histogram")) {
+            chartsToUpdate[chartId] = snteCharts[chartId];
+          }
+        }
+
+        for(var chartId in chartsToUpdate) {
+          snteCharts[chartId].table.cellrange = [0, 0, tableInstance.countRows()-1, tableInstance.countCols()-1];
+          var chartData = snte_chart_generate_data(tableInstance, snteCharts[chartId].table.cellrange, chartsToUpdate[chartId].headerOffset);
+          snteCharts[chartId].data = chartData;
+          async.drawChart(chartsToUpdate[chartId].obj, chartData, chartsToUpdate[chartId].options);
+        }
+      }
     },
     beforeRemoveCol: function (index, amount) {
       snte_table_handsontable_undoable_action();
-    },
-    contextMenu: {
-      items: {
-        "copy": {
-          name: i18n.t("table.context-menu.copy"),
-          icon: "icon-copy",
-          callback: function (key, options) {
-            $("div#snte-copypaste-modal").modal("show");
-          }
-        },
-        "cut": {
-          name: i18n.t("table.context-menu.cut"),
-          icon: "icon-scissors",
-          callback: function (key, options) {
-            $("div#snte-copypaste-modal").modal("show");
-          }
-        },
-        "paste": {
-          name: i18n.t("table.context-menu.paste"),
-          icon: "icon-paste",
-          callback: function (key, options) {
-            $("div#snte-copypaste-modal").modal("show");
-          }
-        },
-        "hsep0": "---------",
-        "vacuum": {
-          name: i18n.t("table.context-menu.vacuum"),
-          icon: "icon-crop",
-          callback: function (key, options) {
-            var doIt = true;
-            var someCellsNotEmpty = false;
-            var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
-            var selectedCells = snte_table_normalize_cell_selection(tableInstance.getSelected()); //[startRow, startCol, endRow, endCol]
 
-            for(var col = 0; col < tableInstance.countCols(); col++) {
-              if(col < selectedCells[1] || col > selectedCells[3]) {
-                someCellsNotEmpty = someCellsNotEmpty || !tableInstance.isEmptyCol(col);
-                if(someCellsNotEmpty) {
-                  break;
-                }
-              }
-            }
-            if(!someCellsNotEmpty) {
-              for(var row = 0; row < tableInstance.countRows(); row++) {
-                if(row < selectedCells[0] || row > selectedCells[2]) {
-                  someCellsNotEmpty = someCellsNotEmpty || !tableInstance.isEmptyRow(row);
-                  if(someCellsNotEmpty) {
-                    break;
-                  }
-                }
-              }
-            }
-            if(someCellsNotEmpty) {
-              doIt = confirm(i18n.t("table.vacuum-confirm"));
-            }
-            if(doIt) {
-              for(var col = tableInstance.countCols()-1; col >= 0; col--) {
-                if(col < selectedCells[1] || col > selectedCells[3]) {
-                  tableInstance.alter("remove_col", col, 1, "vacuum");
-                }
-              }
-              for(var row = tableInstance.countRows()-1; row >= 0; row--) {
-                if(row < selectedCells[0] || row > selectedCells[2]) {
-                  tableInstance.alter("remove_row", row, 1, "vacuum");
-                }
-              }
-              tableInstance.selectCell(0, 0, tableInstance.countRows()-1, tableInstance.countCols()-1);
-            }
-          }
-        },
-        "hsep1": "---------",
-        "row_above": {
-          name: i18n.t("table.context-menu.insert-row-above"),
-          icon: "icon-row-above",
-        },
-        "row_below": {
-          name: i18n.t("table.context-menu.insert-row-below"),
-          icon: "icon-row-below",
-        },
-        "hsep2": "---------",
-        "col_left": {
-          name: i18n.t("table.context-menu.insert-column-left"),
-          icon: "icon-col-left",
-        },
-        "col_right": {
-          name: i18n.t("table.context-menu.insert-column-right"),
-          icon: "icon-col-right",
-        },
-        "hsep3": "---------",
-        "remove_row": {
-          name: i18n.t("table.context-menu.remove-row"),
-          icon: "icon-close",
-          disabled: function () {
-            return this.countRows() === 1;
-          }
-        },
-        "remove_col": {
-          name: i18n.t("table.context-menu.remove-column"),
-          icon: "icon-close",
-          disabled: function () {
-            return this.countCols() === 1;
-          }
-        },
-        "hsep4": "---------",
-        "toggle_row_headers": {
-          name: i18n.t("table.context-menu.hide-row-headers"),
-          icon: "icon-eye-blocked",
-          callback: function (key, options) {
-            var tableSettings = $snteWorkspaceFocusedElement.handsontable("getSettings");
-            tableSettings.rowHeaders = !tableSettings.rowHeaders;
-            $snteWorkspaceFocusedElement.handsontable("getInstance").render();
-            this.contextMenu.options.items.toggle_row_headers.name = tableSettings.rowHeaders ? i18n.t("table.context-menu.hide-row-headers") : i18n.t("table.context-menu.show-row-headers");
-            this.contextMenu.options.items.toggle_row_headers.icon = tableSettings.rowHeaders ? "icon-eye-blocked" : "icon-eye";
-          }
-        },
-        "toggle_column_headers": {
-          name: i18n.t("table.context-menu.hide-column-headers"),
-          icon: "icon-eye-blocked",
-          callback: function (key, options) {
-            var tableSettings = $snteWorkspaceFocusedElement.handsontable("getSettings");
-            tableSettings.colHeaders = !tableSettings.colHeaders;
-            $snteWorkspaceFocusedElement.handsontable("getInstance").render();
-            this.contextMenu.options.items.toggle_column_headers.name = tableSettings.colHeaders ? i18n.t("table.context-menu.hide-column-headers") : i18n.t("table.context-menu.show-column-headers");
-            this.contextMenu.options.items.toggle_column_headers.icon = tableSettings.colHeaders ? "icon-eye-blocked" : "icon-eye";
+      if($snteWorkspaceFocusedElement.hasClass("snte-element-histogram")) {
+        var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+
+        var chartsToUpdate = {};
+
+        for(var chartId in snteCharts) {
+          if(snte_workspace_get_element_id($snteWorkspaceFocusedElement) === snteCharts[chartId].table.id &&
+             snteCharts[chartId].element.hasClass("snte-element-histogram")) {
+            chartsToUpdate[chartId] = snteCharts[chartId];
           }
         }
+
+        for(var chartId in chartsToUpdate) {
+          snteCharts[chartId].table.cellrange = [0, 0, tableInstance.countRows()-1, tableInstance.countCols()-2];
+          var chartData = snte_chart_generate_data(tableInstance, snteCharts[chartId].table.cellrange, chartsToUpdate[chartId].headerOffset);
+          snteCharts[chartId].data = chartData;
+          async.drawChart(chartsToUpdate[chartId].obj, chartData, chartsToUpdate[chartId].options);
+        }
       }
+    },
+    contextMenu: {
+      items: contextMenuItems
     }
   });
   
   $newElementContainer = snte_workspace_create_element_container(true, i18n.t("table.unnamed")+" "+(++snteTableCounter));
 
-  $addRowControl = $("<div>").addClass("snte-table-control snte-table-control-add-row").append($("<span>").addClass("glyphicon glyphicon-plus")).attr("title", i18n.t("table.add-row"));
-  $addRowControl.click(function(event) {
-    $(this).tooltip("hide");
+  if(addRowsAllowed) {
+    $addRowControl = $("<div>").addClass("snte-table-control snte-table-control-add-row").append($("<span>").addClass("glyphicon glyphicon-plus")).attr("title", i18n.t("table.add-row"));
+    $addRowControl.click(function(event) {
+      $(this).tooltip("hide");
 
-    var $workspaceElement = $(event.target).closest("div.snte-element-container").find("div.snte-element");
-    snte_workspace_set_focus($workspaceElement);
-    var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
-    tableInstance.alter("insert_row");
-  });
-  $addRowControl.tooltip({
-    container: "body",
-    placement: "bottom",
-    trigger: "hover",
-    animation: false
-  });
-  $newElementContainer.append($addRowControl);
+      var $workspaceElement = $(event.target).closest("div.snte-element-container").find("div.snte-element");
+      snte_workspace_set_focus($workspaceElement);
+      var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+      tableInstance.alter("insert_row");
+    });
+    $addRowControl.tooltip({
+      container: "body",
+      placement: "bottom",
+      trigger: "hover",
+      animation: false
+    });
+    $newElementContainer.append($addRowControl);
+  }
 
-  $addColumnControl = $("<div>").addClass("snte-table-control snte-table-control-add-column").append($("<span>").addClass("glyphicon glyphicon-plus")).attr("title", i18n.t("table.add-column"));
-  $addColumnControl.click(function(event) {
-    $(this).tooltip("hide");
+  if(addColumnsAllowed) {
+    $addColumnControl = $("<div>").addClass("snte-table-control snte-table-control-add-column").append($("<span>").addClass("glyphicon glyphicon-plus")).attr("title", i18n.t("table.add-column"));
+    $addColumnControl.click(function(event) {
+      $(this).tooltip("hide");
 
-    var $workspaceElement = $(event.target).closest("div.snte-element-container").find("div.snte-element");
-    snte_workspace_set_focus($workspaceElement);
-    var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
-    tableInstance.alter("insert_col");
-  });
-  $addColumnControl.tooltip({
-    container: "body",
-    placement: "right",
-    trigger: "hover",
-    animation: false
-  });
-  $newElementContainer.append($addColumnControl);
+      var $workspaceElement = $(event.target).closest("div.snte-element-container").find("div.snte-element");
+      snte_workspace_set_focus($workspaceElement);
+      var tableInstance = $snteWorkspaceFocusedElement.handsontable("getInstance");
+      tableInstance.alter("insert_col");
+    });
+    $addColumnControl.tooltip({
+      container: "body",
+      placement: "right",
+      trigger: "hover",
+      animation: false
+    });
+    $newElementContainer.append($addColumnControl);
+  }
 
   //snte_workspace_make_resizable($newElementContainer, false, false);
   snte_workspace_bring_to_front($newElementContainer);
@@ -2657,6 +2839,8 @@ function snte_workspace_add_table() {
       snte_workspace_restore_element();
     }
   });
+
+  return $newElement;
 }
 
 function snte_workspace_add_text() {
@@ -2712,6 +2896,8 @@ function snte_workspace_add_text() {
       snte_workspace_restore_element();
     }
   });
+
+  return $newElement;
 }
 
 function snte_workspace_add_comment() {
@@ -2774,6 +2960,8 @@ function snte_workspace_add_comment() {
       snte_workspace_restore_element();
     }
   });
+
+  return $newElement;
 }
 
 function snte_workspace_add_image(url) {
@@ -2954,19 +3142,6 @@ function snte_table_normalize_cell_selection(selectedCells) {
   normalized[3] = Math.max(selectedCells[1], selectedCells[3]);
 
   return normalized;
-}
-
-function snte_table_get_title($elem) {
-  var title;
-  var $input = $snteWorkspaceFocusedElement.parent("div.snte-element-container").find("input.snte-element-title-input");
-  if($input.val().trim() === "") {
-    title = $input.attr("placeholder");
-  }
-  else {
-    title = $input.val().trim();
-  }
-
-  return title;
 }
 
 function snte_i18n_supported_language(lang) {

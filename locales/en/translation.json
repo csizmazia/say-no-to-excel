@@ -43,6 +43,7 @@
     "new-element-comment": "Comment",
     "new-element-chart": "Chart",
     "new-element-image": "Image",
+    "new-element-histogram": "Histogram",
     "hide-comments": "Hide comments",
     "show-comments": "Show comments",
     "toggle-comments": "Comments on/off",
@@ -228,6 +229,9 @@
         "hbar": {
             "title": "Bar"
         },
+        "histogram": {
+            "title": "Histogram"
+        },
         "pie": {
             "title": "Pie"
         },
@@ -250,5 +254,21 @@
         "cmd-paste-mac": "Cmd+V",
         "cmd-paste-pc": "Ctrl+V"
     }
+  },
+  "histogram": {
+    "table-title": "Data",
+    "chart-title": "Histogram",
+    "columns": {
+        "name": {
+            "header": "Name",
+            "example": "Example"
+        },
+        "value": {
+            "header": "Value",
+            "example": "10"
+        }
+    },
+    "table-hint": "This table contains the data to be visualized in the histogram.<br />You may only use numeric values in the right column. You can assign a name to each data point in the left column to identify it easily in the chart.",
+    "chart-hint": "The histogram chart is updated automatically after any change you make to the data table."
   }
 }

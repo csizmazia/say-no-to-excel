@@ -125,7 +125,14 @@ div.snte-element {
 }
 
 div.snte-element-table {
-  margin: 20px;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+div.snte-element-table.has-add-column-control {
+  margin-right: 20px;
+}
+div.snte-element-table.has-add-row-control {
+  margin-bottom: 20px;
 }
 div.snte-element-table table tr {
   background-color: #fff;
@@ -517,6 +524,9 @@ button#snte-chart-wizard-type-vbar>span {
 button#snte-chart-wizard-type-hbar>span {
   background: url('../img/google-charts-thumbs.png') no-repeat scroll 0 -3187px rgba(0, 0, 0, 0);
 }
+button#snte-chart-wizard-type-histogram>span {
+  background: url('../img/google-charts-thumbs.png') no-repeat scroll 0 -1565px rgba(0, 0, 0, 0);
+}
 button#snte-chart-wizard-type-pie>span {
   background: url('../img/google-charts-thumbs.png') no-repeat scroll 0 -3852px rgba(0, 0, 0, 0);
 }
@@ -552,7 +562,7 @@ div.snte-copypaste-modal-shortcut-command {
 }
 .snte-element-container > .arrow.bottom {
   bottom: -11px;
-  left: 50%;
+  left: 50px;
   margin-left: -11px;
   border-top-color: #999;
   border-top-color: rgba(0, 0, 0, 0.1);

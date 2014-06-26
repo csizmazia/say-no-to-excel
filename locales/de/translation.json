@@ -268,7 +268,7 @@
             "example": "10"
         }
     },
-    "table-hint": "Diese Tabelle enthält die Daten für das Histogramm.<br />Als Datenpunkte sind nur numerische Werte zulässig (rechte Spalte). Für jeden Datenpunkt kann eine Name (linke Spalte) vergeben werden, um ihn im Diagramm identifizieren zu können.",
+    "table-hint": "Diese Tabelle enthält die Daten für das Histogramm.<br />Als Datenpunkte (rechte Spalte) sind nur numerische Werte zulässig. Für jeden Datenpunkt kann ein Name (linke Spalte) vergeben werden, um ihn im Diagramm identifizieren zu können.",
     "chart-hint": "Das Diagramm wird nach jeder Änderung der Tabelle automatisch neu gezeichnet."
   }
 }

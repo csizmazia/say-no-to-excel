@@ -2043,6 +2043,7 @@ function snte_workspace_add_histogram() {
   var tableInstance = $tableElement.handsontable("getInstance");
   var tableSettings = $tableElement.handsontable("getSettings");
   tableSettings.colHeaders = false;
+  tableSettings.minSpareRows = 1;
   tableInstance.setDataAtCell(0,0,i18n.t("histogram.columns.name.header"));
   tableInstance.setDataAtCell(0,1,i18n.t("histogram.columns.value.header"));
   tableInstance.setDataAtCell(1,0,i18n.t("histogram.columns.name.example"));
@@ -2408,6 +2409,7 @@ function snte_workspace_add_table(numberOfRows, numberOfColumns, rowHeaders, col
   $newElement.handsontable({
     startRows: numberOfRows,
     startCols: numberOfColumns,
+    //enterBeginsEditing: false,
     colHeaders: colHeaders,
     rowHeaders: rowHeaders,
     manualColumnResize: true,
@@ -2671,6 +2673,9 @@ function snte_workspace_add_table(numberOfRows, numberOfColumns, rowHeaders, col
           }
 
           for(var chartId in chartsToUpdate) {
+            if(snteCharts[chartId].element.hasClass("snte-element-histogram")) {
+              snteCharts[chartId].table.cellrange = [0, 0, tableInstance.countRows()-1, tableInstance.countCols()-1];
+            }
             var chartData = snte_chart_generate_data(tableInstance, chartsToUpdate[chartId].table.cellrange, chartsToUpdate[chartId].headerOffset);
             snteCharts[chartId].data = chartData;
             async.drawChart(chartsToUpdate[chartId].obj, chartData, chartsToUpdate[chartId].options);

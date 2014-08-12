@@ -1,3 +1,6 @@
+/**
+ * Class container for asynchronous jobs. Methods return jQuery Promise objects.
+ */
 var async = (function () {
   /**
    * read contents of file as representing URL
@@ -37,6 +40,14 @@ var async = (function () {
     }).promise();
   };
 
+  /**
+   * create `<image>` from url string
+   *
+   * @param {Object} chartObj - Google Visualization API chart object
+   * @param {Object} chartData - Data object for Google Visualization API chart object
+   * @param {Object} chartOptions
+   * @return {Promise} - then: void
+   */
   var drawChart = function(chartObj, chartData, chartOptions) {
     return $.Deferred(function (deferred) {
       chartObj.draw(chartData, chartOptions);
@@ -51,9 +62,31 @@ var async = (function () {
   };
 })();
 
+/**
+ * Extension of the String-Prototype.
+ *
+ * @param {String} String to test the existence of
+ * @return {Boolean} - True when param string exits, else otherwise
+ */
 String.prototype.contains = function(it) { return this.indexOf(it) !== -1; };
+/**
+ * Extension of the String-Prototype.
+ *
+ * @return {String} - Returns the string with the first letter capitalized.
+ */
 String.prototype.capitalize = function() { return this.charAt(0).toUpperCase() + this.slice(1); };
+/**
+ * Extension of the String-Prototype.
+ *
+ * @return {String} - Returns the string with all whitespaces stripped from the both ends.
+ */
 String.prototype.trim = function() { return String(this).replace(/^\s+|\s+$/g, ''); };
+/**
+ * Extension of the Object-Prototype.
+ *
+ * @param {Object}
+ * @return {Number} - Returns the number of properties of an object
+ */
 Object.size = function(obj) {
   var size = 0;
   for (var key in obj) {
@@ -64,17 +97,42 @@ Object.size = function(obj) {
   return size;
 };
 
+/**
+ * jQuery pointer to the workspace container.
+ */
 var $snteWorkspace;
+/**
+ * Container object for all currently active workspace elements. Keys are element IDs.
+ */
 var snteWorkspaceElements = {};
+/**
+ * Container array for all currently inactive workspace elements (e.g. deleted elements).
+ */
 var snteTrash = [];
+/**
+ * jQuery pointer to the currently focused workspace element.
+ */
 var $snteWorkspaceFocusedElement;
-var snteWorkspaceErrorModalVisible = false;
-var snteLastCellError = {};
+/**
+ * Boolean indicating whether a table cell is currently in editing mode.
+ */
 var snteCellEditorOpened = false;
+/**
+ * Number of currently active table elements on the workspace.
+ */
 var snteTableCounter = 0;
+/**
+ * Number of currently active chart elements on the workspace.
+ */
 var snteChartCounter = 0;
+/**
+ * Container object for all currently active chart objects. Keys are element IDs.
+ */
 var snteCharts = {};
-var snteWorkspaceDragHelper; // used to store drag starting position
+/**
+ * Used to store drag starting position.
+ */
+var snteWorkspaceDragHelper;
 
 var snteUndoManager = new UndoManager();
 var snteUndoTypeTimeout = 0;
